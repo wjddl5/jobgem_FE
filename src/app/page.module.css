@@ -1,0 +1,7 @@
+.main {
+	max-width: 1200px;
+	min-height: calc(100vh - 153px);
+	padding: 1.5rem;
+	margin:auto;
+	box-sizing: border-box;
+}
