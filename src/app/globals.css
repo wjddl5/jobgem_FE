@@ -6,7 +6,21 @@
     font-family: 'BM';
     src: url('/font/BMEULJIRO.otf');
 }
+@font-face {
+    font-family: 'pl';
+    src: url('/font/Pretendard-Regular.woff');
+}
 
 html, body {
-    font-family: 'BM', sans-serif;
+    font-family: 'pl', sans-serif;
+}
+body {
+    background-color:#f2f4f7;
+}
+main {
+    max-width: 1200px;
+    min-height: calc(100vh - 153px);
+    padding: 1.5rem;
+    margin:auto;
+    box-sizing: border-box;
 }
