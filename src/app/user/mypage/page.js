@@ -7,7 +7,7 @@ export default function page() {
 		<div className='bg-gray-100'>
 			<div className='flex gap-2'>
 				<SideMenu />
-				<main className='flex-1 bg-white p-8 shadow-md'>
+				<main className='flex-1 rounded-lg bg-white p-8 shadow-md'>
 					<div className='flex items-center gap-5 mb-8 '>
 						<div className='flex items-center space-x-4'>
 							<div className='w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center'>
