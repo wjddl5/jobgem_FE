@@ -1,4 +1,4 @@
-import '../../../front-end/src/app/globals.css';
+import './globals.css';
 import Header from '@/components/common/header/Header';
 import Footer from '@/components/common/footer/Footer';
 import { config } from '@fortawesome/fontawesome-svg-core';
