@@ -1,6 +1,6 @@
 import React from 'react';
 
-const baseButtonClasses = "middle center mr-4 rounded-lg py-3 px-6 text-xs font-bold uppercase shadow-md transition-all hover:shadow-lg focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none";
+const baseButtonClasses = "middle center flex-shrink-0 rounded-lg py-3 px-4 text-xs font-bold uppercase shadow-md transition-all hover:shadow-lg focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none";
 
 const Button = ({ text, type }) => {
     const buttonClasses = type === 'submit'
