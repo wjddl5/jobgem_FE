@@ -6,6 +6,7 @@ import {DiAptana} from "react-icons/di";
 import IconButton from "@/components/button/IconButton";
 import Image from "next/image";
 import Table from "@/components/table/Table";
+import Link from "next/link";
 
 function Page() {
     return (
@@ -22,6 +23,36 @@ function Page() {
                     </div>
                     <div className="hover:rotate-90 transition duration-200 ease-in-out">
                         <IconButton><DiAptana/></IconButton>
+                    </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mt-6">
+                    <div className="bg-white p-6 rounded-md shadow">
+                        <div className='mb-4 flex justify-between'>
+                            <h2 className="text-lg font-bold mb-4">기업 정보</h2>
+                            <Button text={'수정'}/>
+                        </div>
+                        <div className='flex justify-between'>
+                            <div className="text-center p-4">
+                                <p className="mb-2">매출액</p>
+                                <p className="text-2xl font-bold">46억</p>
+                            </div>
+                            <div className="text-center p-4">
+                                <p className="mb-2">사원수</p>
+                                <p className="text-2xl font-bold">1000명</p>
+                            </div>
+                            <div className="text-center p-4">
+                                <p className="mb-2">산업</p>
+                                <p className="text-2xl font-bold">IT</p>
+                            </div>
+                            <div className="text-center p-4">
+                                <p className="mb-2">설립</p>
+                                <p className="text-2xl font-bold">1933년</p>
+                            </div>
+                            <div className="text-center p-4">
+                                <p className="mb-2">기업형태</p>
+                                <p className="text-2xl font-bold">중견기업</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
@@ -44,11 +75,11 @@ function Page() {
                     </div>
 
                     <div className="bg-white p-6 rounded-md shadow">
-                        <h2 className="text-lg font-bold mb-4">리뷰 현황</h2>
+                        <h2 className="text-lg font-bold mb-4">후기 현황</h2>
                         <div className="flex justify-between mb-4">
                             <div>
                                 <p className="text-2xl font-bold text-blue-600 underline text-center">0</p>
-                                <p>기업 리뷰</p>
+                                <p>기업 후기</p>
                             </div>
                             <div>
                                 <p className="text-2xl font-bold text-blue-600 underline text-center">0</p>
@@ -73,7 +104,7 @@ function Page() {
                             </div>
                         </div>
                         <div className="bg-gray-50 p-4 rounded-md flex items-center justify-center gap-2">
-                            <Button text={'추천목록'} type={'submit'}/>
+                            <Link href='/company/talent/recommend' className='btn submit'>추천목록</Link>
                             <Button text={'찜한목록'}/>
                         </div>
                     </div>
@@ -82,7 +113,7 @@ function Page() {
                     <div className="bg-white p-6 rounded-md shadow">
                         <div className='mb-4 flex justify-between'>
                             <h2 className="text-lg font-bold mb-4">차단 목록</h2>
-                            <Button text={'더보기'}/>
+                            <Link href='/company/black' className='btn'>더보기</Link>
                         </div>
                         <Table list={[{}]} headers={['이름', '차단일자', '이력']}/>
                     </div>
@@ -90,7 +121,7 @@ function Page() {
                     <div className="bg-white p-6 rounded-md shadow">
                         <div className='mb-4 flex justify-between'>
                             <h2 className="text-lg font-bold">채팅 목록</h2>
-                            <Button text={'더보기'} />
+                            <Button text={'더보기'}/>
                         </div>
                         <Table list={[{}]} headers={['프로필', '채팅자', '마지막 채팅 시간']}/>
                     </div>
