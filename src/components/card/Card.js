@@ -17,10 +17,10 @@ function Card({ item }) {
             <a target="_self" href="/blog/slug"
                className="absolute opacity-0 top-0 right-0 left-0 bottom-0"></a>
             <div className="relative mb-4 rounded-2xl">
-                {item.companies.coThumbimgUrl && <Image
+                <Image
                     className="max-h-80 rounded-2xl w-full object-cover transition-transform duration-300 transform group-hover:scale-105"
-                    src={`/img/${item.companies.coThumbimgUrl}`} width={'100'} height={'100'}
-                    alt="썸네일이미지" />}
+                    src={`/img/1.jpg`} width={'100'} height={'100'}
+                    alt="썸네일이미지" />
                 <button
                     className="absolute bottom-3 left-3 inline-flex items-center rounded-lg bg-white p-2 shadow-md z-20">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" stroke="currentColor" className="h-5 w-5 text-red-700">
@@ -42,12 +42,12 @@ function Card({ item }) {
             <div className="flex justify-between items-center w-full pb-4 mb-auto">
                 <div className="flex items-center">
                     <div className="pr-3">
-                        {item.companies.coImgUrl && <Image className="h-12 w-12 rounded-full object-cover" src={`/img/${item.companies.coImgUrl}`} width={'100'} height={'100'} alt="커버이미지" />}
+                        <Image className="h-12 w-12 rounded-full object-cover" src={`/img/1.jpg`} width={'100'} height={'100'} alt="커버이미지" />
                     </div>
                     <div className="flex flex-1">
                         <div className="">
-                            <p className="text-sm font-semibold ">{item.coName}</p>
-                            <p className="text-sm text-gray-500">{item.poDate}</p>
+                            <p className="text-sm font-semibold ">공고이름</p>
+                            <p className="text-sm text-gray-500">공고일자</p>
                         </div>
                     </div>
                 </div>
@@ -58,14 +58,14 @@ function Card({ item }) {
                              xmlns="http://www.w3.org/2000/svg">
                             <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        {deadlineDisplay}
+                        남은기간
                     </div>
                 </div>
             </div>
             <h3 className="font-medium text-xl leading-8">
                 <a href="/blog/slug"
                    className="block relative group-hover:text-blue-700 transition-colors duration-200 ">
-                    {item.poContent}
+                    공고내용
                 </a>
             </h3>
             <div>
