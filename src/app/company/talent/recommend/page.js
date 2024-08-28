@@ -9,7 +9,7 @@ import UserCard from "@/components/card/UserCard";
 
 function Page() {
     return (
-        <div className="bg-gray-100">
+        <>
             <div className="flex gap-3 mb-6">
                 <Input type="text"/>
                 <Select ar={['직무/스킬']} />
@@ -33,7 +33,7 @@ function Page() {
                     <Table headers={['이름', '경력', '직무', '지역', '학력']} list={[{}, {}, {}, {}, {}]} />
                 </div>
             </div>
-        </div>
+        </>
     );
 }
 
