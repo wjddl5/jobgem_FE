@@ -11,12 +11,12 @@ export default function () {
 							<h3 className='font-semibold text-gray-700'>이력서 관리</h3>
 							<ul className='space-y-1 text-gray-600'>
 								<li>
-									<a href='/user/write' className='hover:underline'>
+									<a href='/user/resume-write' className='hover:underline'>
 										이력서 등록(작성페이지)
 									</a>
 								</li>
 								<li>
-									<a href='#' className='hover:underline'>
+									<a href='/user/resume-list' className='hover:underline'>
 										이력서 현황 (작성했던애들 목록-수정 삭제 가능)
 									</a>
 								</li>
