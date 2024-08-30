@@ -1,5 +1,5 @@
 'use client';
-import { Button } from '@mui/material';
+import { Button, TextField, Divider } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import SunEditor from 'suneditor-react';
@@ -34,7 +34,9 @@ export default function page(props) {
 		<div className='write_container'>
 			<form>
 				<h2 className='h2'>공지사항 작성</h2>
-				<input type='text' />
+				<input type='hidden' value={props.params.usIdx} />
+				<TextField id='boTitle' label='제목' variant='outlined' style={{ width: '940px' }} />
+				<Divider style={{ margin: '10px 0' }} />
 				<SunEditor
 					sunEditorStyle='height:700px'
 					setOptions={{

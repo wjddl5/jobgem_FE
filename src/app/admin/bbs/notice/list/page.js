@@ -60,7 +60,6 @@ export default function page() {
 		setChkSet(chk); // 상태 업데이트
 	}
 
-	// *allCheckBox에 checked={chkSet.size === ar.length} 속성 필요
 	//========================
 
 	// 페이지
