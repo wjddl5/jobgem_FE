@@ -3,63 +3,69 @@
 @tailwind utilities;
 
 @font-face {
-    font-family: 'BM';
-    src: url('/font/BMEULJIRO.otf');
+	font-family: 'BM';
+	src: url('/font/BMEULJIRO.otf');
 }
 @font-face {
-    font-family: 'pl';
-    src: url('/font/Pretendard-Regular.woff');
+	font-family: 'pl';
+	src: url('/font/Pretendard-Regular.woff');
 }
 
-html, body {
-    font-family: 'pl', sans-serif;
+html,
+body {
+	font-family: 'pl', sans-serif;
 }
 body {
-    background-color:#f2f4f7;
+	background-color: #f2f4f7;
 }
 main {
-    max-width: 1200px;
-    min-height: calc(100vh - 153px);
-    padding: 1rem;
-    margin:auto;
-    box-sizing: border-box;
+	max-width: 1200px;
+	min-height: calc(100vh - 153px);
+	padding: 1rem;
+	margin: auto;
+	box-sizing: border-box;
 }
+
+.sun-editor .se-wrapper .se-wrapper-inner {
+	min-height: 600px !important;
+}
+
 .btn {
-    flex-shrink: 0;
-    border-radius: 0.5rem;
-    padding: 0.75rem 1rem;
-    font-size: 0.75rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    transition: all 0.2s ease-in-out;
-    border: 1px solid #3b82f6;
-    background-color: white;
-    color: #3b82f6;
-    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+	flex-shrink: 0;
+	border-radius: 0.5rem;
+	padding: 0.75rem 1rem;
+	font-size: 0.75rem;
+	font-weight: bold;
+	text-transform: uppercase;
+	transition: all 0.2s ease-in-out;
+	border: 1px solid #3b82f6;
+	background-color: white;
+	color: #3b82f6;
+	box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
 }
 .btn:hover {
-    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.4);
+	box-shadow: 0 4px 6px rgba(59, 130, 246, 0.4);
 }
 .btn:focus {
-    opacity: 0.85;
-    box-shadow: none;
+	opacity: 0.85;
+	box-shadow: none;
 }
 .btn:active {
-    opacity: 0.85;
-    box-shadow: none;
+	opacity: 0.85;
+	box-shadow: none;
 }
 .btn:disabled {
-    pointer-events: none;
-    opacity: 0.5;
-    box-shadow: none;
+	pointer-events: none;
+	opacity: 0.5;
+	box-shadow: none;
 }
 
 .btn.submit {
-    background-color: #3b82f6;
-    color: white;
-    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+	background-color: #3b82f6;
+	color: white;
+	box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
 }
 
 .btn.submit:hover {
-    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.4);
+	box-shadow: 0 4px 6px rgba(59, 130, 246, 0.4);
 }
