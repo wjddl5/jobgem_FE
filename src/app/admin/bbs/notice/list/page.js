@@ -39,7 +39,7 @@ export default function page() {
 
 	function allCheckChange(event) {
 		if (event.target.checked) {
-			const chkRow = new Set(ar.map((row) => row.bo_idx));
+			const chkRow = new Set(ar.map((row) => row.id));
 			setChkSet(chkRow);
 			setChkAll(true);
 		} else {
@@ -48,14 +48,14 @@ export default function page() {
 		}
 	}
 
-	function checkChange(event, bo_idx) {
+	function checkChange(event, id) {
 		const chk = new Set(chkSet); // chkSet 가져와서 set 생성
 
 		if (event.target.checked) {
 			// 클릭된 체크박스
-			chk.add(bo_idx); // 항목 추가
+			chk.add(id); // 항목 추가
 		} else {
-			chk.delete(bo_idx); // 항목 삭제
+			chk.delete(id); // 항목 삭제
 		}
 		setChkSet(chk); // 상태 업데이트
 	}
@@ -121,17 +121,17 @@ export default function page() {
 				</TableHead>
 				<TableBody>
 					{ar.map((row) => (
-						<TableRow key={row.bo_idx} className={styles.tableRow} onClick={() => router.push(`view/${row.bo_idx}`)} hover>
+						<TableRow key={row.id} className={styles.tableRow} onClick={() => router.push(`view/${row.id}`)} hover>
 							<TableCell align='center'>
-								<Checkbox checked={chkSet.has(row.bo_idx)} onChange={(event) => checkChange(event, row.bo_idx)} onClick={(event) => event.stopPropagation()} />
+								<Checkbox checked={chkSet.has(row.id)} onChange={(event) => checkChange(event, row.id)} onClick={(event) => event.stopPropagation()} />
 							</TableCell>
-							<TableCell align='center'>{row.bo_idx}</TableCell>
-							<TableCell className={styles.tableRow}>{row.bo_title}</TableCell>
-							<TableCell align='left'>{row.us_udx}</TableCell>
+							<TableCell align='center'>{row.id}</TableCell>
+							<TableCell className={styles.tableRow}>{row.boTitle}</TableCell>
+							<TableCell align='left'>{row.user.usId}</TableCell>
 							<TableCell align='center'>{row.commentList.length}</TableCell>
-							<TableCell align='center'>{row.bo_hit}</TableCell>
-							<TableCell align='center'>{row.bo_like}</TableCell>
-							<TableCell align='center'>{row.bo_writedate}</TableCell>
+							<TableCell align='center'>{row.boHit}</TableCell>
+							<TableCell align='center'>{row.boLike}</TableCell>
+							<TableCell align='center'>{row.boWritedate}</TableCell>
 						</TableRow>
 					))}
 				</TableBody>
