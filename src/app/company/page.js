@@ -1,14 +1,20 @@
-'use client'
-
-import React from 'react';
 import Button from "@/components/button/Button";
 import {DiAptana} from "react-icons/di";
 import IconButton from "@/components/button/IconButton";
 import Image from "next/image";
 import Table from "@/components/table/Table";
 import Link from "next/link";
+import axios from "axios";
 
-function Page() {
+async function getPage(id) {
+    const company = await axios(`http://localhost:8080/api/company?id=${id}`);
+
+    return company.data;
+}
+
+export default async function Page() {
+    const company = await getPage(1);
+
     return (
         <>
             <div className="bg-gray-100">
@@ -34,11 +40,11 @@ function Page() {
                         <div className='flex justify-between'>
                             <div className="text-center p-4">
                                 <p className="mb-2">매출액</p>
-                                <p className="text-2xl font-bold">46억</p>
+                                <p className="text-2xl font-bold">{company.company.coSales / 100000000} 억</p>
                             </div>
                             <div className="text-center p-4">
                                 <p className="mb-2">사원수</p>
-                                <p className="text-2xl font-bold">1000명</p>
+                                <p className="text-2xl font-bold">{company.company.coEmployee}명</p>
                             </div>
                             <div className="text-center p-4">
                                 <p className="mb-2">산업</p>
@@ -46,11 +52,11 @@ function Page() {
                             </div>
                             <div className="text-center p-4">
                                 <p className="mb-2">설립</p>
-                                <p className="text-2xl font-bold">1933년</p>
+                                <p className="text-2xl font-bold">{company.company.coOpen.slice(0,4)}년</p>
                             </div>
                             <div className="text-center p-4">
                                 <p className="mb-2">기업형태</p>
-                                <p className="text-2xl font-bold">중견기업</p>
+                                <p className="text-2xl font-bold">{company.company.coType}</p>
                             </div>
                         </div>
                     </div>
@@ -60,12 +66,12 @@ function Page() {
                         <h2 className="text-lg font-bold mb-4">일반 채용 현황</h2>
                         <div className="flex justify-between mb-4">
                             <div>
-                                <p className="text-2xl font-bold text-blue-600 underline text-center">0</p>
+                                <p className="text-2xl font-bold text-blue-600 underline text-center">{company.postCount}</p>
                                 <p>진행중 공고</p>
                             </div>
                             <div>
                                 <p className="text-2xl font-bold text-blue-600 underline text-center">0</p>
-                                <p>마감된 이력서</p>
+                                <p>마감된 공고</p>
                             </div>
                         </div>
                         <div className="bg-gray-50 p-4 rounded-md flex items-center justify-center gap-2">
@@ -130,5 +136,3 @@ function Page() {
         </>
     );
 }
-
-export default Page;
