@@ -8,7 +8,7 @@ export default function page() {
 	return (
 		<div className='flex gap-2'>
 			<SideMenu />
-			<div className='bg-gray-100 flex-1 ml-2'>
+			<div className='bg-white flex-1 ml-2 p-5 rounded-lg'>
 				<div className='max-w-7xl mx-auto'>
 					<h1 className='text-2xl font-bold mb-4'>입사지원 현황</h1>
 				</div>
