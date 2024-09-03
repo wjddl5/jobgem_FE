@@ -1,19 +1,35 @@
+"use client"; // 클라이언트 측 렌더링 활성화
+
+import { useState, useEffect } from "react";
 import Button from "@/components/button/Button";
-import {DiAptana} from "react-icons/di";
+import { DiAptana } from "react-icons/di";
 import IconButton from "@/components/button/IconButton";
 import Image from "next/image";
 import Table from "@/components/table/Table";
 import Link from "next/link";
 import axios from "axios";
+import Pagination from "@/components/pagination/Pagination";
 
-async function getPage(id) {
-    const company = await axios(`http://localhost:8080/api/company?id=${id}`);
-
+// 데이터를 가져오는 함수
+async function getPage(id, blockPage) {
+    const company = await axios(`/api/company?id=${id}&blockPage=${blockPage}`);
     return company.data;
 }
 
-export default async function Page() {
-    const company = await getPage(1);
+export default function Page() {
+    const [company, setCompany] = useState(null); // 회사 데이터를 상태로 관리
+    const [blockPage, setBlockPage] = useState(0); // 페이지 번호 상태 관리
+
+    // 페이지 번호가 변경될 때마다 데이터를 가져옴
+    useEffect(() => {
+        async function fetchData() {
+            const data = await getPage(1, blockPage);
+            setCompany(data);
+        }
+        fetchData();
+    }, [blockPage]);
+
+    if (!company) return <div>Loading...</div>; // 데이터가 로드되기 전 로딩 상태 표시
 
     return (
         <>
@@ -24,7 +40,7 @@ export default async function Page() {
                                className="w-12 h-12 rounded-full object-cover border border-gray-300"/>
                         <button
                             className="flex items-center border border-dashed border-gray-300 px-4 py-2 rounded-md hover:bg-gray-50">
-                            <span className="text-gray-600">로고 등록 +</span>
+                            <label className="text-gray-600"><input type='file' className='appearance-none hidden'/>로고 등록 +</label>
                         </button>
                     </div>
                     <div className="hover:rotate-90 transition duration-200 ease-in-out">
@@ -65,12 +81,12 @@ export default async function Page() {
                     <div className="bg-white p-6 rounded-md shadow">
                         <h2 className="text-lg font-bold mb-4">일반 채용 현황</h2>
                         <div className="flex justify-between mb-4">
-                            <div>
-                                <p className="text-2xl font-bold text-blue-600 underline text-center">{company.postCount}</p>
+                            <div className="text-center">
+                                <Link href='/company' className="text-2xl font-bold text-blue-600 underline text-center">{company.postCount}</Link>
                                 <p>진행중 공고</p>
                             </div>
-                            <div>
-                                <p className="text-2xl font-bold text-blue-600 underline text-center">0</p>
+                            <div className="text-center">
+                                <Link href='/company' className="text-2xl font-bold text-blue-600 underline text-center">{company.noPostCount}</Link>
                                 <p>마감된 공고</p>
                             </div>
                         </div>
@@ -83,12 +99,12 @@ export default async function Page() {
                     <div className="bg-white p-6 rounded-md shadow">
                         <h2 className="text-lg font-bold mb-4">후기 현황</h2>
                         <div className="flex justify-between mb-4">
-                            <div>
-                                <p className="text-2xl font-bold text-blue-600 underline text-center">0</p>
+                            <div className="text-center">
+                                <Link href='/company' className="text-2xl font-bold text-blue-600 underline text-center">{company.reviewCount}</Link>
                                 <p>기업 후기</p>
                             </div>
-                            <div>
-                                <p className="text-2xl font-bold text-blue-600 underline text-center">0</p>
+                            <div className="text-center">
+                                <Link href='/company' className="text-2xl font-bold text-blue-600 underline text-center">{company.interviewCount}</Link>
                                 <p>면접 후기</p>
                             </div>
                         </div>
@@ -100,12 +116,12 @@ export default async function Page() {
                     <div className="bg-white p-6 rounded-md shadow">
                         <h2 className="text-lg font-bold mb-4">인재 현황</h2>
                         <div className="flex felx-co justify-between mb-4">
-                            <div>
-                                <p className="text-2xl font-bold text-blue-600 underline text-center">0</p>
+                            <div className="text-center">
+                                <Link href='/company' className="text-2xl font-bold text-blue-600 underline text-center">{company.fitJobseekerCount}</Link>
                                 <p>인재 추천</p>
                             </div>
-                            <div>
-                                <p className="text-2xl font-bold text-blue-600 underline text-center">0</p>
+                            <div className="text-center">
+                                <Link href='/company' className="text-2xl font-bold text-blue-600 underline text-center">{company.talentCount}</Link>
                                 <p>찜한 인재</p>
                             </div>
                         </div>
@@ -121,7 +137,12 @@ export default async function Page() {
                             <h2 className="text-lg font-bold mb-4">차단 목록</h2>
                             <Link href='/company/black' className='btn'>더보기</Link>
                         </div>
-                        <Table list={[{}]} headers={['이름', '차단일자', '이력']}/>
+                        <Table list={company.blockList.content} headers={['번호', '이름', '차단일자', '내용']} isNumber={true}/>
+                        <Pagination
+                            totalPages={company.blockList.totalPages}
+                            currentPage={blockPage}
+                            onPageChange={(page) => setBlockPage(page)}
+                        />
                     </div>
 
                     <div className="bg-white p-6 rounded-md shadow">
@@ -129,7 +150,7 @@ export default async function Page() {
                             <h2 className="text-lg font-bold">채팅 목록</h2>
                             <Button text={'더보기'}/>
                         </div>
-                        <Table list={[{}]} headers={['프로필', '채팅자', '마지막 채팅 시간']}/>
+                        <Table list={[{}]} headers={['프로필', '채팅자', '마지막 채팅 시간']} />
                     </div>
                 </div>
             </div>
