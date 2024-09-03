@@ -1,8 +1,25 @@
+"use client";
 import SideMenu from "@/components/sidemenu/SideMenu";
+import axios from "axios";
 import Image from "next/image";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
-export default function page() {
+export default function page(props) {
+	const [jobseeker, setJobseeker] = useState({});
+	const router = useRouter;
+	const API_URL = `/api/jobseeker?id=${props.params.id}`;
+
+	function getData() {
+		axios.get(API_URL).then((res) => {
+			setJobseeker(res.data);
+			console.log(res);
+		});
+	}
+
+	useEffect(() => {
+		getData();
+	}, []);
 	return (
 		<div className='bg-gray-100'>
 			<div className='flex gap-2'>
@@ -17,12 +34,12 @@ export default function page() {
 							</div>
 						</div>
 						<div>
-							<h1 className='text-2xl font-bold text-gray-900 mb-2'>안녕하세요 김혜윤입니다</h1>
+							<h1 className='text-2xl font-bold text-gray-900 mb-2'>안녕하세요 {jobseeker.joName}입니다</h1>
 							<div className='flex flex-col'>
-								<span className='text-sm text-gray-500'>생년월일:</span>
-								<span className='text-sm text-gray-500'>주소:</span>
-								<span className='text-sm text-gray-500'>성별:</span>
-								<span className='text-sm text-gray-500'>학력:</span>
+								<span className='text-sm text-gray-500'>생년월일: {jobseeker.joBirth}</span>
+								<span className='text-sm text-gray-500'>주소: {jobseeker.joAddress}</span>
+								<span className='text-sm text-gray-500'>성별: {jobseeker.joGender}</span>
+								<span className='text-sm text-gray-500'>학력: {jobseeker.joEdu}</span>
 							</div>
 						</div>
 					</div>
