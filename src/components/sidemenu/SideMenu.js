@@ -57,7 +57,7 @@ export default function () {
 					</div>
 
 					<div>
-						<h3 className='font-semibold text-gray-700'>컨텐츠 관리</h3>
+						<h3 className='font-semibold text-gray-700'>후기 관리</h3>
 						<ul className='space-y-1 text-gray-600'>
 							<li>
 								<a href='/user/company-review-list' className='hover:underline'>
