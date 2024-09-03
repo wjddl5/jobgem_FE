@@ -2,185 +2,191 @@
 
 /* 게시글 리스트 */
 .bbs_header {
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 20px;
-  margin-bottom: 20px;
-  background-color: #f9f9f9;
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+	align-items: flex-start;
+	padding: 20px;
+	margin-bottom: 20px;
+	background-color: #f9f9f9;
 }
 
 .bbs_title {
-  margin-bottom: 20px;
-  font-size: 24px;
-  font-weight: bold;
+	margin-bottom: 20px;
+	font-size: 24px;
+	font-weight: bold;
 }
 
 .bbs_toolBox {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: nowrap;
-  width: 100%;
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: nowrap;
+	width: 100%;
 }
 
 .bbs_search {
-  display: flex;
-  gap: 10px;
+	display: flex;
+	gap: 10px;
 }
 
 .selectBox {
-  min-width: 100px;
-  height: 38px;
+	min-width: 100px;
+	height: 38px;
 }
 
 .blackList_radio {
-  margin-left: 5px;
+	margin-left: 5px;
 }
 
 .textfield .MuiInputBase-input {
-  height: 38px;
-  padding: 0 14px;
+	height: 38px;
+	padding: 0 14px;
 }
 
 .search_btn {
-  align-items: center;
+	align-items: center;
 }
 
 .bbs_btn {
-  display: flex;
-  gap: 10px;
+	display: flex;
+	gap: 10px;
 }
 
 .bbs_btn button {
-  min-width: 80px;
+	min-width: 80px;
 }
 
 .pagination {
-  display: flex;
-  justify-content: center;
-  margin-top: 13px;
+	display: flex;
+	justify-content: center;
+	margin-top: 13px;
 }
 
 /* 게시글 상세보기 */
 .post_detail-container {
-  max-width: 1000px;
-  margin: 40px auto;
-  padding: 30px;
-  background-color: #f9f9f9;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+	max-width: 1000px;
+	margin: 40px auto;
+	padding: 30px;
+	background-color: #f9f9f9;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
 }
 
 .post_header {
-  margin-bottom: 30px;
-  border-bottom: 2px solid #d0d0d0;
-  padding-bottom: 15px;
+	margin-bottom: 30px;
+	border-bottom: 2px solid #d0d0d0;
+	padding-bottom: 15px;
 }
 
 .post_title {
-  margin: 0;
-  font-size: 32px;
-  font-weight: 700;
-  color: #333;
+	margin: 0;
+	font-size: 32px;
+	font-weight: 700;
+	color: #333;
 }
 
 .post_meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: #555;
-  font-size: 16px;
-  margin-top: 10px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	color: #555;
+	font-size: 16px;
+	margin-top: 10px;
 }
 
 .post_meta span {
-  margin-right: 20px;
+	margin-right: 20px;
 }
 
 .post_content {
-  min-height: 250px;
-  margin-top: 30px;
-  font-size: 18px;
-  line-height: 1.8;
-  color: #444;
+	min-height: 250px;
+	margin-top: 30px;
+	font-size: 18px;
+	line-height: 1.8;
+	color: #444;
 }
 
 .post_comments {
-  margin-top: 50px;
+	margin-top: 50px;
 }
 
 .post_comments h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  border-bottom: 2px solid #d0d0d0;
-  padding-bottom: 10px;
-  color: #333;
+	font-size: 24px;
+	margin-bottom: 20px;
+	border-bottom: 2px solid #d0d0d0;
+	padding-bottom: 10px;
+	color: #333;
 }
 
 .comment_item {
-  margin-bottom: 30px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #d0d0d0;
-  position: relative; /* 버튼을 이 안에서 배치하기 위해 relative 설정 */
+	margin-bottom: 30px;
+	padding-bottom: 15px;
+	border-bottom: 1px solid #d0d0d0;
+	position: relative; /* 버튼을 이 안에서 배치하기 위해 relative 설정 */
 }
 
 .comment_author {
-  margin: 0;
-  font-weight: 600;
-  font-size: 18px;
-  color: #333;
+	margin: 0;
+	font-weight: 600;
+	font-size: 18px;
+	color: #333;
 }
 
 .comment_content {
-  margin: 10px 0;
-  font-size: 16px;
-  color: #444;
+	margin: 10px 0;
+	font-size: 16px;
+	color: #444;
 }
 
 .comment_date {
-  color: #777;
-  font-size: 14px;
+	color: #777;
+	font-size: 14px;
 }
 
 .delete-button {
-  font-size: 14px;
-  position: absolute;
-  top: 0;
-  right: 0;
+	font-size: 14px;
+	position: absolute;
+	top: 0;
+	right: 0;
 }
 
 .btn_group {
-  display: flex;
-  gap: 5px;
-  justify-content: flex-end;
+	display: flex;
+	gap: 5px;
+	justify-content: flex-end;
+	margin-top: 30px;
+}
+
+.commentSaveBtn {
+	height: 56px;
+	margin-left: 6px;
 }
 
 /* 게시글 작성 */
 .write_container {
-  max-width: 1000px;
-  margin: 40px auto;
-  padding: 30px;
-  background-color: #f9f9f9;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+	max-width: 1000px;
+	margin: 40px auto;
+	padding: 30px;
+	background-color: #f9f9f9;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
 }
 
 .editor-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f9f9f9;
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 20px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	background-color: #f9f9f9;
 }
 
 .h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #333;
+	text-align: center;
+	margin-bottom: 20px;
+	color: #333;
 }
 
 .sun-editor {
-  margin-bottom: 20px;
+	margin-bottom: 20px;
 }

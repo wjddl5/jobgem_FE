@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import styles from '/public/css/board.css';
-import { Button } from '@mui/material';
+import { Button, TextField } from '@mui/material';
 
 // (관리자) 공지사항 게시글 상세보기
 export default function page(props) {
@@ -12,6 +12,7 @@ export default function page(props) {
 	const [vo, setVo] = useState({});
 	const [user, setUser] = useState({});
 	const [commentList, setCommentList] = useState([]);
+	const [commentContent, setCommentContent] = useState('');
 	const API_URL = `/api/bbs/notice/view?id=${props.params.id}`;
 
 	useEffect(() => {
@@ -34,11 +35,30 @@ export default function page(props) {
 
 	function removeComment(id) {
 		if (confirm('댓글을 삭제 하시겠습니까?')) {
-			axios.get(`/api/bbs/comment/remove?id=${id}`).then((res) => {
+			axios.get(`/api/comment/remove?id=${id}`).then((res) => {
 				if (res.data == true) alert('삭제 완료 되었습니다.');
 				else alert('삭제 실패 !');
 			});
 			window.location.reload();
+		}
+	}
+
+	function saveComment() {
+		console.log(commentContent);
+		if (commentContent.trim().length < 1) {
+			alert('댓글을 입력하세요.');
+		} else {
+			axios
+				.get('/api/comment/write', {
+					params: {
+						content: commentContent,
+						usIdx: 1,
+						boIdx: props.params.id,
+					},
+				})
+				.then((res) => {
+					window.location.reload();
+				});
 		}
 	}
 
@@ -72,6 +92,26 @@ export default function page(props) {
 						</li>
 					))}
 				</ul>
+				<TextField
+					id='commentWrite'
+					label='댓글작성'
+					variant='outlined'
+					style={{ width: '870px' }}
+					onChange={(event) => {
+						setCommentContent(event.target.value);
+					}}
+				/>
+
+				<Button
+					className='commentSaveBtn'
+					variant='outlined'
+					size='small'
+					onClick={() => {
+						saveComment();
+					}}
+				>
+					저장
+				</Button>
 			</div>
 			<div className='btn_group'>
 				<Button variant='outlined' size='small' onClick={() => router.push(`/admin/bbs/notice/list?cPage=${props.searchParams.cPage}`)}>
