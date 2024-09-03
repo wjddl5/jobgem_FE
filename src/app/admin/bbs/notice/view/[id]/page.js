@@ -22,12 +22,32 @@ export default function page(props) {
 		});
 	}, []);
 
+	function removeBbs(id) {
+		if (confirm('게시글을 삭제 하시겠습니까?')) {
+			axios.get(`/api/bbs/notice/remove?id=${id}`).then((res) => {
+				if (res.data == true) alert('삭제 완료 되었습니다.');
+				else alert('삭제 실패 !');
+				router.push('/admin/bbs/notice/list');
+			});
+		}
+	}
+
+	function removeComment(id) {
+		if (confirm('댓글을 삭제 하시겠습니까?')) {
+			axios.get(`/api/bbs/comment/remove?id=${id}`).then((res) => {
+				if (res.data == true) alert('삭제 완료 되었습니다.');
+				else alert('삭제 실패 !');
+			});
+			window.location.reload();
+		}
+	}
+
 	return (
 		<div className='post_detail-container'>
 			<div className='post_header'>
 				<h1 className='post_title'>{vo.boTitle}</h1>
 				<div className='post_meta'>
-					<span>By {user.usId}</span>
+					<span>By {vo.usId}</span>
 					<span>{vo.boWritedate}</span>
 					<span>조회: {vo.boHit}</span>
 					<span>추천: {vo.boLike ? vo.boLike : 0}</span>
@@ -39,12 +59,12 @@ export default function page(props) {
 			<div className='post_comments'>
 				<h2>댓글</h2>
 				<ul>
-					{commentList.map((comment) => (
-						<li key={comment.id} className='comment_item'>
+					{commentList.map((comment, index) => (
+						<li key={index} className='comment_item'>
 							<p className='comment_writer'>
-								<strong>{comment.user.usId}</strong> :
+								<strong>{comment.usId}</strong> :
 							</p>
-							<Button className='delete-button' variant='text' color='error' size='small' onClick={() => router.push(`delete`)}>
+							<Button className='delete-button' variant='text' color='error' size='small' onClick={() => removeComment(comment.id)}>
 								삭제
 							</Button>
 							<p className='comment_content'>{comment.commContent}</p>
@@ -60,7 +80,7 @@ export default function page(props) {
 				<Button variant='outlined' size='small'>
 					수정
 				</Button>
-				<Button variant='outlined' size='small' color='error'>
+				<Button variant='outlined' size='small' color='error' onClick={() => removeBbs(vo.id)}>
 					삭제
 				</Button>
 			</div>
