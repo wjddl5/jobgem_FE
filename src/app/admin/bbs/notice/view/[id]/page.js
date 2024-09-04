@@ -58,7 +58,7 @@ export default function page(props) {
 				.get('/api/comment/write', {
 					params: {
 						content: commentContent,
-						usIdx: 1,
+						usIdx: 1, //로그인한 유저 idx로 변경 (!)
 						boIdx: props.params.id,
 					},
 				})
