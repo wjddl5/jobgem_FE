@@ -80,7 +80,7 @@ export default function page(props) {
 				.then((res) => {
 					if (res.data == true) alert('삭제 완료 되었습니다.');
 					else alert('삭제 실패 !');
-					window.location.reload();
+					getData();
 				});
 		}
 	}

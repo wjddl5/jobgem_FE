@@ -16,19 +16,24 @@ export default function page(props) {
 	const API_URL = `/api/bbs/notice/view?id=${props.params.id}`;
 
 	useEffect(() => {
+		getData();
+	}, []);
+
+	function getData() {
 		axios.get(API_URL).then((res) => {
 			setVo(res.data.vo);
 			setUser(res.data.vo.user);
 			setCommentList(res.data.commentList);
 		});
-	}, []);
+	}
 
 	function removeBbs(id) {
 		if (confirm('게시글을 삭제 하시겠습니까?')) {
 			axios.get(`/api/bbs/notice/remove?id=${id}`).then((res) => {
-				if (res.data == true) alert('삭제 완료 되었습니다.');
-				else alert('삭제 실패 !');
-				router.push('/admin/bbs/notice/list');
+				if (res.data == true) {
+					alert('삭제 완료 되었습니다.');
+					router.push('/admin/bbs/notice/list');
+				} else alert('삭제 실패 !');
 			});
 		}
 	}
@@ -38,13 +43,14 @@ export default function page(props) {
 			axios.get(`/api/comment/remove?id=${id}`).then((res) => {
 				if (res.data == true) alert('삭제 완료 되었습니다.');
 				else alert('삭제 실패 !');
+				getData();
 			});
-			window.location.reload();
 		}
 	}
 
 	function saveComment() {
-		console.log(commentContent);
+		var c = document.getElementById('commentWrite');
+		c.value = '';
 		if (commentContent.trim().length < 1) {
 			alert('댓글을 입력하세요.');
 		} else {
@@ -57,7 +63,8 @@ export default function page(props) {
 					},
 				})
 				.then((res) => {
-					window.location.reload();
+					document.getElementById('commentWrite').value = '';
+					getData();
 				});
 		}
 	}

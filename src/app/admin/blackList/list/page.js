@@ -67,7 +67,7 @@ export default function page() {
 		<div>
 			<script src='%PUBLIC_URL%/javascript/checkbox.js'></script>
 			<div className='bbs_header'>
-				<h2 className='bbs_title'>공지사항</h2>
+				<h2 className='bbs_title'>신고목록</h2>
 				<div className='bbs_toolBox'>
 					<div className='bbs_search'>
 						<Select className='selectBox' value={searchType} onChange={(event) => selectChange(event)}>
