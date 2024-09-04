@@ -1,4 +1,4 @@
-import './globals.css';
+import '../globals.css';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import Header from "@/components/common/header/Header";
 import Footer from "@/components/common/footer/Footer";
@@ -12,12 +12,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
 
 	return (
-		<html lang='en'>
-			<body>
-				<div className='wrap'>
-					{children}
-				</div>
-			</body>
-		</html>
-);
+			<>
+				<Header/>
+					<main className='main'>
+						{children}
+					</main>
+				<Footer/>
+			</>
+)
+	;
 }
