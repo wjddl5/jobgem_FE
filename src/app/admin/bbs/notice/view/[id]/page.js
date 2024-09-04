@@ -10,9 +10,9 @@ export default function page(props) {
 	// 초기화
 	const router = useRouter();
 	const [vo, setVo] = useState({});
-	const [user, setUser] = useState({});
 	const [commentList, setCommentList] = useState([]);
 	const [commentContent, setCommentContent] = useState('');
+	const [disabled, setDisabled] = useState(true);
 	const API_URL = `/api/bbs/notice/view?id=${props.params.id}`;
 
 	useEffect(() => {
@@ -22,10 +22,17 @@ export default function page(props) {
 	function getData() {
 		axios.get(API_URL).then((res) => {
 			setVo(res.data.vo);
-			setUser(res.data.vo.user);
 			setCommentList(res.data.commentList);
 		});
 	}
+
+	useEffect(() => {
+		if (vo.usIdx == 1 /*(!) 로그인한 유저idx로 변경*/) {
+			setDisabled(false);
+		} else {
+			setDisabled(true);
+		}
+	}, [vo]);
 
 	function removeBbs(id) {
 		if (confirm('게시글을 삭제 하시겠습니까?')) {
@@ -124,7 +131,8 @@ export default function page(props) {
 				<Button variant='outlined' size='small' onClick={() => router.push(`/admin/bbs/notice/list?cPage=${props.searchParams.cPage}`)}>
 					목록
 				</Button>
-				<Button variant='outlined' size='small'>
+				<Button variant='outlined' disabled={disabled} size='small' onClick={() => router.push(`/admin/bbs/notice/edit/${vo.id}`)}>
+					{/*로그인한 유저 idx로 변경 (!)*/}
 					수정
 				</Button>
 				<Button variant='outlined' size='small' color='error' onClick={() => removeBbs(vo.id)}>
