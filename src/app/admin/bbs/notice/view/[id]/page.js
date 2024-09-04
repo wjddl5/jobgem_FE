@@ -23,6 +23,7 @@ export default function page(props) {
 		axios.get(API_URL).then((res) => {
 			setVo(res.data.vo);
 			setCommentList(res.data.commentList);
+			console.log(res.data.commentList);
 		});
 	}
 
@@ -56,10 +57,10 @@ export default function page(props) {
 	}
 
 	function saveComment() {
-		var c = document.getElementById('commentWrite');
-		c.value = '';
 		if (commentContent.trim().length < 1) {
 			alert('댓글을 입력하세요.');
+		} else if (commentContent.length > 100) {
+			alert('최대 100글자까지 입력할 수 있습니다.');
 		} else {
 			axios
 				.get('/api/comment/write', {
@@ -73,6 +74,16 @@ export default function page(props) {
 					document.getElementById('commentWrite').value = '';
 					getData();
 				});
+		}
+	}
+
+	function changeComment(event) {
+		var c = event.target.value;
+		if (c.length > 100) {
+			alert('최대 100글자까지 입력할 수 있습니다.');
+			event.target.value = c.substring(0, 99);
+		} else {
+			setCommentContent(c);
 		}
 	}
 
@@ -98,6 +109,10 @@ export default function page(props) {
 							<p className='comment_writer'>
 								<strong>{comment.usId}</strong> :
 							</p>
+							<Button className='edit-button' variant='text' size='small' hidden={comment.usIdx != 1} onClick={() => removeComment(comment.id)}>
+								{/* (!) 로그인한 유저idx로 수정 */}
+								수정
+							</Button>
 							<Button className='delete-button' variant='text' color='error' size='small' onClick={() => removeComment(comment.id)}>
 								삭제
 							</Button>
@@ -106,15 +121,7 @@ export default function page(props) {
 						</li>
 					))}
 				</ul>
-				<TextField
-					id='commentWrite'
-					label='댓글작성'
-					variant='outlined'
-					style={{ width: '870px' }}
-					onChange={(event) => {
-						setCommentContent(event.target.value);
-					}}
-				/>
+				<TextField id='commentWrite' label='댓글작성' variant='outlined' style={{ width: '870px' }} onChange={changeComment} />
 
 				<Button
 					className='commentSaveBtn'

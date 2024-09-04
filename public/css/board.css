@@ -148,6 +148,15 @@
 	position: absolute;
 	top: 0;
 	right: 0;
+	min-width: 40px !important;
+}
+
+.edit-button {
+	font-size: 14px;
+	position: absolute;
+	top: 0;
+	right: 45px;
+	min-width: 40px !important;
 }
 
 .btn_group {

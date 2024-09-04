@@ -32,8 +32,9 @@ export default function page(props) {
 	//========================
 
 	// 함수
-	function selectChange(event) {
-		setSearchType(event.target.value);
+	function search() {
+		setPage(0);
+		getData();
 	}
 
 	function getData() {
@@ -132,7 +133,7 @@ export default function page(props) {
 							<MenuItem value={'content'}>내용</MenuItem>
 						</Select>
 						<TextField className='textfield' variant='outlined' onChange={(event) => setSearchValue(event.target.value)} />
-						<Button className='search_btn' variant='contained' onClick={getData}>
+						<Button className='search_btn' variant='contained' onClick={search}>
 							검색
 						</Button>
 					</div>

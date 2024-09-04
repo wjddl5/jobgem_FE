@@ -297,7 +297,7 @@ export default function Sidebar() {
 			<li className='nav-item'>
 				<a
 					className='nav-link collapsed'
-					href='admin/blackList/list'
+					href='/admin/blackList/list'
 					onClick={() => handleLinkClick('collapseSeven')}
 					data-toggle='collapse'
 					data-target='#collapseSeven'
