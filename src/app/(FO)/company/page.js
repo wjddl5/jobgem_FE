@@ -117,7 +117,7 @@ export default function Page() {
                         <h2 className="text-lg font-bold mb-4">인재 현황</h2>
                         <div className="flex felx-co justify-between mb-4">
                             <div className="text-center">
-                                <Link href='/company' className="text-2xl font-bold text-blue-600 underline text-center">{company.fitJobseekerCount}</Link>
+                                <Link href='/company/talent/fit' className="text-2xl font-bold text-blue-600 underline text-center">{company.fitJobseekerCount}</Link>
                                 <p>인재 추천</p>
                             </div>
                             <div className="text-center">
@@ -126,7 +126,7 @@ export default function Page() {
                             </div>
                         </div>
                         <div className="bg-gray-50 p-4 rounded-md flex items-center justify-center gap-2">
-                            <Link href='/src/app/(FO)/company/talent/recommend' className='btn submit'>추천목록</Link>
+                            <Link href='/company/talent/fit' className='btn submit'>추천목록</Link>
                             <Button text={'찜한목록'}/>
                         </div>
                     </div>
