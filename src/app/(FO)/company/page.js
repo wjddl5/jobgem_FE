@@ -126,7 +126,7 @@ export default function Page() {
                             </div>
                         </div>
                         <div className="bg-gray-50 p-4 rounded-md flex items-center justify-center gap-2">
-                            <Link href='/company/talent/recommend' className='btn submit'>추천목록</Link>
+                            <Link href='/src/app/(FO)/company/talent/recommend' className='btn submit'>추천목록</Link>
                             <Button text={'찜한목록'}/>
                         </div>
                     </div>
@@ -135,7 +135,7 @@ export default function Page() {
                     <div className="bg-white p-6 rounded-md shadow">
                         <div className='mb-4 flex justify-between'>
                             <h2 className="text-lg font-bold mb-4">차단 목록</h2>
-                            <Link href='/company/black' className='btn'>더보기</Link>
+                            <Link href='/src/app/(FO)/company/black' className='btn'>더보기</Link>
                         </div>
                         <Table list={company.blockList.content} headers={['번호', '이름', '차단일자', '내용']} isNumber={true}/>
                         <Pagination
