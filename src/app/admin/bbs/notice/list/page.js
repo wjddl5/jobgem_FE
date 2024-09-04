@@ -32,8 +32,9 @@ export default function page(props) {
 	//========================
 
 	// 함수
-	function selectChange(event) {
-		setSearchType(event.target.value);
+	function search() {
+		setPage(0);
+		getData();
 	}
 
 	function getData() {
@@ -80,7 +81,7 @@ export default function page(props) {
 				.then((res) => {
 					if (res.data == true) alert('삭제 완료 되었습니다.');
 					else alert('삭제 실패 !');
-					window.location.reload();
+					getData();
 				});
 		}
 	}
@@ -132,12 +133,13 @@ export default function page(props) {
 							<MenuItem value={'content'}>내용</MenuItem>
 						</Select>
 						<TextField className='textfield' variant='outlined' onChange={(event) => setSearchValue(event.target.value)} />
-						<Button className='search_btn' variant='contained' onClick={getData}>
+						<Button className='search_btn' variant='contained' onClick={search}>
 							검색
 						</Button>
 					</div>
 					<div className='bbs_btn'>
 						<Button variant='contained' onClick={() => router.push(`write/${1}`)}>
+							{/*로그인한 유저 idx로 변경 (!)*/}
 							글쓰기
 						</Button>
 						<Button
