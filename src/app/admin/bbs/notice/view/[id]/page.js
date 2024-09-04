@@ -23,7 +23,6 @@ export default function page(props) {
 		axios.get(API_URL).then((res) => {
 			setVo(res.data.vo);
 			setCommentList(res.data.commentList);
-			console.log(res.data.commentList);
 		});
 	}
 
@@ -46,6 +45,7 @@ export default function page(props) {
 		}
 	}
 
+	// 댓글
 	function removeComment(id) {
 		if (confirm('댓글을 삭제 하시겠습니까?')) {
 			axios.get(`/api/comment/remove?id=${id}`).then((res) => {
@@ -87,6 +87,32 @@ export default function page(props) {
 		}
 	}
 
+	const [editingCommentId, setEditingCommentId] = useState(null);
+	const [newContent, setNewContent] = useState('');
+
+	const EditClick = (comment) => {
+		setEditingCommentId(comment.id);
+		setNewContent(comment.commContent);
+	};
+
+	const SaveClick = (commentId) => {
+		updateComment(commentId, newContent);
+		setEditingCommentId(null);
+	};
+
+	function updateComment(id, content) {
+		axios
+			.get('/api/comment/edit', {
+				params: {
+					id: id,
+					content: content,
+				},
+			})
+			.then(() => {
+				getData();
+			});
+	}
+
 	return (
 		<div className='post_detail-container'>
 			<div className='post_header'>
@@ -109,15 +135,29 @@ export default function page(props) {
 							<p className='comment_writer'>
 								<strong>{comment.usId}</strong> :
 							</p>
-							<Button className='edit-button' variant='text' size='small' hidden={comment.usIdx != 1} onClick={() => removeComment(comment.id)}>
-								{/* (!) 로그인한 유저idx로 수정 */}
-								수정
-							</Button>
-							<Button className='delete-button' variant='text' color='error' size='small' onClick={() => removeComment(comment.id)}>
-								삭제
-							</Button>
-							<p className='comment_content'>{comment.commContent}</p>
-							<p className='comment_date'>{comment.commWritedate}</p>
+							{editingCommentId === comment.id ? (
+								<>
+									<input className='editCommentInput' type='text' value={newContent} onChange={(e) => setNewContent(e.target.value)} />
+									<Button className='edit-button' variant='text' size='small' onClick={() => SaveClick(comment.id)}>
+										저장
+									</Button>
+									<Button className='delete-button' variant='text' color='error' size='small' onClick={() => setEditingCommentId(null)}>
+										취소
+									</Button>
+								</>
+							) : (
+								<>
+									<Button className='edit-button' variant='text' size='small' hidden={comment.usIdx != 1} onClick={() => EditClick(comment)}>
+										{/* (!) 로그인한 유저idx로 수정 */}
+										수정
+									</Button>
+									<Button className='delete-button' variant='text' color='error' size='small' onClick={() => removeComment(comment.id)}>
+										삭제
+									</Button>
+									<p className='comment_content'>{comment.commContent}</p>
+									<p className='comment_date'>{comment.commWritedate}</p>
+								</>
+							)}
 						</li>
 					))}
 				</ul>

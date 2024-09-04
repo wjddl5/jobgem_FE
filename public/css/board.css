@@ -166,6 +166,10 @@
 	margin-top: 30px;
 }
 
+.editCommentInput {
+	width: 940px;
+}
+
 .commentSaveBtn {
 	height: 56px;
 	margin-left: 6px;
