@@ -1,6 +1,4 @@
 import './globals.css';
-import Header from '@/components/common/header/Header';
-import Footer from '@/components/common/footer/Footer';
 import { config } from '@fortawesome/fontawesome-svg-core';
 config.autoAddCss = false;
 
@@ -14,11 +12,7 @@ export default function RootLayout({ children }) {
 		<html lang='en'>
 			<body>
 				<div className='wrap'>
-					<Header />
-					<main>
-						{children}
-					</main>
-					<Footer />
+					{children}
 				</div>
 			</body>
 		</html>
