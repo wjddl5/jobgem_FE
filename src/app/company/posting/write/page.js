@@ -48,7 +48,7 @@ export default function ApplicationForm() {
 
     /* 근무요일 */
     const [selectedWorkDay, setSelectedWorkDay] = useState([]);
-    const workDayList = [{id:0,name:'월'},{id:1,name:'화'},{id:2,name:'수'},{id:3,name:'목'},{id:4,name:'금'},{id:5,name:'토'},{id:6,name:'일'}];
+    const workDayList = [{id:1,name:'월'},{id:2,name:'화'},{id:3,name:'수'},{id:4,name:'목'},{id:5,name:'금'},{id:6,name:'토'},{id:7,name:'일'}];
     const handleWorkDayToggle = (workDayId) => {
         setSelectedWorkDay(prevWorkDay =>
             prevWorkDay.includes(workDayId)
