@@ -1,5 +1,5 @@
-import { personalJoin } from '@/app/action/UserAction';
 import { useContext } from 'react';
+import { personalJoin } from '../action/RegAction';
 import JoinButton from '../component/JoinButton';
 import Section from '../component/Section';
 import PersonalForm from '../component/form/PersonalForm';

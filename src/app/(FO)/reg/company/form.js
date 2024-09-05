@@ -1,5 +1,5 @@
-import { companyJoin } from '@/app/action/UserAction';
 import { useContext } from 'react';
+import { companyJoin } from '../action/RegAction';
 import JoinButton from '../component/JoinButton';
 import Section from '../component/Section';
 import CompanyForm from '../component/form/CompanyForm';
