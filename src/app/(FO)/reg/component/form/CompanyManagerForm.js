@@ -14,8 +14,8 @@ export default function CompanyManagerForm() {
       }
     return (
         <div>
-            <Input label="인사담당자 이름" name="coManagerName" validation={coManagerName_validation} />
-            <Input label="인사담당자 전화번호" name="coManagerTel" validation={coManagerTel_validation} />
+            <Input label="인사담당자 이름" name="managerName" validation={coManagerName_validation} />
+            <Input label="인사담당자 전화번호" name="managerTel" validation={coManagerTel_validation} />
         </div>
     );
 }

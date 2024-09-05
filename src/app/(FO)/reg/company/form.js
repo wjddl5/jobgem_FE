@@ -1,3 +1,4 @@
+import { companyJoin } from '@/app/action/UserAction';
 import { useContext } from 'react';
 import JoinButton from '../component/JoinButton';
 import Section from '../component/Section';
@@ -11,7 +12,7 @@ export default function CompanyReg() {
   const { handleSubmit, reset } = useContext(useFormContext);
   
   const onSubmit = (data) => {
-    console.log(data);
+    companyJoin(data);
     reset();
   };
 
