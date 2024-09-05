@@ -14,8 +14,8 @@ export default function UserForm() {
 
     return (
         <div>
-            <Input label="이메일" name="usId" validation={email_validation} />
-            <Input type="password" label="비밀번호" name="usPw" validation={password_validation} />
+            <Input label="이메일" name="email" validation={email_validation} />
+            <Input type="password" label="비밀번호" name="password" validation={password_validation} />
         </div>
     )
 }

@@ -28,11 +28,11 @@ export default function CompanyForm() {
 
   return (
     <div>
-      <Input label="기업명" name="coName" validation={coName_validation} />
-      <Input label="기업주소" name="coAddress" validation={coAddress_validation} />
-      <Input label="기업 대표 전화번호" name="coTel" validation={coTel_validation} />
-      <Input label="사업자 등록번호" name="coNumber" validation={coNumber_validation} />
-      <Input label="기업 유형" name="coType" validation={coType_validation} />
+      <Input label="기업명" name="name" validation={coName_validation} />
+      <Input label="기업주소" name="address" validation={coAddress_validation} />
+      <Input label="기업 대표 전화번호" name="tel" validation={coTel_validation} />
+      <Input label="사업자 등록번호" name="number" validation={coNumber_validation} />
+      <Input label="기업 유형" name="type" validation={coType_validation} />
     </div>
   )
 }

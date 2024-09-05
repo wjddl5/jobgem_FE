@@ -15,8 +15,8 @@ export default function PersonalForm() {
 
   return (
     <div>
-      <Input label="이름" name="joName" validation={name_validation} />
-      <Input label="전화번호" name="joTel" validation={tel_validation} />
+      <Input label="이름" name="name" validation={name_validation} />
+      <Input label="전화번호" name="tel" validation={tel_validation} />
     </div>
   )
 }

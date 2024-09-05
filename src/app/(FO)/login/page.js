@@ -4,8 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { login } from "../../action/UserAction";
-
+import { loginAction } from "./action/LoginAction";
 
 export default function LoginPage() {
   
@@ -19,7 +18,7 @@ export default function LoginPage() {
   } = useForm()
 
   const onSubmit = async (formdata) => {
-    const login_msg = await login(formdata);
+    const login_msg = await loginAction(formdata);
     if (login_msg == "로그인 성공") {
       reset();
     } else {
