@@ -8,6 +8,11 @@ export default function () {
 					<div>
 						<h2 className='font-bold text-lg text-gray-900 mb-4'>개인회원 홈</h2>
 						<div className='space-y-1'>
+							<h3 className='font-semibold text-gray-700 mb-3'>
+								<a href='/user/mypage/1'>마이페이지</a>
+							</h3>
+						</div>
+						<div className='space-y-1'>
 							<h3 className='font-semibold text-gray-700'>이력서 관리</h3>
 							<ul className='space-y-1 text-gray-600'>
 								<li>
@@ -57,7 +62,7 @@ export default function () {
 					</div>
 
 					<div>
-						<h3 className='font-semibold text-gray-700'>컨텐츠 관리</h3>
+						<h3 className='font-semibold text-gray-700'>후기 관리</h3>
 						<ul className='space-y-1 text-gray-600'>
 							<li>
 								<a href='/user/company-review-list' className='hover:underline'>
@@ -65,7 +70,7 @@ export default function () {
 								</a>
 							</li>
 							<li>
-								<a href='/user/meeting-review-list' className='hover:underline'>
+								<a href='/user/interview-list' className='hover:underline'>
 									면접후기
 								</a>
 							</li>

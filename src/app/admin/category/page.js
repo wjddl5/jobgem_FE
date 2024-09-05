@@ -2,10 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import styles from '/public/css/category.css';
 import { Button, Checkbox, Divider, Table, TableCell, TableHead, TableRow } from '@mui/material';
-import Tec_category from '@/component/category/Tec_category';
-import Car_category from '@/component/category/Car_category';
-import Loc_category from '@/component/category/Loc_category';
-import Etc_category from '@/component/category/Etc_category';
+import Tec_category from '@/components/category/Tec_category';
+import Car_category from '@/components/category/Car_category';
+import Loc_category from '@/components/category/Loc_category';
+import Etc_category from '@/components/category/Etc_category';
 
 // (관리자) 카테고리 관리
 export default function page() {
