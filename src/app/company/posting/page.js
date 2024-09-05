@@ -11,30 +11,34 @@ export default function Posting() {
     }, [])
     function getList() {
         const ar = [
-            // {
-            //     title: '백엔드',
-            //     count: '7명',
-            //     deadline: '2024-05-01',
-            //     date: '2024-04-01'
-            // },
-            // {
-            //     title: '프론트엔드',
-            //     count: '3명',
-            //     deadline: '2024-08-01',
-            //     date: '2024-07-01'
-            // },
-            // {
-            //     title: '디자이너',
-            //     count: '1명',
-            //     deadline: '2024-09-01',
-            //     date: '2024-08-01'
-            // },
-            // {
-            //     title: '마케터',
-            //     count: '2명',
-            //     deadline: '2024-10-01',
-            //     date: '2024-09-01'
-            // }
+            {
+                title: '백엔드',
+                count: '7명',
+                applicant: '1명',
+                deadline: '2024-05-01',
+                date: '2024-04-01'
+            },
+            {
+                title: '프론트엔드',
+                count: '3명',
+                applicant: '7명',
+                deadline: '2024-08-01',
+                date: '2024-07-01'
+            },
+            {
+                title: '디자이너',
+                count: '1명',
+                applicant: '3명',
+                deadline: '2024-09-01',
+                date: '2024-08-01'
+            },
+            {
+                title: '마케터',
+                count: '2명',
+                applicant: '5명',
+                deadline: '2024-10-01',
+                date: '2024-09-01'
+            }
         ]
         setList(ar)
     }
@@ -86,11 +90,10 @@ export default function Posting() {
         
         {/* 진행중인 공고가 있을때 */}
         {list.length > 0 && (
-        <Table headers={['공고명', '채용인원', '마감일', '등록일']} list={list} />
+        <Table headers={['공고명', '채용인원', '지원자', '마감일', '등록일']} list={list} />
         )}
         <footer class="mt-16 pt-8 border-t border-gray-200">
 				<p class='text-sm text-gray-600'>채용공고 게재기간은 최소 7일에서 최대 90일까지 가능합니다.</p>
-				{/* 추가 안내사항 */}
 			</footer>
 		</main>
 	    );
