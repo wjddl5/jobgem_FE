@@ -2,10 +2,10 @@ import axios from "axios";
 
 export async function login(formdata) {
     const API_URL = "/api/login"
-    
+
     const result = axios.post(API_URL, {
-        email: formdata.email,
-        password: formdata.password
+        usId: formdata.usId,
+        usPw: formdata.usPw
     })
     
     switch ((await result).status) {
@@ -25,11 +25,18 @@ export async function login(formdata) {
 }
 
 export async function personalJoin(formdata) {
-    const API_URL = "/api/join"
+    const API_URL = "/api/join/jobseeker"
     
     const result = axios.post(API_URL, {
-        email: formdata.email,
-        password: formdata.password
+        user: {
+            usId: formdata.usId,
+            usPw: formdata.usPw,
+        },
+        jobseeker: {
+            joName: formdata.joName,
+            joTel: formdata.joTel,
+            joGender: "M"
+        }
     })
     
     switch ((await result).status) {
@@ -49,11 +56,22 @@ export async function personalJoin(formdata) {
 }
 
 export async function companyJoin(formdata) {
-    const API_URL = "/api/join"
+    const API_URL = "/api/join/company"
     
     const result = axios.post(API_URL, {
-        email: formdata.email,
-        password: formdata.password
+        user: {
+            usId: formdata.usId,
+            usPw: formdata.usPw,
+        },
+        company: {
+            coName: formdata.coName,
+            coAddress: formdata.coAddress,
+            coTel: formdata.coTel,
+            coNumber: formdata.coNumber,
+            coType: formdata.coType,
+            coManagerName: formdata.coManagerName,
+            coManagerTel: formdata.coManagerTel
+        }
     })
     
     switch ((await result).status) {
