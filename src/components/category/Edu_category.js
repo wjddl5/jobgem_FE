@@ -168,7 +168,7 @@ export default function page() {
 						setEditItemName('');
 						getData();
 					} else {
-						alert('오류가 발생했습니다..\n 다시 시도해주세요.');
+						alert('오류가 발생했습니다.\n 다시 시도해주세요.');
 					}
 				});
 		}
