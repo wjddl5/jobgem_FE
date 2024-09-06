@@ -73,7 +73,6 @@ function EnhancedTable() {
     //엔터키 검색
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
-            console.log("엔터눌림");
             handleSearch();
         }
     }
