@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
-import React, {useEffect, useState} from 'react';
-import UserCard from "@/components/card/UserCard";
-import axios from "axios";
+import React, { useEffect, useState, useCallback } from 'react';
+import axios from 'axios';
+import UserCard from '@/components/card/UserCard';
 
 function Page() {
     const [jobseekers, setJobseekers] = useState([]);
@@ -10,40 +10,45 @@ function Page() {
     const [isLoading, setIsLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
 
-    useEffect(() => {
-        async function fetchData() {
-            setIsLoading(true);
+    const fetchData = useCallback(async () => {
+        setIsLoading(true);
+        try {
             const res = await axios(`/api/company/fit?id=${1}&loadPage=${loadPage}`);
-            setJobseekers([...jobseekers, ...res.data.fitJobseekers.content]);
+            setJobseekers(prevJobseekers => [
+                ...prevJobseekers,
+                ...res.data.fitJobseekers.content
+            ]);
             setHasMore(!res.data.fitJobseekers.last);
+        } catch (error) {
+            console.error('Failed to fetch jobseekers:', error);
+        } finally {
             setIsLoading(false);
         }
-        fetchData();
-
     }, [loadPage]);
 
     useEffect(() => {
-        const handleScroll = () => {
-            if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight || isLoading || !hasMore) return;
-            setLoadPage(loadPage + 1);
-        };
+        fetchData();
+    }, [fetchData]);
 
-        window.addEventListener('scroll', handleScroll);
-
-        // Cleanup function to remove event listener on unmount
-        return () => window.removeEventListener('scroll', handleScroll);
+    const handleScroll = useCallback(() => {
+        if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight || isLoading || !hasMore) return;
+        setLoadPage(prevLoadPage => prevLoadPage + 1);
     }, [isLoading, hasMore]);
+
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [handleScroll]);
 
     return (
         <>
-                <h2 className="text-xl font-semibold mb-4">맞춤형 인재</h2>
-                <div className="grid grid-cols-3 gap-4">
-                    {
-                        jobseekers.map((jobseeker) => (
-                            <UserCard key={jobseeker.id} jobseeker={jobseeker}/>
-                        ))
-                    }
-                </div>
+            <h2 className="text-xl font-semibold mb-4">맞춤형 인재</h2>
+            <div className="grid grid-cols-3 gap-4">
+                {jobseekers.map((jobseeker,idx) => (
+                    <UserCard key={idx} jobseeker={jobseeker} />
+                ))}
+            </div>
+            {isLoading && <p>Loading...</p>}
         </>
     );
 }

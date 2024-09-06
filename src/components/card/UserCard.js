@@ -1,9 +1,13 @@
 import React from 'react';
 import Button from "@/components/button/Button";
 
-function UserCard({ jobseeker }) {
+function UserCard({type, jobseeker }) {
     // 안전성을 위해 skills가 정의되어 있는지 확인
     const skills = jobseeker.skills || [];
+
+    const addWish = () => {
+
+    }
 
     return (
         <div className="p-4 bg-white rounded-md shadow-md">
@@ -29,7 +33,7 @@ function UserCard({ jobseeker }) {
             </div>
             <div className='flex gap-2 justify-center mt-4'>
                 <Button text='1:1 대화' type='submit' />
-                <Button text='인재 찜하기' />
+                {type === 'wish' ? <Button text='찜 삭제' /> : <Button text='인재 찜하기' /> }
             </div>
         </div>
     );
