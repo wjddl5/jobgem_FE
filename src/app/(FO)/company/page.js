@@ -29,7 +29,7 @@ export default function Page() {
         fetchData();
     }, [blockPage]);
 
-    if (!company) return <div>Loading...</div>;
+    if (!company) return <div className='flex justify-center'><img src='/img/loading.gif' alt='로딩' /></div>;
 
     return (
         <>
@@ -136,7 +136,7 @@ export default function Page() {
                         <div className='mb-4 flex justify-between'>
                             <h2 className="text-lg font-bold">차단 목록</h2>
                             <div className="hover:rotate-90 transition duration-200 ease-in-out h-6">
-                                <IconButton><DiAptana/></IconButton>
+                                <Link href='/company/black'><IconButton><DiAptana/></IconButton></Link>
                             </div>
                         </div>
                         <Table list={company.blockList.content} headers={['번호', '이름', '차단일자', '내용']} isNumber={true}/>
