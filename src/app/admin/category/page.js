@@ -1,52 +1,49 @@
-'use client';
-import React, { useEffect, useState } from 'react';
-import styles from '/public/css/category.css';
-import { Button, Checkbox, Divider, Table, TableCell, TableHead, TableRow } from '@mui/material';
-import Tec_category from '@/component/category/Tec_category';
-import Car_category from '@/component/category/Car_category';
-import Loc_category from '@/component/category/Loc_category';
-import Etc_category from '@/component/category/Etc_category';
+"use client";
+import React, { useState } from "react";
+import styles from "/public/css/category.css";
+import { Button, Divider, Tab, Tabs, Box } from "@mui/material";
+import Tec_category from "@/components/category/Tec_category";
+import Car_category from "@/components/category/Car_category";
+import Loc_category from "@/components/category/Loc_category";
+import Etc_category from "@/components/category/Etc_category";
+import Edu_category from "@/components/category/Edu_category";
 
 // (관리자) 카테고리 관리
-export default function page() {
-	const [component, setComponent] = useState(null);
+export default function CategoryPage() {
+  const [selectedTab, setSelectedTab] = useState(0);
 
-	const resComponent = () => {
-		switch (component) {
-			case 'tec':
-				return <Tec_category />;
-			case 'car':
-				return <Car_category />;
-			case 'loc':
-				return <Loc_category />;
-			case 'etc':
-				return <Etc_category />;
-		}
-	};
+  const handleTabChange = (event, newValue) => {
+    setSelectedTab(newValue);
+  };
 
-	return (
-		<>
-			<Table>
-				<TableHead>
-					<TableRow hover>
-						<TableCell onClick={() => setComponent('tec')}>기술</TableCell>
-					</TableRow>
-					<TableRow hover>
-						<TableCell onClick={() => setComponent('car')}>경력</TableCell>
-					</TableRow>
-					<TableRow hover>
-						<TableCell onClick={() => setComponent('loc')}>지역</TableCell>
-					</TableRow>
-					<TableRow hover>
-						<TableCell onClick={() => setComponent('etc')}>기타</TableCell>
-					</TableRow>
-				</TableHead>
-			</Table>
-			<Divider />
-			<Divider />
-			<Divider />
-			<Divider />
-			{resComponent()}
-		</>
-	);
+  const renderCategoryComponent = () => {
+    switch (selectedTab) {
+      case 0:
+        return <Tec_category />;
+      case 1:
+        return <Car_category />;
+      case 2:
+        return <Edu_category />;
+      case 3:
+        return <Loc_category />;
+      case 4:
+        return <Etc_category />;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <>
+      <Tabs value={selectedTab} onChange={handleTabChange} indicatorColor="primary" textColor="primary" centered>
+        <Tab label="기술" />
+        <Tab label="경력" />
+        <Tab label="학력" />
+        <Tab label="지역" />
+        <Tab label="고용형태" />
+      </Tabs>
+      <Divider />
+      <Box padding={3}>{renderCategoryComponent()}</Box>
+    </>
+  );
 }
