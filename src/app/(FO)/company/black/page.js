@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from "@/components/button/Button";
 import Table from "@/components/table/Table";
+import Input from "@/components/form/Input";
 
 function Page() {
     return (
@@ -8,9 +9,42 @@ function Page() {
             <div className="p-6">
                 <div className="flex justify-between items-center mb-4">
                     <h1 className="text-2xl font-semibold mb-6">차단내역</h1>
-                    <Button text='차단해제' />
+                    <Button text='차단해제'/>
                 </div>
-                <Table headers={['선택', '이름', '나이', '최종학력', '최종 상태', '희망 변경', '차단 상태']} list={[{}, {}, {}, {}, {}, {}]} />
+                <table className="border-collapse w-full">
+                    <thead>
+                    <tr>
+                        <th className="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">
+                            선택
+                        </th>
+                        <th className="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">
+                            이름
+                        </th>
+                        <th className="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">
+                            사유
+                        </th>
+                        <th className="p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell">
+                            차단일자
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr className="bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
+                        <td className="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                            <Input type='checkbox' />
+                        </td>
+                        <td className="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+
+                        </td>
+                        <td className="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+
+                        </td>
+                        <td className="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
                 <div className="mt-4 text-gray-600 text-sm">
                     <p>• 차단된 인재는 귀사에서 진행하는 모든 채용공고에 지원하더라도 지원자 목록에 표시되지 않습니다.</p>
                     <p>• 차단해제는 해당 지원자에게 통보되지 않습니다.</p>
