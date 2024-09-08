@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 
 function EnhancedTable() {
     const router = useRouter();
-    const [api_url, setApiUrl] = useState("/api/blocklist?size=10");
+    const [api_url, setApiUrl] = useState("/api/blackList?size=10");
     const [mid, setMid] = useState(null);
     const [ar, setAr] = useState([]);
     const [page, setPage] = useState(0);
@@ -52,7 +52,7 @@ function EnhancedTable() {
     //페이지 번호 변경
     const changePage = (event, value) => {
         setPage(value - 1); // 페이지 번호는 0부터 시작하므로 1을 빼줍니다.
-        setApiUrl("/api/blocklist?size=10&page="+(value-1));
+        setApiUrl("/api/blackList?size=10&page=" + (value - 1));
         getBlockList();
         setChkSet(new Set());
         setChkAll(false);
@@ -148,7 +148,7 @@ function EnhancedTable() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {ar.map((user,idx) => (
+                        {ar.map((user, idx) => (
                             <TableRow
                                 key={idx} // 키를 user.id로 설정
                                 hover

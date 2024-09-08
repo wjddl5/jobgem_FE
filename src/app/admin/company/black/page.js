@@ -4,7 +4,7 @@ import { TextField, MenuItem, FormControl, Select, InputLabel, Box, Paper, Table
 import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
 function EnhancedTable() {
-    const [api_url, setApiUrl] = useState("/api/company/blocklist?size=10");
+    const [api_url, setApiUrl] = useState("/api/company/blackList?size=10");
     const [ar, setAr] = useState([]);
     const [page, setPage] = useState(0);
     const [totalPage, setTotalPage] = useState(0);
@@ -56,7 +56,7 @@ function EnhancedTable() {
     }
     const changePage = (event, value) => {
         setPage(value - 1); // 페이지 번호는 0부터 시작하므로 1을 빼줍니다.
-        setApiUrl("/api/company/blocklist?size=10&page=" + (value - 1));
+        setApiUrl("/api/company/blackList?size=10&page=" + (value - 1));
         getBlockList();
     };
     function checkChange(event, bo_idx) {
