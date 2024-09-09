@@ -29,7 +29,7 @@ export default function Page() {
         fetchData();
     }, [blockPage]);
 
-    if (!company) return <div>Loading...</div>; // 데이터가 로드되기 전 로딩 상태 표시
+    if (!company) return <div>Loading...</div>;
 
     return (
         <>
@@ -121,21 +121,23 @@ export default function Page() {
                                 <p>인재 추천</p>
                             </div>
                             <div className="text-center">
-                                <Link href='/company' className="text-2xl font-bold text-blue-600 underline text-center">{company.talentCount}</Link>
+                                <Link href='/company/talent/wish' className="text-2xl font-bold text-blue-600 underline text-center">{company.talentCount}</Link>
                                 <p>찜한 인재</p>
                             </div>
                         </div>
                         <div className="bg-gray-50 p-4 rounded-md flex items-center justify-center gap-2">
                             <Link href='/company/talent/fit' className='btn submit'>추천목록</Link>
-                            <Button text={'찜한목록'}/>
+                            <Link href='/company/talent/wish' className='btn'>찜한목록</Link>
                         </div>
                     </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                     <div className="bg-white p-6 rounded-md shadow">
                         <div className='mb-4 flex justify-between'>
-                            <h2 className="text-lg font-bold mb-4">차단 목록</h2>
-                            <Link href='/src/app/(FO)/company/black' className='btn'>더보기</Link>
+                            <h2 className="text-lg font-bold">차단 목록</h2>
+                            <div className="hover:rotate-90 transition duration-200 ease-in-out h-6">
+                                <IconButton><DiAptana/></IconButton>
+                            </div>
                         </div>
                         <Table list={company.blockList.content} headers={['번호', '이름', '차단일자', '내용']} isNumber={true}/>
                         <Pagination
@@ -148,9 +150,11 @@ export default function Page() {
                     <div className="bg-white p-6 rounded-md shadow">
                         <div className='mb-4 flex justify-between'>
                             <h2 className="text-lg font-bold">채팅 목록</h2>
-                            <Button text={'더보기'}/>
+                            <div className="hover:rotate-90 transition duration-200 ease-in-out h-6">
+                                <IconButton><DiAptana/></IconButton>
+                            </div>
                         </div>
-                        <Table list={[{}]} headers={['프로필', '채팅자', '마지막 채팅 시간']} />
+                        <Table list={[{}]} headers={['프로필', '채팅자', '마지막 채팅 시간']}/>
                     </div>
                 </div>
             </div>

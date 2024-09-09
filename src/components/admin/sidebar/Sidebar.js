@@ -220,6 +220,21 @@ export default function Sidebar() {
 			<li className='nav-item'>
 				<a
 					className='nav-link collapsed'
+					href='/admin/category'
+					onClick={() => handleLinkClick('collapseSeven')}
+					data-toggle='collapse'
+					data-target='#collapseSeven'
+					aria-expanded={activeLink['collapseSeven']}
+					aria-controls='collapseSeven'
+				>
+					<ListIcon />
+					<span style={{ marginLeft: '10px' }}>카테고리 관리</span>
+				</a>
+			</li>
+
+			{/* <li className='nav-item'>
+				<a
+					className='nav-link collapsed'
 					href='#'
 					onClick={() => handleLinkClick('collapseEight')}
 					data-toggle='collapse'
@@ -291,7 +306,7 @@ export default function Sidebar() {
 						</div>
 					</div>
 				</div>
-			</li>
+			</li> */}
 
 			{/* 신고 관리 */}
 			<li className='nav-item'>
