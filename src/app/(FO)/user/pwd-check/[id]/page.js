@@ -1,9 +1,40 @@
+"use client";
 import Button from "@/components/button/Button";
 import Input from "@/components/form/Input";
 import SideMenu from "@/components/sidemenu/SideMenu";
-import React from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
-export default function page() {
+export default function page(props) {
+	const joIdx = props.params.id;
+	const [jobseeker, setJobseeker] = useState({});
+	const router = useRouter();
+
+	const API_URL = `/api/jobseeker?id=${joIdx}`;
+	function getData() {
+		axios.get(API_URL).then((res) => {
+			setJobseeker(res.data);
+			setUser(res.data.user);
+		});
+	}
+
+	function send() {
+		axios({
+			url: "/api/updatePassword",
+			method: "get",
+			params: {
+				id: joIdx,
+			},
+		}).then((res) => {
+			console.log(res);
+		});
+	}
+
+	useEffect(() => {
+		getData();
+	}, []);
+
 	return (
 		<div className='flex gap-2'>
 			<SideMenu />
@@ -15,7 +46,7 @@ export default function page() {
 						<label for='username' className='block text-sm font-medium text-gray-700'>
 							아이디
 						</label>
-						<Input type='text' id='username' name='username' value='jjh0299' className='mt-1 block w-full p-2 border border-gray-300 rounded-md bg-gray-100' disabled />
+						<Input type='text' id='username' name='username' value={jobseeker.joName} className='mt-1 block w-full p-2 border border-gray-300 rounded-md bg-gray-100' disabled />
 					</div>
 					<div className='mb-6'>
 						<label for='password' className='block text-sm font-medium text-gray-700'>
