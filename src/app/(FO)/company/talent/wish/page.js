@@ -14,8 +14,8 @@ function Page(props) {
     const getData = async () => {
         setIsLoading(true);
         const res = await axios(`/api/company/wish?id=${1}&loadPage=${loadPage}`);
-        setJobseekers((prevJobseekers) => [...prevJobseekers, ...res.data.wishJobseekers.content]);
-        setHasMore(!res.data.wishJobseekers.last);
+        setJobseekers((prevJobseekers) => [...prevJobseekers, ...res.data.content]);
+        setHasMore(!res.data.last);
         setIsLoading(false);
     };
 
@@ -38,7 +38,7 @@ function Page(props) {
 
     const removeWishHandler = (id) => {
         if(confirm("해당 인재를 찜목록에서 삭제하시겠습니까?")){
-            axios.post('/api/company/wish/remove',null, {
+            axios.post('/api/company/wish/delete',null, {
                 params: {
                     id: id
                 }

@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 export default function TableRow({item, number}) {
     const values= Object.values(item);
