@@ -1,9 +1,7 @@
-import * as React from 'react';
+'use client';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
+import { Tabs, Tab, Typography, Box } from '@mui/material';
 
 function TabPanel(props) {
 	const { children, value, index, ...other } = props;
@@ -33,14 +31,14 @@ function a11yProps(index) {
 }
 
 export default function VerticalTabs() {
-	const [value, setValue] = React.useState(0);
+	const [value, setValue] = useState(0);
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
 	};
 
 	return (
-		<Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 224 }}>
+		<Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 300 }}>
 			<Tabs orientation='vertical' variant='scrollable' value={value} onChange={handleChange} aria-label='Vertical tabs example' sx={{ borderRight: 1, borderColor: 'divider' }}>
 				<Tab label='Item One' {...a11yProps(0)} />
 				<Tab label='Item Two' {...a11yProps(1)} />
