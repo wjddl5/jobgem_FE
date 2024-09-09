@@ -9,13 +9,24 @@ export default function Posting() {
     const [list, setList] = useState([])
     const [data, setData] =useState([])
     const [search, setSearch] = useState('')
-    const [searchType, setSearchType] = useState('poTitle')
+    const [searchType, setSearchType] = useState('title')
     const [select, setSelect] = useState(0)
     const [sort, setSort] = useState('poDateDesc')
     const [page, setPage] = useState(1)
     useEffect(() => {
         init();
     }, [])
+    useEffect(() => {
+        if(select === 0){
+            getAllList()
+        }else if(select === 1){
+            getProgressList()
+        }else if(select === 2){
+            getDeadlineList()
+        }else if(select === 3){
+            getCloseList()
+        }
+    }, [sort])
     function init(){
         axios.get('/api/post')
         .then(res => {
@@ -62,7 +73,6 @@ export default function Posting() {
             params: {
                 state: 1,
                 sort: sort,
-                page: page
             }
         })
         .then(res => {
@@ -75,7 +85,6 @@ export default function Posting() {
             params: {
                 deadline: 'today',
                 sort: sort,
-                page: page
             }
         })
         .then(res => {
@@ -88,7 +97,6 @@ export default function Posting() {
             params: {
                 state: 2,
                 sort: sort,
-                page: page
             }
         })
         .then(res => {
@@ -101,17 +109,21 @@ export default function Posting() {
             alert('검색어를 입력해주세요.')
             return
         }
+        setSelect(0)
         axios.get('/api/post',{
             params: {
                 search: search,
                 searchType: searchType,
                 sort: sort,
-                page: page
             }
         })
         .then(res => {
             listSet(res)
         })
+    }
+    
+    function sortList(e){
+        setSort(e.target.value)
     }
 
     
@@ -136,11 +148,11 @@ export default function Posting() {
 
         <div className="flex justify-between items-center mb-6">
             <div className="flex ">
-                <select className="border p-2 rounded mr-3" onChange={(e) => setSort(e.target.value)}>
+                <select className="border p-2 rounded mr-3" onChange={sortList}>
                     <option value="poDateDesc">최근 등록순</option>
                     <option value="poDeadlineAsc">마감일순</option>
                     <option value="applyCountDesc">지원자순</option>
-                    
+                    <option value="poDateAsc">오래된순</option>
                 </select>
                 <select className="border p-2 rounded">
                     <option>10개씩 보기</option>
