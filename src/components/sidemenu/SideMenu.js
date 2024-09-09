@@ -1,10 +1,12 @@
 "use client";
 import React, { useState } from "react";
-import { FiMenu } from "react-icons/fi"; // 메뉴 아이콘 추가
+import { FiMenu } from "react-icons/fi";
+import { useRouter } from "next/navigation";
 
 export default function Sidebar() {
-	// 사이드바의 상태를 관리하는 useState 훅 추가 (모바일 토글)
+	const joIdx = 1;
 	const [isOpen, setIsOpen] = useState(false);
+	const router = useRouter(); // useRouter 훅 사용
 
 	return (
 		<div className='flex'>
@@ -20,23 +22,26 @@ export default function Sidebar() {
 						<h2 className='font-bold text-lg text-gray-900 mb-4'>개인회원 홈</h2>
 						<div className='space-y-1'>
 							<h3 className='font-semibold text-gray-700 mb-3'>
-								<a href='/user/mypage/1' className='hover:text-blue-600'>
+								{/* 마이페이지로 이동 */}
+								<span onClick={() => router.push(`/user/mypage/${joIdx}`)} className='hover:text-blue-600 cursor-pointer'>
 									마이페이지
-								</a>
+								</span>
 							</h3>
 						</div>
 						<div className='space-y-1'>
 							<h3 className='font-semibold text-gray-700'>이력서 관리</h3>
 							<ul className='space-y-1 text-gray-600'>
 								<li>
-									<a href='/user/resume-write' className='hover:text-blue-600'>
+									{/* 이력서 등록 */}
+									<span onClick={() => router.push(`/user/resume-write/${joIdx}`)} className='hover:text-blue-600 cursor-pointer'>
 										이력서 등록
-									</a>
+									</span>
 								</li>
 								<li>
-									<a href='/user/resume-list' className='hover:text-blue-600'>
+									{/* 이력서 현황 */}
+									<span onClick={() => router.push(`/user/resume-list/${joIdx}`)} className='hover:text-blue-600 cursor-pointer'>
 										이력서 현황
-									</a>
+									</span>
 								</li>
 							</ul>
 						</div>
@@ -46,14 +51,16 @@ export default function Sidebar() {
 						<h3 className='font-semibold text-gray-700'>입사지원·제안 관리</h3>
 						<ul className='space-y-1 text-gray-600'>
 							<li>
-								<a href='/user/apply-company' className='hover:text-blue-600'>
+								{/* 입사지원 현황 */}
+								<span onClick={() => router.push(`/user/apply-company/${joIdx}`)} className='hover:text-blue-600 cursor-pointer'>
 									입사지원 현황
-								</a>
+								</span>
 							</li>
 							<li>
-								<a href='/user/job-offer' className='hover:text-blue-600'>
+								{/* 입사제안 목록 */}
+								<span onClick={() => router.push(`/user/job-offer/${joIdx}`)} className='hover:text-blue-600 cursor-pointer'>
 									입사제안 목록
-								</a>
+								</span>
 							</li>
 						</ul>
 					</div>
@@ -62,14 +69,16 @@ export default function Sidebar() {
 						<h3 className='font-semibold text-gray-700'>스크랩/관심기업</h3>
 						<ul className='space-y-1 text-gray-600'>
 							<li>
-								<a href='#' className='hover:text-blue-600'>
+								{/* 스크랩 공고 */}
+								<span onClick={() => router.push(`/user/scrap/${joIdx}`)} className='hover:text-blue-600 cursor-pointer'>
 									스크랩 공고
-								</a>
+								</span>
 							</li>
 							<li>
-								<a href='#' className='hover:text-blue-600'>
+								{/* 관심기업 */}
+								<span onClick={() => router.push(`/user/favorite-companies/${joIdx}`)} className='hover:text-blue-600 cursor-pointer'>
 									관심기업
-								</a>
+								</span>
 							</li>
 						</ul>
 					</div>
@@ -78,14 +87,16 @@ export default function Sidebar() {
 						<h3 className='font-semibold text-gray-700'>후기 관리</h3>
 						<ul className='space-y-1 text-gray-600'>
 							<li>
-								<a href='/user/company-review-list' className='hover:text-blue-600'>
+								{/* 기업후기 */}
+								<span onClick={() => router.push(`/user/company-review-list/${joIdx}`)} className='hover:text-blue-600 cursor-pointer'>
 									기업후기
-								</a>
+								</span>
 							</li>
 							<li>
-								<a href='/user/interview-list' className='hover:text-blue-600'>
+								{/* 면접후기 */}
+								<span onClick={() => router.push(`/user/interview-list/${joIdx}`)} className='hover:text-blue-600 cursor-pointer'>
 									면접후기
-								</a>
+								</span>
 							</li>
 						</ul>
 					</div>
@@ -94,14 +105,29 @@ export default function Sidebar() {
 						<h3 className='font-semibold text-gray-700'>회원정보 관리</h3>
 						<ul className='space-y-1 text-gray-600'>
 							<li>
-								<a href='/user/mypage-update' className='hover:text-blue-600'>
+								{/* 회원정보 수정 */}
+								<span onClick={() => router.push(`/user/mypage-update/${joIdx}`)} className='hover:text-blue-600 cursor-pointer'>
 									회원정보 수정
-								</a>
+								</span>
 							</li>
 							<li>
-								<a href='/user/pwd-check' className='hover:text-blue-600'>
+								{/* 비밀번호 변경 */}
+								<span onClick={() => router.push(`/user/pwd-check/${joIdx}`)} className='hover:text-blue-600 cursor-pointer'>
 									비밀번호 변경
-								</a>
+								</span>
+							</li>
+						</ul>
+					</div>
+
+					{/* 회원탈퇴하기 섹션 추가 */}
+					<div>
+						<h3 className='font-semibold text-red-600'>회원탈퇴</h3> {/* 빨간색 텍스트로 표시 */}
+						<ul className='space-y-1 text-gray-600'>
+							<li>
+								{/* 회원탈퇴 */}
+								<span onClick={() => router.push(`/user/delete-account/${joIdx}`)} className='hover:text-red-600 cursor-pointer'>
+									회원탈퇴하기
+								</span>
 							</li>
 						</ul>
 					</div>

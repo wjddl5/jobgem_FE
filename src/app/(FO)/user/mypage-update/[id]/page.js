@@ -22,7 +22,6 @@ export default function Page(props) {
 		axios.get(API_URL).then((res) => {
 			setJobseeker(res.data);
 			setUser(res.data.user);
-			setHaveSkill(res.data.skills);
 			setSelectedSkills(res.data.skills.map((skill) => skill.id)); // Initialize selectedSkills with haveSkill IDs
 			console.log("jobseeker 데이터:", res.data);
 		});
