@@ -8,43 +8,66 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-export default function Page() {
-	const joIdx = 1;
+export default function Page(props) {
+	const joIdx = props.params.id;
 	const [jobseeker, setJobseeker] = useState({});
 	const [user, setUser] = useState({});
+	const [skillList, setSkillList] = useState([]);
+	const [selectedSkills, setSelectedSkills] = useState([]); // To keep track of selected skills
 	const router = useRouter();
 	const API_URL = `/api/jobseeker?id=${joIdx}`;
 
+	// 데이터 가져오는 함수
 	function getData() {
 		axios.get(API_URL).then((res) => {
 			setJobseeker(res.data);
 			setUser(res.data.user);
-			console.log(res);
+			setHaveSkill(res.data.skills);
+			setSelectedSkills(res.data.skills.map((skill) => skill.id)); // Initialize selectedSkills with haveSkill IDs
+			console.log("jobseeker 데이터:", res.data);
 		});
 	}
 
+	// 스킬 목록 가져오는 함수
+	function getSkillList() {
+		axios.get("/api/skillList").then((res) => {
+			setSkillList(res.data);
+			console.log("skillList:", res.data);
+		});
+	}
+
+	// 데이터 전송 함수
 	function send() {
+		console.log("보내기 전 jobseeker 상태 확인:", jobseeker);
+		console.log("선택된 스킬 목록:", selectedSkills);
+
 		axios({
-			url: "/api/updateJobseeker",
+			url: "/api/updateMypage",
 			method: "get",
 			params: {
 				id: joIdx,
-				joName: joName,
-				joGender: joGender,
-				joBirth: joBirth,
-				joTel: joTel,
-				joEdu: joEdu,
-				joSal: joSal,
-				skills: skills,
-				jo_img_url: jo_img_url,
+				joName: jobseeker.joName,
+				joGender: jobseeker.joGender,
+				joBirth: jobseeker.joBirth,
+				joTel: jobseeker.joTel,
+				joEdu: jobseeker.joEdu,
+				joSal: jobseeker.joSal,
+				joAddress: jobseeker.joAddress,
+				joImgUrl: jobseeker.joImgUrl,
+				skillIds: selectedSkills.length > 0 ? selectedSkills : [], // 선택된 스킬이 없으면 빈 배열을 전송
 			},
-		}).then((res) => {
-			console.log(res);
-			if (res.status == 200) {
-				alert("수정완료");
-				router.push(`/user/mypage/${joIdx}`);
-			}
-		});
+		})
+			.then((res) => {
+				console.log(res);
+				if (res.status == 200) {
+					alert("수정 완료");
+					router.push(`/user/mypage/${joIdx}`);
+				}
+			})
+			.catch((error) => {
+				console.error("에러 발생:", error);
+				alert("수정 중 문제가 발생했습니다.");
+			});
 	}
 
 	// 생년월일 변경 핸들러
@@ -64,7 +87,19 @@ export default function Page() {
 		}));
 	}
 
+	// 스킬 선택 변경 핸들러
+	function handleSkillChange(e) {
+		const skillId = Number(e.target.value); // skillId를 숫자로 변환
+		if (e.target.checked) {
+			setSelectedSkills((prevSkills) => [...prevSkills, skillId]);
+		} else {
+			setSelectedSkills((prevSkills) => prevSkills.filter((s) => s !== skillId));
+		}
+	}
+
+	// 컴포넌트가 마운트될 때 데이터 가져오기
 	useEffect(() => {
+		getSkillList();
 		getData();
 	}, []);
 
@@ -84,7 +119,6 @@ export default function Page() {
 						</div>
 
 						<div className='grid grid-cols-2 gap-4'>
-							{/* 이메일 필드 비활성화 */}
 							<div>
 								<label className='block text-sm font-medium text-gray-700' htmlFor='email'>
 									이메일
@@ -92,7 +126,6 @@ export default function Page() {
 								<Input id='usId' name='usId' type='email' value={user.usId || ""} disabled />
 							</div>
 
-							{/* 나머지 필드는 수정 가능 */}
 							<div>
 								<label className='block text-sm font-medium text-gray-700' htmlFor='name'>
 									이름
@@ -130,13 +163,13 @@ export default function Page() {
 								<label className='block text-sm font-medium text-gray-700' htmlFor='edu'>
 									학력
 								</label>
-								<Select name='joGender' ar={["초", "중", "고", "대", "석", "박"]} value={jobseeker.joEdu || ""} onChange={handleInputChange} />
+								<Select name='joEdu' ar={["초", "중", "고", "대", "석", "박"]} value={jobseeker.joEdu || ""} onChange={handleInputChange} />
 							</div>
 							<div>
-								<label className='block text-sm font-medium text-gray-700' htmlFor='phone'>
+								<label className='block text-sm font-medium text-gray-700' htmlFor='joTel'>
 									전화번호
 								</label>
-								<Input name='joTel' className='mt-1 block w-full border border-gray-300 rounded p-2' value={jobseeker.joTel || ""} onChange={handleInputChange} />
+								<Input name='joTel' className='mt-1 block w-full border border-gray-300 rounded p-2' type='tel' value={jobseeker.joTel || ""} onChange={handleInputChange} />
 							</div>
 							<div>
 								<label className='block text-sm font-medium text-gray-700' htmlFor='phone'>
@@ -148,7 +181,35 @@ export default function Page() {
 								<label className='block text-sm font-medium text-gray-700' htmlFor='address'>
 									주소
 								</label>
-								<Input id='address' name='joAddress' className='mt-1 block w-full border border-gray-300 rounded p-2' value={jobseeker.joAddress || ""} onChange={handleInputChange} />
+								<Input
+									id='joAddress'
+									name='joAddress'
+									className='mt-1 block w-full border border-gray-300 rounded p-2'
+									value={jobseeker.joAddress || ""}
+									onChange={handleInputChange}
+								/>
+							</div>
+
+							{/* Skill List */}
+							<div className='col-span-2'>
+								<h3 className='text-sm font-medium text-gray-700'>보유 기술</h3>
+								<div className='mt-2 grid grid-cols-2 gap-2'>
+									{skillList.map((skill) => (
+										<div key={skill.id} className='flex items-center'>
+											<input
+												id={`skill-${skill.id}`}
+												type='checkbox'
+												value={skill.id}
+												checked={selectedSkills.includes(skill.id)} // Skill is checked if it's in selectedSkills
+												onChange={handleSkillChange}
+												className='h-4 w-4 text-blue-600 border-gray-300 rounded'
+											/>
+											<label htmlFor={`skill-${skill.id}`} className='ml-2 block text-sm text-gray-900'>
+												{skill.skName} {/* 객체의 skName 속성만 렌더링 */}
+											</label>
+										</div>
+									))}
+								</div>
 							</div>
 						</div>
 					</section>
