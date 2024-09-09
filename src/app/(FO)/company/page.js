@@ -10,16 +10,15 @@ import Link from "next/link";
 import axios from "axios";
 import Pagination from "@/components/pagination/Pagination";
 
-// 데이터를 가져오는 함수
-async function getPage(id, blockPage) {
-    const company = await axios(`/api/company?id=${id}&blockPage=${blockPage}`);
-    return company.data;
-}
-
 export default function Page() {
     const [company, setCompany] = useState(null); // 회사 데이터를 상태로 관리
     const [blockPage, setBlockPage] = useState(0); // 페이지 번호 상태 관리
 
+    // 데이터를 가져오는 함수
+    const getPage = async (id, blockPage) => {
+        const company = await axios(`/api/company?id=${id}&blockPage=${blockPage}`);
+        return company.data;
+    }
     // 페이지 번호가 변경될 때마다 데이터를 가져옴
     useEffect(() => {
         async function fetchData() {
