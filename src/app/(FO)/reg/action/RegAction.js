@@ -1,5 +1,21 @@
 import axios from "axios";
 
+export async function emailCheck(email) {
+    const API_URL = "/api/join/check/email"
+    try {
+        const result = axios.get(API_URL, {
+            params: {
+                email: email
+            }
+        })
+        if((await result).status === 200) {
+            return (await result).data;
+        } 
+    } catch (error) {
+        return "통신이 원활하지 않습니다."
+    }
+}
+
 export async function personalJoin(formdata) {
     const API_URL = "/api/join/jobseeker"
     try {
