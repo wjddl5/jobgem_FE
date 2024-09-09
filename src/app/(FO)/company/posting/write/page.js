@@ -107,7 +107,7 @@ export default function ApplicationForm() {
     /* 시간 옵션 배열 생성 */
     const timeOptions = Array.from({length: 24}, (_, i) => i + 1);
     // 분 옵션 배열 생성
-    const minuteOptions = ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'];
+    const minuteOptions = ['00', '10', '20', '30', '40', '50'];
 
     /* 랜더링시 초기화*/
     useEffect(() => {
