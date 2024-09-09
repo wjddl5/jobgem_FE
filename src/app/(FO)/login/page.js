@@ -4,8 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { login } from "../../action/UserAction";
-
+import { loginAction } from "./action/LoginAction";
 
 export default function LoginPage() {
   
@@ -19,7 +18,7 @@ export default function LoginPage() {
   } = useForm()
 
   const onSubmit = async (formdata) => {
-    const login_msg = await login(formdata);
+    const login_msg = await loginAction(formdata);
     if (login_msg == "로그인 성공") {
       reset();
     } else {
@@ -41,7 +40,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-2/5">
       <Image src="/img/logo.png" alt="logo" width={200} height={200} className="mx-auto"/>
         <div className="flex justify-between mb-4">
         <button 

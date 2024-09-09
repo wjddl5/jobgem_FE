@@ -1,15 +1,14 @@
-import { personalJoin } from '@/app/action/UserAction';
-import { useContext } from 'react';
+import { personalJoin } from '../action/RegAction';
 import JoinButton from '../component/JoinButton';
 import Section from '../component/Section';
 import PersonalForm from '../component/form/PersonalForm';
 import TermsAgreementForm from '../component/form/TermsAgreementForm';
 import UserForm from '../component/form/UserForm';
-import { useFormContext } from '../page';
+import { useFormContext } from "react-hook-form";
 
 export default function PersonalReg() {
 
-  const { handleSubmit, reset } = useContext(useFormContext);
+  const { handleSubmit, reset } = useFormContext();
 
   const onSubmit = (data) => {
     personalJoin(data);

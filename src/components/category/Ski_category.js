@@ -26,7 +26,7 @@ import {
 } from '@mui/material';
 import { Delete as DeleteIcon, AddRounded as AddRoundedIcon, Add as AddIcon } from '@mui/icons-material';
 
-// 학력 카테고리 관리 컴포넌트
+// 보유기술 카테고리 관리 컴포넌트
 export default function page() {
 	//초기화
 	const [selected, setSelected] = useState([]);
@@ -58,7 +58,7 @@ export default function page() {
 	}, []);
 
 	function getData() {
-		axios.get('/api/category/car').then((res) => {
+		axios.get('/api/category/ski').then((res) => {
 			setRows(res.data);
 		});
 	}
@@ -120,7 +120,7 @@ export default function page() {
 		if (confirm('체크한 항목을 삭제하시겠습니까?')) {
 			console.log(chkAraay);
 			axios
-				.get('/api/category/removeCar', {
+				.get('/api/category/removeSki', {
 					params: {
 						chkList: chkAraay,
 					},
@@ -156,7 +156,7 @@ export default function page() {
 			alert('최대 30글자까지 입력할 수 있습니다.');
 		} else {
 			axios
-				.get('/api/category/editCar', {
+				.get('/api/category/editSki', {
 					params: {
 						id: id,
 						editItemName: editItemName,
@@ -204,7 +204,7 @@ export default function page() {
 			alert('최대 30글자까지 입력할 수 있습니다.');
 		} else {
 			axios
-				.get('/api/category/addCar', {
+				.get('/api/category/addSki', {
 					params: {
 						itemName: itemName,
 					},
@@ -245,7 +245,7 @@ export default function page() {
 					</Typography>
 				) : (
 					<Typography sx={{ flex: '1 1 100%' }} variant='h6' id='tableTitle' component='div'>
-						Career
+						Skill
 					</Typography>
 				)}
 
@@ -348,11 +348,11 @@ export default function page() {
 										</TableCell>
 										{editRow != row.id ? (
 											<TableCell component='th' scope='row' padding='12px' sx={{ minWidth: '200px' }}>
-												{row.crName}
+												{row.skName}
 											</TableCell>
 										) : (
 											<TableCell component='th' scope='row' padding='12px' sx={{ minWidth: '200px' }}>
-												<TextField id='editField' style={{ width: '300px' }} onChange={changeEditItemName} defaultValue={row.crName} />
+												<TextField id='editField' style={{ width: '300px' }} onChange={changeEditItemName} defaultValue={row.skName} />
 												<Button
 													variant='text'
 													size='small'
