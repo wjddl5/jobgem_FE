@@ -1,8 +1,7 @@
-import { useContext } from "react";
-import { useFormContext } from "../../page";
+import { useFormContext } from "react-hook-form";
 
 export default function TermsAgreementForm() {
-    const { register, formState: { errors } } = useContext(useFormContext);
+    const { register, formState: { errors } } = useFormContext();
 
     const agreement_validation = {
         required: "개인정보 수집 및 이용에 동의해주세요",
