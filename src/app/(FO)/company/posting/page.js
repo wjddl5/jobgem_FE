@@ -16,7 +16,7 @@ export default function Posting() {
     useEffect(() => {
         init();
     }, [])
-    useEffect(() => {
+useEffect(() => {
         if(select === 0){
             getAllList()
         }else if(select === 1){
@@ -72,7 +72,7 @@ export default function Posting() {
         axios.get('/api/post',{
             params: {
                 state: 1,
-                sort: sort,
+                sort: sort
             }
         })
         .then(res => {
@@ -84,7 +84,7 @@ export default function Posting() {
         axios.get('/api/post',{
             params: {
                 deadline: 'today',
-                sort: sort,
+                sort: sort
             }
         })
         .then(res => {
@@ -96,7 +96,7 @@ export default function Posting() {
         axios.get('/api/post',{
             params: {
                 state: 2,
-                sort: sort,
+                sort: sort
             }
         })
         .then(res => {
@@ -121,7 +121,7 @@ export default function Posting() {
             listSet(res)
         })
     }
-    
+
     function sortList(e){
         setSort(e.target.value)
     }

@@ -118,7 +118,6 @@ export default function page() {
 	function removeItem(chkList) {
 		const chkAraay = Array.from(chkList);
 		if (confirm('체크한 항목을 삭제하시겠습니까?')) {
-			console.log(chkAraay);
 			axios
 				.get('/api/category/removeSki', {
 					params: {
@@ -167,6 +166,7 @@ export default function page() {
 						alert('수정완료');
 						setSelected([]);
 						setEditItemName('');
+						setEditRow('');
 						getData();
 					} else {
 						alert('오류가 발생했습니다.\n 다시 시도해주세요.');
@@ -200,7 +200,7 @@ export default function page() {
 	function saveItem() {
 		if (itemName.trim().length < 1) {
 			alert('카테고리명을 입력하세요.');
-		} else if (itemName.length > 100) {
+		} else if (itemName.length > 30) {
 			alert('최대 30글자까지 입력할 수 있습니다.');
 		} else {
 			axios
@@ -214,6 +214,7 @@ export default function page() {
 						alert('저장성공');
 						setItemName('');
 						document.getElementById('itemNameField').value = '';
+						setEditRow('');
 						getData();
 					} else {
 						alert('오류가 발생했습니다.\n 다시 시도해주세요.');
@@ -331,6 +332,7 @@ export default function page() {
 										sx={{ cursor: 'pointer' }}
 										onClick={() => {
 											editClick(row.id);
+											addItem(true);
 										}}
 									>
 										<TableCell padding='checkbox'>
@@ -370,7 +372,15 @@ export default function page() {
 							})}
 							<TableRow style={{ height: '90px' }}>
 								<TableCell colSpan={2} style={{ padding: '12px' }}>
-									<Fab color='primary' size='small' aria-label='add' onClick={() => addItem(addClick)}>
+									<Fab
+										color='primary'
+										size='small'
+										aria-label='add'
+										onClick={() => {
+											addItem(addClick);
+											setEditRow('');
+										}}
+									>
 										{addClick ? <RemoveOutlinedIcon /> : <AddIcon />}
 									</Fab>
 								</TableCell>
