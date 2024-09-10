@@ -182,6 +182,7 @@ export default function page() {
 	// (지역_구,시) 초기화
 	const [loc_gusi, setLoc_gusi] = useState([]);
 	const [editRow, setEditRow] = useState('');
+
 	const [itemName, setItemName] = useState('');
 	const [editItemName, setEditItemName] = useState('');
 	const [ldIdx, setLdIdx] = useState(0);
@@ -243,6 +244,7 @@ export default function page() {
 	//(구,시) 수정
 	function editClick(id) {
 		setEditRow(id);
+
 		setAddClick(false);
 
 	}
@@ -276,7 +278,9 @@ export default function page() {
 						setEditItemName('');
 						setChkSet(new Set());
 						setChkAll(false);
+
 						getData(ldIdx);
+
 					} else {
 						alert('오류가 발생했습니다.\n 다시 시도해주세요.');
 					}
@@ -337,7 +341,9 @@ export default function page() {
 	// 페이지
 	return (
 		<>
+
 			<Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 550, boxShadow: 2 }}>
+
 				<Tabs orientation='vertical' variant='scrollable' value={value} onChange={handleChange} aria-label='Vertical tabs example' sx={{ borderRight: 1, borderColor: 'divider', width: 300 }}>
 					{loc_do.map((row) => (
 						<Tab
@@ -514,6 +520,7 @@ export default function page() {
 								))}
 								<TableRow style={{ height: '90px' }}>
 									<TableCell colSpan={2} style={{ padding: '12px' }}>
+
 
 										<Fab
 											color='primary'
