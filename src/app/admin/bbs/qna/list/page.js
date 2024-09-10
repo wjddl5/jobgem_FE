@@ -5,38 +5,93 @@ import React, { useEffect, useState } from 'react';
 import styles from '/public/css/board.css';
 import axios from 'axios';
 
-// (관리자) 문의사항 게시판 리스트
-export default function page() {
+// (관리자) QnA 게시판 리스트
+export default function page(props) {
 	// 초기화
 	const router = useRouter();
 	const [searchType, setSearchType] = useState('title');
+	const [searchValue, setSearchValue] = useState('');
 	const [ar, setAr] = useState([]);
 	const [arLength, setArLength] = useState(0);
 	const API_URL = '/api/bbs/qna/list';
 
+	// 페이징
+	const [cPage, setCPage] = useState(Number(props.searchParams.cPage));
+	const [page, setPage] = useState(cPage ? cPage : 0);
+	const [totalPage, setTotalPage] = useState(0);
+	const [pageSize, setPageSize] = useState(10);
+
+	function changePage(event, value) {
+		setPage(value - 1);
+		router.replace(`/admin/bbs/qna/list?cPage=${value - 1}`, { shallow: true }); // 뒤로가기에도 원래 페이지로 갈 수 있게 URL수정
+	}
+
+	useEffect(() => {
+		setPage(cPage ? Math.max(0, Math.min(cPage, totalPage)) : 0);
+	}, [cPage, totalPage]);
 	//========================
+
 	// 함수
-	function selectChange(event) {
-		setSearchType(event.target.value);
+	function search() {
+		setPage(0);
+		getData();
 	}
 
 	function getData() {
-		axios.get(API_URL).then((res) => {
-			setAr(res.data.ar);
-			setArLength(res.data.length);
-		});
+		if (searchValue.trim().length < 1) {
+			axios
+				.get(API_URL, {
+					params: {
+						page: page,
+						size: pageSize,
+					},
+				})
+				.then((res) => {
+					setAr(res.data.content);
+					setArLength(res.data.content.length);
+					setTotalPage(res.data.totalPages);
+				});
+		} else {
+			axios
+				.get(API_URL, {
+					params: {
+						page: page,
+						size: pageSize,
+						searchType: searchType,
+						searchValue: searchValue,
+					},
+				})
+				.then((res) => {
+					setAr(res.data.content);
+					setArLength(res.data.content.length);
+					setTotalPage(res.data.totalPages);
+				});
+		}
+	}
+
+	function removeBbsList(chkList) {
+		const chkAraay = Array.from(chkList);
+		if (confirm('체크한 게시글을 삭제하시겠습니까?')) {
+			axios
+				.get('/api/bbs/removeList', {
+					params: {
+						chkList: chkAraay,
+					},
+				})
+				.then((res) => {
+					if (res.data == true) alert('삭제 완료 되었습니다.');
+					else alert('삭제 실패 !');
+					getData();
+				});
+		}
 	}
 
 	useEffect(() => {
 		getData();
-	}, []);
-	function selectChange(event) {
-		setSearchType(event.target.value);
-	}
-
+	}, [page]);
 	//========================
 
-	//체크박스 관련 함수 (별도 파일로 이동?)
+	//체크박스
 	const [chkSet, setChkSet] = useState(new Set());
 	const [chkAll, setChkAll] = useState(false); //false=전체선택해제
 
@@ -62,6 +117,7 @@ export default function page() {
 		}
 		setChkSet(chk); // 상태 업데이트
 	}
+
 	//========================
 
 	// 페이지
@@ -71,18 +127,18 @@ export default function page() {
 				<h2 className='bbs_title'>Q & A</h2>
 				<div className='bbs_toolBox'>
 					<div className='bbs_search'>
-						<Select className='selectBox' value={searchType} onChange={(event) => selectChange(event)}>
+						<Select className='selectBox' value={searchType} onChange={(event) => setSearchType(event.target.value)}>
 							<MenuItem value={'title'}>제목</MenuItem>
 							<MenuItem value={'writer'}>작성자</MenuItem>
 							<MenuItem value={'content'}>내용</MenuItem>
 						</Select>
-						<TextField className='textfield' variant='outlined' />
-						<Button className='search_btn' variant='contained' onClick={() => router.push('')}>
+						<TextField className='textfield' variant='outlined' onChange={(event) => setSearchValue(event.target.value)} />
+						<Button className='search_btn' variant='contained' onClick={search}>
 							검색
 						</Button>
 					</div>
 					<div className='bbs_btn'>
-						<Button variant='outlined' color='error' onClick={() => router.push(`delete` /*선택항목 idx*/)}>
+						<Button variant='outlined' color='error' onClick={() => removeBbsList(chkSet)}>
 							삭제
 						</Button>
 					</div>
@@ -116,15 +172,15 @@ export default function page() {
 							</TableCell>
 							<TableCell align='center'>{row.id}</TableCell>
 							<TableCell>
-								{row.boTitle} | {row.boAnswer == 0 ? '답변대기' : '답변완료'}
+								{row.boTitle} &nbsp;&nbsp;| <strong> {row.boAnswer != 1 ? '답변대기' : '답변완료'}</strong>
 							</TableCell>
-							<TableCell align='left'>{row.user.usIdx}</TableCell>
+							<TableCell align='left'>{row.usId}</TableCell>
 							<TableCell align='center'>{row.boWritedate}</TableCell>
 						</TableRow>
 					))}
 				</TableBody>
 			</Table>
-			<Pagination className='pagination' count={10} color='primary' />
+			<Pagination className='pagination' count={totalPage} page={page + 1} color='primary' onChange={changePage} />
 		</div>
 	);
 }

@@ -73,7 +73,7 @@ export default function page(props) {
 		const chkAraay = Array.from(chkList);
 		if (confirm('체크한 게시글을 삭제하시겠습니까?')) {
 			axios
-				.get('/api/bbs/notice/removeList', {
+				.get('/api/bbs/removeList', {
 					params: {
 						chkList: chkAraay,
 					},
