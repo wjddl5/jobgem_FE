@@ -16,7 +16,7 @@ export default function Posting() {
     useEffect(() => {
         init();
     }, [])
-useEffect(() => {
+    useEffect(() => {
         if(select === 0){
             getAllList()
         }else if(select === 1){
@@ -130,10 +130,16 @@ useEffect(() => {
 	return (
 		<main className="container mx-auto px-4 py-8">
         <div className="bg-blue-100 rounded-lg p-6 mb-8">
-            <p className="text-lg mb-4">유능한 인재를 효과적으로 채용하는 방법! 잡코리아 베스트 채용상품을 만나보세요!</p>
+            <p className="text-lg mb-4">유능한 인재를 효과적으로 채용하는 방법! 잡잼 인재 추천 서비스를 만나보세요</p>
             <button className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800">지금 바로 보러가기 →</button>
         </div>
-            <h2 className="text-2xl font-bold mb-4">전체 채용공고</h2>
+        <div className="flex justify-between items-center">
+            {select === 0 ? <h2 className="text-2xl font-bold mb-4">전체 채용공고</h2> :
+            <h2 className="text-2xl font-bold mb-4">{select === 1 ? '진행중인 공고' : select === 2 ? '오늘마감 공고' : '채용마감 공고'}</h2>}
+            
+            <Link href="/company/posting/write"><button className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">공고등록하기</button></Link>
+        </div>
+            
         <div className="flex" >
             {select === 0  ?<button className="text-blue-500 mr-9 " onClick={getAllList}>전체 {data.all}</button> :
             <button className="text-gray-600 mr-9 hover:text-blue-500" onClick={getAllList}>전체 {data.all}</button>}
@@ -165,7 +171,7 @@ useEffect(() => {
                     <option value="poTitle">공고명</option>
                 </select>
                 <input type="text" placeholder="검색어 입력" className="border p-2 rounded" onChange={(e) => setSearch(e.target.value)}/>
-                <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onClick={searchList}>검색</button>    
+                <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onClick={searchList}>검색</button>
             </div>
         </div>
         {/* 진행중인 공고가 없을 때 */} 
