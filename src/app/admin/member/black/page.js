@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation';
 function EnhancedTable() {
     const router = useRouter();
     const [api_url, setApiUrl] = useState("/api/blackList?size=10");
-    const [mid, setMid] = useState(null);
     const [ar, setAr] = useState([]);
     const [page, setPage] = useState(0);
     const [totalPage, setTotalPage] = useState(0);
@@ -29,7 +28,6 @@ function EnhancedTable() {
     }
     // 검색
     const handleSearch = async (e) => {
-        console.log(searchType, searchValue);
         try {
             const response = await axios.get(api_url, {
                 params: {
@@ -60,7 +58,6 @@ function EnhancedTable() {
     //엔터키 검색
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
-            console.log("엔터눌림");
             handleSearch();
         }
     }
@@ -80,8 +77,31 @@ function EnhancedTable() {
     // 전체 선택 체크박스 상태 변경 함수 수정
     function allCheckChange(event) {
         const isChecked = event.target.checked;
-        setChkSet(isChecked ? new Set(ar.map((_, idx) => idx)) : new Set());
+        setChkSet(isChecked ? new Set(ar.map((user) => user.id)) : new Set());
     }
+    // 체크박스 삭제
+    const handleDelete = async () => {
+        if(chkSet.size === 0){
+            alert("삭제할 항목을 선택해주세요");
+            return;
+        }
+        try {
+            const response = await axios.get("/api/deletejobseekerBlock", {
+                params: {
+                    chkList: Array.from(chkSet).join(',')
+                }
+            });
+            if (response.status === 200) {
+                let count = response.data;
+                alert(`${count}개의 항목이 삭제되었습니다.`);
+                getBlockList();
+            }
+        } catch (error) {
+            console.error('삭제 중 오류 발생:', error);
+            alert("삭제 중 오류 발생");
+        }
+    }
+
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', mt: 3, boxShadow: 3, padding: 5 }}>
             <Toolbar sx={{ pl: { sm: 2 }, pr: { xs: 1, sm: 1 } }}>
@@ -154,7 +174,7 @@ function EnhancedTable() {
                                 hover
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell align="center"><Checkbox checked={chkSet.has(idx)} onChange={(e) => checkChange(e, idx)} /></TableCell>
+                                <TableCell align="center"><Checkbox checked={chkSet.has(user.id)} onChange={(e) => checkChange(e, user.id)} /></TableCell>
                                 <TableCell align="center">{user.blDate}</TableCell>
                                 <TableCell align="center">{user.blContent}</TableCell>
                                 <TableCell align="center">{user.jobseeker.joName}</TableCell>

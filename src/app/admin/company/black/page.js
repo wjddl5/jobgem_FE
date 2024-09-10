@@ -3,7 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { TextField, MenuItem, FormControl, Select, InputLabel, Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Toolbar, Typography, IconButton, Button, Pagination, Dialog, DialogTitle, DialogContent, Avatar, DialogActions, Grid, Input, Checkbox } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
+
 function EnhancedTable() {
+    const router = useRouter();
     const [api_url, setApiUrl] = useState("/api/company/blackList?size=10");
     const [ar, setAr] = useState([]);
     const [page, setPage] = useState(0);
@@ -17,6 +20,7 @@ function EnhancedTable() {
     }, [page]);
     function getBlockList() {
         axios.get(api_url).then((response) => {
+            console.log(response.data);
             setAr(response.data.content);
             setTotalPage(response.data.totalPages);
             setPage(response.data.pageable.pageNumber);
@@ -44,36 +48,57 @@ function EnhancedTable() {
             alert("검색 중 오류 발생");
         }
     };
-    function allCheckChange(event) {
-        if (event.target.checked) {
-            const chkRow = new Set(ar.map((row) => row.bo_idx));
-            setChkSet(chkRow);
-            setChkAll(true);
-        } else {
-            setChkSet(new Set());
-            setChkAll(false);
-        }
-    }
     const changePage = (event, value) => {
         setPage(value - 1); // 페이지 번호는 0부터 시작하므로 1을 빼줍니다.
         setApiUrl("/api/company/blackList?size=10&page=" + (value - 1));
         getBlockList();
+        setChkSet(new Set());
+        setChkAll(false);
     };
-    function checkChange(event, bo_idx) {
-        const chk = new Set(chkSet); // chkSet 가져와서 set 생성
-
-        if (event.target.checked) {
-            // 클릭된 체크박스
-            chk.add(bo_idx); // 항목 추가
-        } else {
-            chk.delete(bo_idx); // 항목 삭제
-        }
-        setChkSet(chk); // 상태 업데이트
-    }
     //엔터키 검색
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
             handleSearch();
+        }
+    }
+    useEffect(() => {
+        setChkAll(chkSet.size === ar.length && ar.length > 0);
+    }, [chkSet, ar]);
+    // 체크박스 상태 변경 함수 수정
+    function checkChange(event, idx) {
+        const newChkSet = new Set(chkSet);
+        if (event.target.checked) {
+            newChkSet.add(idx);
+        } else {
+            newChkSet.delete(idx);
+        }
+        setChkSet(newChkSet);
+    }
+    // 전체 선택 체크박스 상태 변경 함수 수정
+    function allCheckChange(event) {
+        const isChecked = event.target.checked;
+        setChkSet(isChecked ? new Set(ar.map((company) => company.id)) : new Set());
+    }
+    // 체크박스 삭제
+    const handleDelete = async () => {
+        if(chkSet.size === 0){
+            alert("삭제할 항목을 선택해주세요");
+            return;
+        }
+        try {
+            const response = await axios.get("/api/company/deletecompanyBlock", {
+                params: {
+                    chkList: Array.from(chkSet).join(',')
+                }
+            });
+            if (response.status === 200) {
+                let count = response.data;
+                alert(`${count}개의 항목이 삭제되었습니다.`);
+                getBlockList();
+            }
+        } catch (error) {
+            console.error('삭제 중 오류 발생:', error);
+            alert("삭제 중 오류 발생");
         }
     }
     return (
@@ -119,15 +144,16 @@ function EnhancedTable() {
                     <IconButton sx={{ p: '10px' }} aria-label="search">
                         <SearchIcon onClick={handleSearch} />
                     </IconButton>
-                    <Button variant="contained" color="info">추가</Button>
-                    <Button variant="contained" color="warning">삭제</Button>
-                    <Button variant="contained" color="error">차단</Button>
+                    <Button variant="contained" color="info" onClick={() => router.push('/admin/company/black/add')}>추가</Button>
+                    <Button variant="contained" color="warning" onClick={handleDelete}>삭제</Button>
+                    {/* <Button variant="contained" color="error">차단</Button> */}
                 </Box>
             </Toolbar>
             <TableContainer>
                 <Table sx={{ minWidth: 750, border: '1px solid #e0e0e0' }} aria-labelledby="tableTitle" size="medium">
                     <TableHead >
                         <TableRow sx={{ bgcolor: 'primary.dark' }}>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}><Checkbox checked={chkAll} onChange={allCheckChange} /></TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>차단일</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>차단사유</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>기업명</TableCell>
@@ -146,27 +172,28 @@ function EnhancedTable() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {ar.map((key, index) => (
+                        {ar.map((company, index) => (
                             <TableRow
                                 key={index} // 키를 user.usIdx로 변경
                                 hover
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell align="center">{key.blDate}</TableCell>
-                                <TableCell align="center">{key.blContent}</TableCell>
-                                <TableCell align="center">{key.company.coName}</TableCell>
-                                <TableCell align="center">{key.company.coNumber}</TableCell>
-                                <TableCell align="center">{key.company.coAddress}</TableCell>
-                                <TableCell align="center">{key.company.coTel}</TableCell>
-                                <TableCell align="center">{key.company.coType}</TableCell>
-                                <TableCell align="center">{key.company.coOpen}</TableCell>
-                                <TableCell align="center">{key.company.coEmployee}</TableCell>
-                                <TableCell align="center">{key.company.coImgUrl == null ? '없음' : <TableCell align="center"><img src={key.company.coImgUrl} alt="회원사진" style={{ width: '50px', height: '50px' }} /></TableCell>}</TableCell>
-                                <TableCell align="center">{key.company.coThumbImgUrl == null ? '없음' : <TableCell align="center"><img src={key.company.coThumbImgUrl} alt="회원사진" style={{ width: '50px', height: '50px' }} /></TableCell>}</TableCell>
-                                <TableCell align="center">{key.company.coSales}</TableCell>
-                                <TableCell align="center">{key.company.coScore}</TableCell>
-                                <TableCell align="center">{key.company.coManagerName}</TableCell>
-                                <TableCell align="center">{key.company.coManagerTel}</TableCell>
+                                <TableCell align="center"><Checkbox checked={chkSet.has(company.id)} onChange={(e) => checkChange(e, company.id)} /></TableCell>
+                                <TableCell align="center">{company.blDate}</TableCell>
+                                <TableCell align="center">{company.blContent}</TableCell>
+                                <TableCell align="center">{company.company.coName}</TableCell>
+                                <TableCell align="center">{company.company.coNumber}</TableCell>
+                                <TableCell align="center">{company.company.coAddress}</TableCell>
+                                <TableCell align="center">{company.company.coTel}</TableCell>
+                                <TableCell align="center">{company.company.coType}</TableCell>
+                                <TableCell align="center">{company.company.coOpen}</TableCell>
+                                <TableCell align="center">{company.company.coEmployee}</TableCell>
+                                <TableCell align="center">{company.company.coImgUrl == null ? '없음' : <TableCell align="center"><img src={company.company.coImgUrl} alt="회원사진" style={{ width: '50px', height: '50px' }} /></TableCell>}</TableCell>
+                                <TableCell align="center">{company.company.coThumbImgUrl == null ? '없음' : <TableCell align="center"><img src={company.company.coThumbImgUrl} alt="회원사진" style={{ width: '50px', height: '50px' }} /></TableCell>}</TableCell>
+                                <TableCell align="center">{company.company.coSales}</TableCell>
+                                <TableCell align="center">{company.company.coScore}</TableCell>
+                                <TableCell align="center">{company.company.coManagerName}</TableCell>
+                                <TableCell align="center">{company.company.coManagerTel}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
