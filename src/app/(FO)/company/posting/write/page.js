@@ -14,7 +14,7 @@ export default function ApplicationForm() {
     })
     /*버튼관리*/
     const [selectedPeriod, setSelectedPeriod] = useState(1);
-    const [jobjam, setJobjam] = useState(false);
+    const [jobgem, setjobgem] = useState(false);
     const [homepage, setHomepage] = useState(false);
     const [post, setPost] = useState(false);
     const [visit, setVisit] = useState(false);
@@ -26,7 +26,7 @@ export default function ApplicationForm() {
     const [selectedMethods, setSelectedMethods] = useState([]);
 
     const applicationMethods = [
-        { id: 'jobjam', name: '잡잼지원' },
+        { id: 'jobgem', name: '잡잼지원' },
         { id: 'homepage', name: '홈페이지' },
         { id: 'post', name: '우편' },
         { id: 'visit', name: '방문' },
@@ -116,7 +116,7 @@ export default function ApplicationForm() {
     }, []);
     // Update the corresponding state variables when methods change
     useEffect(() => {
-        setJobjam(selectedMethods.includes('jobjam'));
+        setjobgem(selectedMethods.includes('jobgem'));
         setHomepage(selectedMethods.includes('homepage'));
         setPost(selectedMethods.includes('post'));
         setVisit(selectedMethods.includes('visit'));
@@ -365,7 +365,22 @@ export default function ApplicationForm() {
             id: skill.id,
             skName: skill.name
         }));
+        let subType = '';
+        selectedMethods.map(method => {
+            if(method === 'jobgem') {
+                subType += 'jobgem';
+            }else if(method === 'homepage') {
+                subType += 'homepage,';
+            }else if(method === 'email') {
+                subType += 'email,';
+            }else if(method === 'fax') {
+                subType += 'fax,';
+            }else if(method === 'post') {
+                subType += 'post,';
+            }
+        });
         let location = [];
+        subType =  selectedMethods.map(method => method.name).join(', ');
         for(let i = 0; i < selectedLocation.length; i++) {
             if(selectedLocation[i].lgIdx !== 0) {
                 location.push({
@@ -388,6 +403,7 @@ export default function ApplicationForm() {
             skill: skillData,
             salary: salary,
             poDate: startDate,
+            subType: subType,
             workStartTime: workStartTime.hour+":"+workStartTime.minute,
             workEndTime: workEndTime.hour+":"+workEndTime.minute,
             workDay: selectedWorkDay,
@@ -398,9 +414,6 @@ export default function ApplicationForm() {
                 return;
             }
             data.poDeadline = endDate;
-        }
-        if(selectedMethods.includes('jobjam')) {
-            data.subType = 'jobjam';
         }
         if(selectedMethods.includes('homepage')) {
             if(homepageUrl.replace(blankPattern, '').length === 0 || !urlRegex.test(homepageUrl)) {
