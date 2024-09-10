@@ -20,14 +20,12 @@ export default function Page() {
 
     function getCompanyList() {
         axios.get(api_url).then((response) => {
-            console.log(response);
             setAr(response.data);
         });
     }
 
     // 검색
     const handleSearch = async (e) => {
-        console.log(searchType, searchValue);
         try {
             const response = await axios.get(api_url, {
                 params: {
@@ -41,7 +39,6 @@ export default function Page() {
                 alert("검색 실패");
             }
         } catch (error) {
-            console.error('검색 중 오류 발생:', error);
             alert("검색 중 오류 발생");
         }
     };
@@ -56,7 +53,6 @@ export default function Page() {
             alert("사유를 입력해주세요.");
             return;
         } else {
-            console.log(company.id, reason);
             try {
                 const response = await axios.get('/api/company/addcompanyBlock', {
                     params: {
@@ -65,7 +61,6 @@ export default function Page() {
                     }
                 });
                 if (response.status === 200) {
-                    console.log(response.data);
                     alert("블랙리스트 추가 성공");
                     getCompanyList();
                     setCompany('');
@@ -74,7 +69,6 @@ export default function Page() {
                     alert("블랙리스트 추가 실패");
                 }
             } catch (error) {
-                console.error('블랙리스트 추가 중 오류 발생:', error);
                 alert("블랙리스트 추가 중 오류 발생");
             }
         }

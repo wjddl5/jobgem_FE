@@ -20,7 +20,6 @@ function EnhancedTable() {
     }, [page]);
     function getBlockList() {
         axios.get(api_url).then((response) => {
-            console.log(response.data);
             setAr(response.data.content);
             setTotalPage(response.data.totalPages);
             setPage(response.data.pageable.pageNumber);
@@ -28,7 +27,6 @@ function EnhancedTable() {
     }
     // 검색
     const handleSearch = async (e) => {
-        console.log(searchType, searchValue);
         try {
             const response = await axios.get(api_url, {
                 params: {
@@ -44,7 +42,6 @@ function EnhancedTable() {
                 alert("검색 실패");
             }
         } catch (error) {
-            console.error('검색 중 오류 발생:', error);
             alert("검색 중 오류 발생");
         }
     };
@@ -97,7 +94,6 @@ function EnhancedTable() {
                 getBlockList();
             }
         } catch (error) {
-            console.error('삭제 중 오류 발생:', error);
             alert("삭제 중 오류 발생");
         }
     }
