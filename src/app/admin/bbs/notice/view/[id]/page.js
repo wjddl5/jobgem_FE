@@ -36,7 +36,7 @@ export default function page(props) {
 
 	function removeBbs(id) {
 		if (confirm('게시글을 삭제 하시겠습니까?')) {
-			axios.get(`/api/bbs/notice/remove?id=${id}`).then((res) => {
+			axios.get(`/api/bbs/remove?id=${id}`).then((res) => {
 				if (res.data == true) {
 					alert('삭제 완료 되었습니다.');
 					router.push('/admin/bbs/notice/list');
@@ -125,7 +125,7 @@ export default function page(props) {
 				</div>
 			</div>
 			<div className='post_content'>
-				<p>{vo.boContent}</p>
+				<p dangerouslySetInnerHTML={{ __html: vo.boContent }}></p>
 			</div>
 			<div className='post_comments'>
 				<h2>댓글</h2>
