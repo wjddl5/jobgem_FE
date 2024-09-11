@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react';
-import { TextField, MenuItem, FormControl, Select, InputLabel, Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Toolbar, Typography, IconButton, Button, Pagination, Dialog, DialogTitle, DialogContent, Avatar, DialogActions, Grid, Input, Checkbox } from '@mui/material';
+import { TextField, MenuItem, FormControl, Select, InputLabel, Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Toolbar, Typography, IconButton, Button, Pagination, Dialog, CircularProgress, Checkbox } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
@@ -15,6 +15,7 @@ function EnhancedTable() {
     const [searchValue, setSearchValue] = useState('');
     const [chkSet, setChkSet] = useState(new Set());
     const [chkAll, setChkAll] = useState(false);
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
         getBlockList();
     }, [page]);
@@ -95,13 +96,18 @@ function EnhancedTable() {
                 let count = response.data;
                 alert(`${count}개의 항목이 삭제되었습니다.`);
                 getBlockList();
+                setChkSet(new Set());
+                setChkAll(false);
             }
         } catch (error) {
             console.error('삭제 중 오류 발생:', error);
             alert("삭제 중 오류 발생");
         }
     }
-
+    const handleAdd = () => {
+        setLoading(true);
+        router.push('/admin/member/black/add');
+    }
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', mt: 3, boxShadow: 3, padding: 5 }}>
             <Toolbar sx={{ pl: { sm: 2 }, pr: { xs: 1, sm: 1 } }}>
@@ -143,7 +149,7 @@ function EnhancedTable() {
                     <IconButton sx={{ p: '10px' }} aria-label="search">
                         <SearchIcon onClick={handleSearch} />
                     </IconButton>
-                    <Button variant="contained" color="info" onClick={() => router.push('/admin/member/black/add')}>추가</Button>
+                    <Button variant="contained" color="info" onClick={handleAdd}>추가</Button>
                     <Button variant="contained" color="warning" onClick={() => handleDelete()}>삭제</Button>
                     {/* <Button variant="contained" color="error">차단</Button> */}
                 </Box>
@@ -200,7 +206,11 @@ function EnhancedTable() {
                 style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}
                 className="pagination"
             />
+            <Dialog open={loading}>
+                <CircularProgress />
+            </Dialog>
         </Paper>
+
 
     );
 }

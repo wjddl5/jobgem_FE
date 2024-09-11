@@ -1,11 +1,13 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import { TextField, Box, Paper, Button, Typography, Toolbar, List, ListItem, ListItemText, Divider, IconButton, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
+import { TextField, Box, Paper, Button, Typography, Toolbar, List, ListItem, ListItemText, Divider, IconButton, Select, MenuItem, InputLabel, FormControl, Dialog, CircularProgress} from '@mui/material';
+
 import { useRouter } from 'next/navigation';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
 
 export default function Page() {
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [member, setMember] = useState('');
   const [reason, setReason] = useState('');
@@ -26,6 +28,9 @@ export default function Page() {
 
   // 검색
   const handleSearch = async (e) => {
+    if (searchType === '') {
+      getMemberList();
+    }
     try {
       const response = await axios.get(api_url, {
         params: {
@@ -77,6 +82,16 @@ export default function Page() {
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       handleSearch();
+    }
+  };
+
+  const handleCancel = () => {
+    if (member) {
+      setMember('');
+      setReason('');
+    } else {
+      setLoading(true);
+      router.push('/admin/member/black');
     }
   };
 
@@ -175,12 +190,15 @@ export default function Page() {
               />
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
                 <Button variant="contained" color="primary" type="submit">추가</Button>
-                <Button variant="contained" color="secondary" onClick={() => {if (member) {setMember(''); setReason('');} else {router.push('/admin/member/black')}}}>취소</Button>
+                <Button variant="contained" color="secondary" onClick={handleCancel}>취소</Button>
               </Box>
             </Box>
           </form>
         </Box>
       </Box>
+      <Dialog open={loading} onClose={handleCancel}>
+        <CircularProgress />
+      </Dialog>
     </Paper>
   );
 }
