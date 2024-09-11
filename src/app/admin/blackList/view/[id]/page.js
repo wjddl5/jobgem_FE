@@ -71,11 +71,11 @@ export default function page(props) {
 			</div>
 			<div className='btn_group'>
 				{vo.coIdx ? (
-					<Button variant='outlined' size='small' onClick={() => router.push(`/admin/company/black/add?${vo.coIdx}`)}>
+					<Button variant='outlined' size='small' onClick={() => router.push(`/admin/company/black/add?coIdx=${vo.coIdx}&blIdx=${vo.id}`)}>
 						처리
 					</Button>
 				) : (
-					<Button variant='outlined' size='small' onClick={() => router.push(`/admin/member/black/add?${vo.joIdx}`)}>
+					<Button variant='outlined' size='small' onClick={() => router.push(`/admin/member/black/add?joIdx=${vo.joIdx}&blIdx=${vo.id}`)}>
 						처리
 					</Button>
 				)}
