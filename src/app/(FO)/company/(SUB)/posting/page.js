@@ -4,8 +4,10 @@ import Link from 'next/link';
 import Table from '@/components/table/Table';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 export default function Posting() {
+    const router = useRouter();
     const [list, setList] = useState([])
     const [data, setData] =useState([])
     const [search, setSearch] = useState('')
@@ -46,6 +48,7 @@ export default function Posting() {
                     status = '대기중'
                 }
                 const data = {
+                    poIdx: item.id,
                     poTitle: item.poTitle,
                     poCount: item.applyCount,
                     poDate: item.poDate,
@@ -126,18 +129,17 @@ export default function Posting() {
         setSort(e.target.value)
     }
 
+    function detail(poIdx){
+        router.push(`/company/posting/detail/${poIdx}`)
+    }
     
 	return (
 		<main className="container mx-auto px-4 py-8">
-        <div className="bg-blue-100 rounded-lg p-6 mb-8">
-            <p className="text-lg mb-4">유능한 인재를 효과적으로 채용하는 방법! 잡잼 인재 추천 서비스를 만나보세요</p>
-            <button className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800">지금 바로 보러가기 →</button>
-        </div>
         <div className="flex justify-between items-center">
             {select === 0 ? <h2 className="text-2xl font-bold mb-4">전체 채용공고</h2> :
             <h2 className="text-2xl font-bold mb-4">{select === 1 ? '진행중인 공고' : select === 2 ? '오늘마감 공고' : '채용마감 공고'}</h2>}
             
-            <Link href="/(FO)/company/(SUB)/posting/write"><button className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">공고등록하기</button></Link>
+            <Link href="/company/posting/write"><button className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">공고등록하기</button></Link>
         </div>
             
         <div className="flex" >
@@ -184,7 +186,28 @@ export default function Posting() {
         
         {/* 진행중인 공고가 있을때 */}
         {list.length > 0 && (
-        <Table headers={['공고명', '지원자', '등록일', '마감일', '상태']} list={list.map(item => [item.poTitle, item.poCount, item.poDate, item.poDeadline, item.status])} />
+        <table className='border-collapse w-full'>
+            <thead>
+                <tr>
+                    <th className='p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell'>공고명</th>
+                    <th className='p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell'>지원자</th>
+                    <th className='p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell'>등록일</th>
+                    <th className='p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell'>마감일</th>
+                    <th className='p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell'>상태</th>
+                </tr>
+            </thead>
+            <tbody>
+                {list.map((item, idx) => (
+                    <tr key={idx} onClick={() => detail(item.poIdx)}>
+                        <td className='p-3 border border-gray-300'>{item.poTitle}</td>
+                        <td className='p-3 border border-gray-300'>{item.poCount}</td>
+                        <td className='p-3 border border-gray-300'>{item.poDate}</td>
+                        <td className='p-3 border border-gray-300'>{item.poDeadline}</td>
+                        <td className='p-3 border border-gray-300'>{item.status}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
         )}
         <footer className="mt-16 pt-8 border-t border-gray-200">
 			<p className='text-sm text-gray-600'>채용공고 게재기간은 최소 7일에서 최대 90일까지 가능합니다.</p>
