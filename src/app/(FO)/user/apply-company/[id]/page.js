@@ -9,16 +9,16 @@ import React, { useEffect, useState } from "react";
 
 export default function page(props) {
 	const [totalPages, setTotalPages] = useState("");
+	const [curPage, setCurPage] = useState(0);
 	const [startDate, setStartDate] = useState("");
 	const [endDate, setEndDate] = useState("");
-	const [curPage, setCurPage] = useState(0);
 	const [applyment, setApplyment] = useState([]);
+	const [apRead, setApRead] = useState(0); // 열람 여부 상태 추가
 	const [applymentCount, setApplymentCount] = useState({
 		지원완료: 0,
 		열람: 0,
 		미열람: 0,
 	});
-	const [apRead, setApRead] = useState(0); // 열람 여부 상태 추가
 
 	const API_URL = `/api/applymentList?id=${props.params.id}&curPage=${curPage}`;
 	const APPLYMENT_COUNT_URL = `/api/applymentCount?id=${props.params.id}`;

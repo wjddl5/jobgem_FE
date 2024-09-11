@@ -6,17 +6,19 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Pagination from "@/components/pagination/Pagination";
 
 export default function (props) {
-	const router = useRouter();
-	const [page, setPage] = useState(0);
+	const [totalPages, setTotalPages] = useState("");
+	const [curPage, setCurPage] = useState(0);
 	const [offers, setOffers] = useState([]);
-	const API_URL = `/api/offerList?id=${props.params.id}&page=${page}&size=5`;
+	const API_URL = `/api/offerList?id=${props.params.id}&curPage=${curPage}`;
 
 	function getData() {
 		axios.get(API_URL).then((res) => {
 			console.log(res);
 			setOffers(res.data.content);
+			setTotalPages(res.data.totalPages);
 		});
 	}
 
@@ -30,7 +32,7 @@ export default function (props) {
 
 	useEffect(() => {
 		getData();
-	}, [page]);
+	}, [curPage]);
 
 	return (
 		<div className='flex'>
@@ -67,6 +69,7 @@ export default function (props) {
 					) : (
 						<p className='text-center text-gray-400'>제안된 입사 제안이 없습니다.</p>
 					)}
+					<Pagination totalPages={totalPages} currentPage={curPage} setLoadPage={setCurPage} />
 				</div>
 			</div>
 		</div>
