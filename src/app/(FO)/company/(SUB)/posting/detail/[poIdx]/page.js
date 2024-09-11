@@ -5,7 +5,8 @@ import Input from "@/components/form/Input";
 import Select from "@/components/form/Select";
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import React from 'react';
+import { useRouter } from "next/navigation";
 export default function DetialPage(props) {
 	const [curPage, setCurPage] = useState(0);
     const [applyment, setApplyment] = useState([]);
@@ -13,11 +14,18 @@ export default function DetialPage(props) {
     const [totalElements, setTotalElements] = useState(0);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [title, setTitle] = useState('');
+	const [applymentCount, setApplymentCount] = useState(0);
+	const [viewCount, setViewCount] = useState(0);
+	const [unviewCount, setUnviewCount] = useState(0);
+	const [expandedRow, setExpandedRow] = useState(null);
 	useEffect(()=>{
 		getApplymentList();
-		getTitle();
+		getDetail();
 	},[])
 	
+
+	const router = useRouter();
+
     function getApplymentList(){
         axios.get(`/api/post/apply?id=${props.params.poIdx}&curPage=${curPage}`).then((res)=>{
 			console.log(res);
@@ -26,7 +34,11 @@ export default function DetialPage(props) {
             setTotalElements(res.data.totalElements);
         })
     }
-
+	function getResume(){
+		axios.get(`/api/post/resume?id=${props.params.poIdx}&curPage=${curPage}`).then((res)=>{
+			console.log(res);
+		})
+	}
     useEffect(()=>{
         getApplymentList();
     },[curPage])
@@ -41,15 +53,18 @@ export default function DetialPage(props) {
 		setShowDeleteConfirm(false);
 	};
 
-	function getTitle(){
-		axios.get(`/api/post/title?id=${props.params.poIdx}`).then((res)=>{
-			setTitle(res.data);
+	function getDetail(){
+		axios.get(`/api/post/detail?id=${props.params.poIdx}`).then((res)=>{
+			setTitle(res.data.title);
+			setApplymentCount(res.data.applymentCount);
+			setViewCount(res.data.viewCount);
+			setUnviewCount(res.data.unviewCount);
 		})
 	}
 
 	return (
 		<div className='flex gap-4'>
-			<div className='flex-1 ml-4 p-6 bg-gray-50 rounded-lg shadow-lg'>
+			<div className='flex-1 ml-4 p-6 '>
 				<div className='flex justify-between max-w-7xl mx-auto mb-8'>
 					<h1 className='text-3xl font-bold text-gray-800 mb-4 flex items-center'>{title}</h1>
 					<div className='flex gap-4'>
@@ -60,15 +75,15 @@ export default function DetialPage(props) {
 				{/* 통계 섹션 */}
 				<div className='grid grid-cols-3 gap-6 max-w-7xl mx-auto mb-8'>
 					<div className='bg-white p-6 rounded-lg shadow-md text-center'>
-						<p className='text-4xl font-bold text-blue-600'>{applyment.length}</p>
-						<p className='text-lg text-gray-600 mt-2'>지원완료</p>
+						<p className='text-4xl font-bold text-blue-600'>{totalElements}</p>
+						<p className='text-lg text-gray-600 mt-2'>지원자</p>
 					</div>
 					<div className='bg-white p-6 rounded-lg shadow-md text-center'>
-						<p className='text-4xl font-bold text-green-600'>{applyment.filter(item => item.apRead === 1).length}</p>
+						<p className='text-4xl font-bold text-green-600'>{viewCount}</p>
 						<p className='text-lg text-gray-600 mt-2'>열람</p>
 					</div>
 					<div className='bg-white p-6 rounded-lg shadow-md text-center'>
-						<p className='text-4xl font-bold text-red-600'>{applyment.filter(item => item.apRead === 0).length}</p>
+						<p className='text-4xl font-bold text-red-600'>{unviewCount}</p>
 						<p className='text-lg text-gray-600 mt-2'>미열람</p>
 					</div>
 				</div>
@@ -103,25 +118,60 @@ export default function DetialPage(props) {
 								<th className='px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider'>지원회사</th>
 								<th className='px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider'>열람상태</th>
 								<th className='px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider'>지원날짜</th>
-								<th className='px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider'>합격여부</th>
+								<th className='px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider'>이력서보기</th>
 							</tr>
 						</thead>
 						<tbody className='bg-white divide-y divide-gray-200'>
 							{/* 데이터가 있을 때 테이블을 렌더링 */}
 							{applyment.length > 0 ? (
 								applyment.map((item, index) => (
-									<tr key={index} className='hover:bg-gray-50 transition-all'>
-										<td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>{index + 1}</td>
-										<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>{item.post.company.coName}</td>
-										<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>
-											<span className={item.apRead === 1 ? "text-green-600" : "text-red-600"}>{item.apRead === 1 ? "열람" : "미열람"}</span>
-										</td>
-										<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>{item.apDate}</td>
-										<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>
-											{item.apPass === 1 ? <span className="text-blue-600">합격</span> : item.apPass === 0 ? 
-											<span className="text-red-600">불합격</span> : <span className="text-yellow-600">대기</span>}
-										</td>
-									</tr>
+									<React.Fragment key={item.id || index}>
+										<tr 
+											className='hover:bg-gray-50 transition-all cursor-pointer'
+											onClick={() => setExpandedRow(expandedRow === index ? null : index)}
+										>
+											<td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>{index + 1}</td>
+											<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>{item.jobseeker.joName}</td>
+											<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>
+												<span className={item.apRead === 1 ? "text-green-600" : "text-red-600"}>{item.apRead === 1 ? "열람" : "미열람"}</span>
+											</td>
+											<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>{item.apDate}</td>
+											<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>
+												<button className='text-blue-500 hover:text-blue-600' onClick={()=>router.push(`/company/resume/${item.reIdx}`)}>
+												| 이력서보기 |
+												</button>
+											</td>
+										</tr>
+										{expandedRow === index && (
+											<tr>
+												<td colSpan={5} className='px-6 py-4'>
+													<div className='bg-gray-100 p-6 rounded-lg shadow-md'>
+														<div className='flex justify-between items-center'>
+															<div className='w-1/3 flex justify-center'>
+																<img src={item.jobseeker.joImgUrl} alt='프로필' className='w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg' />
+															</div>
+															<div className='flex flex-col w-2/3 space-y-2'>
+																<p className='text-lg font-semibold text-gray-800'>이름: {item.jobseeker.joName}</p>
+																<p className='text-md text-gray-600'>학력: {item.jobseeker.joEdu}</p>
+																<p className='text-md text-gray-600'>나이: {new Date().getFullYear() - new Date(item.jobseeker.joBirth).getFullYear()}</p>
+																<p className='text-md text-gray-600'>전화번호: {item.jobseeker.joTel}</p>
+																<p className='text-md text-gray-600'>성별: {item.jobseeker.joGender === "M" ? "남자" : "여자"}</p>
+															</div>
+														</div>
+														<div className='mt-4 pt-4 border-t border-gray-200'>
+															{item.jobseeker.skills.length > 0 ? 
+																<p className='text-md text-gray-700'>
+																	<span className='font-semibold'>보유스킬:</span> {item.jobseeker.skills.map((skill) => skill.skName).join(", ")}
+																</p>
+																:
+																<p className='text-md text-gray-500 italic'>보유스킬 없음</p>
+															}
+														</div>
+													</div>
+												</td>
+											</tr>
+										)}
+									</React.Fragment>
 								))
 							) : (
 								<tr>
