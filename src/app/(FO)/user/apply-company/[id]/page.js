@@ -2,25 +2,68 @@
 import Button from "@/components/button/Button";
 import Input from "@/components/form/Input";
 import Select from "@/components/form/Select";
+import Pagination from "@/components/pagination/Pagination";
 import SideMenu from "@/components/sidemenu/SideMenu";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
 export default function page(props) {
+	const [totalPages, setTotalPages] = useState("");
 	const [curPage, setCurPage] = useState(0);
+	const [startDate, setStartDate] = useState("");
+	const [endDate, setEndDate] = useState("");
 	const [applyment, setApplyment] = useState([]);
+	const [apRead, setApRead] = useState(0); // 열람 여부 상태 추가
+	const [applymentCount, setApplymentCount] = useState({
+		지원완료: 0,
+		열람: 0,
+		미열람: 0,
+	});
+
 	const API_URL = `/api/applymentList?id=${props.params.id}&curPage=${curPage}`;
+	const APPLYMENT_COUNT_URL = `/api/applymentCount?id=${props.params.id}`;
+	const FILTER_API_URL = `/api/applymentSearch?joIdx=${props.params.id}`;
 
 	// 데이터 가져오기
 	function getData() {
 		axios.get(API_URL).then((res) => {
 			setApplyment(res.data.content); // 데이터를 상태에 저장
+			setTotalPages(res.data.totalPages);
 			console.log(res);
 		});
 	}
 
+	// applymentCount 가져오기
+	function getApplymentCount() {
+		axios.get(APPLYMENT_COUNT_URL).then((res) => {
+			setApplymentCount(res.data); // applymentCount 데이터를 상태에 저장
+			console.log(res.data);
+		});
+	}
+
+	// 날짜 범위와 열람 여부로 검색된 데이터 가져오기
+	function getFilteredData() {
+		axios
+			.get(FILTER_API_URL, {
+				params: {
+					startDate: startDate,
+					endDate: endDate,
+					apRead: apRead,
+					curPage: curPage,
+				},
+			})
+			.then((res) => {
+				setApplyment(res.data.content);
+				console.log(res.data);
+			})
+			.catch((err) => {
+				console.error("Error fetching filtered data:", err);
+			});
+	}
+
 	useEffect(() => {
 		getData();
+		getApplymentCount();
 	}, [curPage]);
 
 	return (
@@ -35,15 +78,15 @@ export default function page(props) {
 				{/* 통계 섹션 */}
 				<div className='grid grid-cols-3 gap-6 max-w-7xl mx-auto mb-8'>
 					<div className='bg-white p-6 rounded-lg shadow-md text-center'>
-						<p className='text-4xl font-bold text-blue-600'>0</p>
+						<p className='text-4xl font-bold text-blue-600'>{applymentCount.지원완료}</p>
 						<p className='text-lg text-gray-600 mt-2'>지원완료</p>
 					</div>
 					<div className='bg-white p-6 rounded-lg shadow-md text-center'>
-						<p className='text-4xl font-bold text-green-600'>0</p>
+						<p className='text-4xl font-bold text-green-600'>{applymentCount.열람}</p>
 						<p className='text-lg text-gray-600 mt-2'>열람</p>
 					</div>
 					<div className='bg-white p-6 rounded-lg shadow-md text-center'>
-						<p className='text-4xl font-bold text-red-600'>0</p>
+						<p className='text-4xl font-bold text-red-600'>{applymentCount.미열람}</p>
 						<p className='text-lg text-gray-600 mt-2'>미열람</p>
 					</div>
 				</div>
@@ -55,17 +98,23 @@ export default function page(props) {
 						<div className='col-span-2'>
 							<label className='text-sm text-gray-500 block mb-2'>날짜선택</label>
 							<div className='flex space-x-2'>
-								<Input type='date' className='w-full p-2 rounded border' />
-								<Input type='date' className='w-full p-2 rounded border' />
+								<Input type='date' className='w-full p-2 rounded border' value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+								<Input type='date' className='w-full p-2 rounded border' value={endDate} onChange={(e) => setEndDate(e.target.value)} />
 							</div>
 						</div>
 						<div className='col-span-2'>
-							<label className='text-sm text-gray-500 block mb-2'>합격여부</label>
-							<Select ar={["합격", "불합격", "대기"]} className='w-full p-2 rounded border' />
+							<label className='text-sm text-gray-500 block mb-2'>열람여부</label>
+							<Select
+								ar={["열람", "미열람"]}
+								name='apRead'
+								className='w-full p-2 rounded border'
+								value={apRead == 1 ? "열람" : apRead == 0 ? "미열람" : ""}
+								onChange={(e) => setApRead(e.target.value == "열람" ? 1 : e.target.value == "미열람" ? 0 : -1)} // 기본값 -1
+							/>
 						</div>
 					</div>
 					<div className='mt-5 text-center'>
-						<Button type='submit' text='검색' className='px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all' />
+						<Button type='submit' text='검색' onClick={getFilteredData} className='px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all' />
 					</div>
 				</div>
 
@@ -78,7 +127,6 @@ export default function page(props) {
 								<th className='px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider'>지원회사</th>
 								<th className='px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider'>열람상태</th>
 								<th className='px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider'>지원날짜</th>
-								<th className='px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider'>합격여부</th>
 							</tr>
 						</thead>
 						<tbody className='bg-white divide-y divide-gray-200'>
@@ -92,9 +140,6 @@ export default function page(props) {
 											<span className={item.apRead === 1 ? "text-green-600" : "text-red-600"}>{item.apRead === 1 ? "열람" : "미열람"}</span>
 										</td>
 										<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>{item.apDate}</td>
-										<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>
-											<span className={item.apPass === 1 ? "text-green-600" : "text-red-600"}>{item.apPass === 1 ? "합격" : "불합격"}</span>
-										</td>
 									</tr>
 								))
 							) : (
@@ -109,16 +154,7 @@ export default function page(props) {
 				</div>
 
 				{/* 페이지 네이션 */}
-				<div className='flex justify-center mt-6 space-x-4'>
-					<Button
-						type='button'
-						text='이전'
-						onClick={() => setCurPage(curPage - 1)}
-						disabled={curPage === 0}
-						className='px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all'
-					/>
-					<Button type='button' text='다음' onClick={() => setCurPage(curPage + 1)} className='px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all' />
-				</div>
+				<Pagination totalPages={totalPages} currentPage={curPage} setLoadPage={setCurPage} />
 			</div>
 		</div>
 	);
