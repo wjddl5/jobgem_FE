@@ -1,6 +1,7 @@
 "use client";
 import Button from "@/components/button/Button";
 import IconButton from "@/components/button/IconButton";
+import Pagination from "@/components/pagination/Pagination";
 import SideMenu from "@/components/sidemenu/SideMenu";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -8,15 +9,18 @@ import React, { useEffect, useState } from "react";
 import { FiTrash2, FiEdit2, FiStar } from "react-icons/fi"; // 별표 아이콘 추가
 
 export default function Page(props) {
+	const [totalPages, setTotalPages] = useState("");
+	const [curPage, setCurPage] = useState(0);
 	const router = useRouter();
 	const [page, setPage] = useState(0);
 	const [resume, setResume] = useState([]);
-	const API_URL = `/api/resumeList?id=${props.params.id}&page=${page}&size=5`;
+	const API_URL = `/api/resumeList?id=${props.params.id}&curPage=${curPage}`;
 
 	// 데이터 가져오기
 	function getData() {
 		axios.get(API_URL).then((res) => {
-			setResume(res.data.content); // 데이터를 상태에 저장
+			setResume(res.data.content);
+			setTotalPages(res.data.totalPages);
 			console.log(res);
 		});
 	}
@@ -45,7 +49,7 @@ export default function Page(props) {
 
 	useEffect(() => {
 		getData();
-	}, [page]);
+	}, [curPage]);
 
 	return (
 		<div className='flex gap-4'>
@@ -90,18 +94,7 @@ export default function Page(props) {
 					) : (
 						<p className='text-center mt-6 text-gray-500'>이력서가 없습니다.</p>
 					)}
-				</div>
-
-				{/* 페이지 네이션 */}
-				<div className='flex justify-center mt-6 space-x-4'>
-					<Button
-						type='button'
-						text='이전'
-						onClick={() => setPage(page - 1)}
-						disabled={page === 0}
-						className='px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition-all'
-					/>
-					<Button type='button' text='다음' onClick={() => setPage(page + 1)} className='px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all' />
+					<Pagination totalPages={totalPages} currentPage={curPage} setLoadPage={setCurPage} />
 				</div>
 			</div>
 		</div>

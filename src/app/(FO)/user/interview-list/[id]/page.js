@@ -1,6 +1,7 @@
 "use client";
 import Button from "@/components/button/Button";
 import IconButton from "@/components/button/IconButton";
+import Pagination from "@/components/pagination/Pagination";
 import SideMenu from "@/components/sidemenu/SideMenu";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -8,14 +9,16 @@ import React, { useEffect, useState } from "react";
 import { FiTrash2, FiEdit2 } from "react-icons/fi";
 
 export default function Page(props) {
+	const [totalPages, setTotalPages] = useState("");
+	const [curPage, setCurPage] = useState(0);
 	const router = useRouter();
-	const [page, setPage] = useState(0);
 	const [interview, setInterview] = useState([]);
-	const API_URL = `/api/interviewList?id=${props.params.id}&page=${page}&size=5`;
+	const API_URL = `/api/interviewList?id=${props.params.id}&curPage=${curPage}`;
 
 	function getData() {
 		axios.get(API_URL).then((res) => {
-			setInterview(res.data.content); // 데이터를 상태에 저장
+			setInterview(res.data.content);
+			setTotalPages(res.data.totalPages);
 			console.log(res);
 		});
 	}
@@ -32,7 +35,7 @@ export default function Page(props) {
 
 	useEffect(() => {
 		getData();
-	}, [page]);
+	}, [curPage]);
 
 	// 문자열이 7글자 이상일 경우, 잘라서 표시하는 함수
 	function shortenText(text, maxLength) {
@@ -79,6 +82,7 @@ export default function Page(props) {
 					) : (
 						<p>면접후기가 없습니다.</p>
 					)}
+					<Pagination totalPages={totalPages} currentPage={curPage} setLoadPage={setCurPage} />
 				</div>
 			</div>
 		</div>
