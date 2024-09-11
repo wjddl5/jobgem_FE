@@ -65,6 +65,15 @@ function Page() {
         }
     };
 
+    const handlePageChange = (page) => {
+        setLoadPage(page);
+    };
+
+    const handleBlockChange = (block) => {
+        const newPage = block * 5;
+        setLoadPage(newPage);
+    };
+
     return (
         <div className="flex-1 bg-white shadow-md rounded-lg overflow-hidden">
             <div className="p-6">
@@ -133,7 +142,7 @@ function Page() {
                 <Pagination
                     totalPages={list.totalPages}
                     currentPage={loadPage}
-                    onPageChange={(page) => setLoadPage(page)}
+                    setLoadPage={setLoadPage}
                 />
                 <div className="mt-4 text-gray-600 text-sm">
                     <p>• 차단된 인재는 귀사에서 진행하는 모든 채용공고에 지원하더라도 지원자 목록에 표시되지 않습니다.</p>

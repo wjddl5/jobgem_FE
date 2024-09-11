@@ -89,8 +89,8 @@ function Page() {
                                 {Array(5)
                                     .fill(0)
                                     .map((_, index) => (
-                                        <span key={index}>{review.reScore >= index + 1 ? '★' : '☆'}</span>
-                                    ))}
+                                    <span key={index}>{review.reScore >= index + 1 ? '★' : '☆'}</span>
+                                ))}
                             </div>
                             <button className="flex items-center gap-1 top-2 right-2 text-red-600 text-xs md:text-sm hover:underline">
                                 <AiFillAlert/>신고하기

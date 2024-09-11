@@ -7,7 +7,7 @@ export default function SideMenuCom() {
     const router = useRouter();
 
     return (
-        <div className="relative">
+        <div className="sticky top-24">
             <aside className={`hidden md:block w-64 bg-white p-6 shadow-lg rounded-lg`}>
                 <nav className='space-y-8'>
                     <div>

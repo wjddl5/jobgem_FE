@@ -16,12 +16,6 @@ export default function Page(props) {
 
 	const resumeId = props.params.id; // 리뷰 ID를 props에서 가져옴
 
-	function getCompany() {
-		axios.get("/api/companyList").then((res) => {
-			setCompany(res.data); // 받아온 데이터를 상태에 저장
-		});
-	}
-
 	function getResume() {
 		axios.get(`/api/getResume?id=${resumeId}`).then((res) => {
 			const data = res.data;
@@ -33,7 +27,6 @@ export default function Page(props) {
 	}
 
 	useEffect(() => {
-		getCompany();
 		getResume(); // 컴포넌트가 마운트될 때 한 번만 실행
 	}, []);
 
