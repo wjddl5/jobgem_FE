@@ -76,17 +76,17 @@ export default function Page() {
                         <h2 className="text-lg font-bold mb-4">일반 채용 현황</h2>
                         <div className="flex justify-between mb-4">
                             <div className="text-center">
-                                <Link href='/company' className="text-2xl font-bold text-blue-600 underline text-center">{companyData.postCount}</Link>
+                                <Link href='/company/posting' className="text-2xl font-bold text-blue-600 underline text-center">{companyData.postCount}</Link>
                                 <p>진행중 공고</p>
                             </div>
                             <div className="text-center">
-                                <Link href='/company' className="text-2xl font-bold text-blue-600 underline text-center">{companyData.noPostCount}</Link>
+                                <Link href='/company/posting' className="text-2xl font-bold text-blue-600 underline text-center">{companyData.noPostCount}</Link>
                                 <p>마감된 공고</p>
                             </div>
                         </div>
                         <div className="bg-gray-50 p-4 rounded-md flex items-center justify-center gap-2">
-                            <Button text={'공고목록'} type={'submit'}/>
-                            <Button text={'공고등록'}/>
+                            <Link href='/company/posting' className='btn submit'>공고목록</Link>
+                            <Link href='/(SUB)/posting/write' className='btn'>공고등록</Link>
                         </div>
                     </div>
 
@@ -94,17 +94,17 @@ export default function Page() {
                         <h2 className="text-lg font-bold mb-4">후기 현황</h2>
                         <div className="flex justify-between mb-4">
                             <div className="text-center">
-                                <Link href='/company' className="text-2xl font-bold text-blue-600 underline text-center">{companyData.reviewCount}</Link>
+                                <Link href='/company/review' className="text-2xl font-bold text-blue-600 underline text-center">{companyData.reviewCount}</Link>
                                 <p>기업 후기</p>
                             </div>
                             <div className="text-center">
-                                <Link href='/company' className="text-2xl font-bold text-blue-600 underline text-center">{companyData.interviewCount}</Link>
+                                <Link href='/company/review/meeting' className="text-2xl font-bold text-blue-600 underline text-center">{companyData.interviewCount}</Link>
                                 <p>면접 후기</p>
                             </div>
                         </div>
                         <div className="bg-gray-50 p-4 rounded-md flex items-center justify-center gap-2">
-                            <Button text={'기업후기'} type={'submit'}/>
-                            <Button text={'면접후기'}/>
+                            <Link href='/company/review' className='btn submit'>기업후기</Link>
+                            <Link href='/company/review/meeting' className='btn'>면접 후기</Link>
                         </div>
                     </div>
                     <div className="bg-white p-6 rounded-md shadow">

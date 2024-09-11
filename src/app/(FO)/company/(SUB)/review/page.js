@@ -18,7 +18,7 @@ function Page() {
     }, []);
 
     return (
-        <div className="bg-gray-50 min-h-screen p-4 md:p-8 flex flex-col items-center">
+        <div className="bg-gray-50 min-h-screen flex-1 flex flex-col items-center">
             <div className="bg-white w-full max-w-3xl md:max-w-5xl p-4 md:p-8 rounded-lg shadow-lg">
                 <div className="md:flex justify-between items-start mb-8 border-b pb-6">
                     <div className="mb-4 md:mb-0">
