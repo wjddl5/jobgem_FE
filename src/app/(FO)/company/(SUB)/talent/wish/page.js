@@ -26,50 +26,54 @@ function Page(props) {
     useEffect(() => {
         const handleScroll = () => {
             if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight || isLoading || !hasMore) return;
-            setLoadPage((prevLoadPage) => prevLoadPage + 1); // 함수형 업데이트로 수정
+            setLoadPage((prevLoadPage) => prevLoadPage + 1);
         };
 
         window.addEventListener('scroll', handleScroll);
 
-        // Cleanup function to remove event listener on unmount
         return () => window.removeEventListener('scroll', handleScroll);
     }, [isLoading, hasMore]);
-
 
     const removeWishHandler = (id) => {
         if(confirm("해당 인재를 찜목록에서 삭제하시겠습니까?")){
             axios.post('/api/company/wish/delete',null, {
-                params: {
-                    id: id
-                }
+                params: { id }
             }).then(res => {
                 alert("삭제 완료했습니다.");
                 setJobseekers(prevJobseekers =>
-                    prevJobseekers.filter(jobseeker => jobseeker.id !== id) // Corrected the filtering
+                    prevJobseekers.filter(jobseeker => jobseeker.id !== id)
                 );
-            })
+            });
         }
-    }
+    };
 
     return (
-        <>
-            <h2 className="text-xl font-semibold mb-4">찜한 인재</h2>
-            <div className="grid grid-cols-3 gap-4">
+        <div className="container mx-auto p-8">
+            <div className="relative mb-6">
+                <h2 className="text-3xl font-bold text-center text-gray-800 relative z-10">
+                    찜한 인재
+                </h2>
+                <div
+                    className="absolute left-1/2 transform -translate-x-1/2 w-24 h-1 bg-blue-500 rounded-full mt-2"></div>
+            </div>
+
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {
                     jobseekers.map((item, idx) => (
-                        <div key={idx} className="p-4 bg-white rounded-md shadow-md">
-                            <div className="flex items-center mb-4">
-                                <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                        <div key={idx} className="p-6 bg-white rounded-lg shadow-lg">
+                        <div className="flex items-center mb-4">
+                                <div className="w-14 h-14 bg-gray-200 rounded-full flex items-center justify-center">
                                     <span className="text-gray-400 text-2xl">👤</span>
                                 </div>
                                 <div className="ml-4">
-                                    <h3 className="text-lg font-semibold">{item.jobseeker.joName} (만 {item.jobseeker.joAge}세)</h3>
+                                    <h3 className="text-lg font-bold">{item.jobseeker.joName} (만 {item.jobseeker.joAge}세)</h3>
                                     <p className="text-blue-500">{item.jobseeker.joTel}</p>
                                 </div>
                             </div>
-                            <p className="text-gray-700 mb-2">{item.jobseeker.joAddress}</p>
-                            <p className="text-gray-500 text-sm mb-2">{item.jobseeker.joEdu}</p>
-                            <div className="flex flex-wrap gap-2 mb-2">
+                            <p className="text-gray-700 mb-3">{item.jobseeker.joAddress}</p>
+                            <p className="text-gray-500 text-sm mb-3">{item.jobseeker.joEdu}</p>
+                            <div className="flex flex-wrap gap-2 mb-3">
                                 {item.jobseeker.skills.length > 0 ? (
                                     item.jobseeker.skills.map((skill, i) => (
                                         <span key={i}
@@ -79,15 +83,15 @@ function Page(props) {
                                     <span className="text-gray-500 text-sm">No skills listed</span>
                                 )}
                             </div>
-                            <div className='flex gap-2 justify-center mt-4'>
-                                <Button text='1:1 대화' type='submit'/>
-                                <Button text='찜 삭제' onClick={() => removeWishHandler(item.id)}/>
+                            <div className="flex justify-center gap-3 mt-4">
+                                <Button text='1:1 대화' type='submit' className="w-1/2" />
+                                <Button text='찜 삭제' onClick={() => removeWishHandler(item.id)} className="w-1/2" />
                             </div>
-                        </div>)
-                    )
+                        </div>
+                    ))
                 }
             </div>
-        </>
+        </div>
     );
 }
 

@@ -137,7 +137,7 @@ export default function Posting() {
             {select === 0 ? <h2 className="text-2xl font-bold mb-4">전체 채용공고</h2> :
             <h2 className="text-2xl font-bold mb-4">{select === 1 ? '진행중인 공고' : select === 2 ? '오늘마감 공고' : '채용마감 공고'}</h2>}
             
-            <Link href="/company/posting/write"><button className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">공고등록하기</button></Link>
+            <Link href="/(FO)/company/(SUB)/posting/write"><button className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">공고등록하기</button></Link>
         </div>
             
         <div className="flex" >
@@ -178,7 +178,7 @@ export default function Posting() {
         {list.length === 0 && (
         <div className="text-center py-16">
             <p className="text-gray-600 mb-4">진행중인 공고가 없습니다.</p>
-            <Link href="/company/posting/write"><button className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">공고등록하기</button></Link>
+            <Link href="/(FO)/company/(SUB)/posting/write"><button className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">공고등록하기</button></Link>
         </div>
         )}
         

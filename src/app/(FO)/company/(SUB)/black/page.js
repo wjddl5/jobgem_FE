@@ -66,7 +66,7 @@ function Page() {
     };
 
     return (
-        <div className="bg-white shadow-md rounded-lg overflow-hidden">
+        <div className="flex-1 bg-white shadow-md rounded-lg overflow-hidden">
             <div className="p-6">
                 <div className="flex justify-between items-center mb-4">
                     <h1 className="text-2xl font-semibold mb-6">차단내역</h1>
