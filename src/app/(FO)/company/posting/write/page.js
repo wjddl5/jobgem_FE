@@ -2,6 +2,7 @@
 
 import SelectButton from '@/components/selector/SelectButton';
 import axios from 'axios';
+import { Router } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Map, MapMarker, useKakaoLoader } from 'react-kakao-maps-sdk';
 import SunEditor from "suneditor-react";
@@ -108,6 +109,8 @@ export default function ApplicationForm() {
     const timeOptions = Array.from({length: 24}, (_, i) => i + 1);
     // 분 옵션 배열 생성
     const minuteOptions = ['00', '10', '20', '30', '40', '50'];
+    /* 확인 팝업 */
+    const [showConfirmPopup, setShowConfirmPopup] = useState(false);
 
     /* 랜더링시 초기화*/
     useEffect(() => {
@@ -348,23 +351,41 @@ export default function ApplicationForm() {
             alert('접수기간이 오늘보다 이전일 수 없습니다.');
             return;
         }
+        if(endDate !== '') {
+            if(endDate < startDate) {
+                alert('접수기간이 채용기간보다 길어야 합니다.');
+                return;
+            }
+        }
+        if(selectedMethods.includes('homepage')) {
+            if(homepageUrl.replace(blankPattern, '').length === 0 || !urlRegex.test(homepageUrl)) {
+                alert('유효한 홈페이지 URL을 입력해주세요');
+                return;
+            }
+        }
+        if(selectedMethods.includes('email')) {
+            if(email.replace(blankPattern, '').length === 0||emailDomain.replace(blankPattern, '').length === 0||email.search("/\W|\s/g") !== -1||emailDomain.search("/\W|\s/g") !== -1) {
+                alert('유효한 이메일을 입력해주세요');
+                return;
+            }
+        }
+        if(selectedMethods.includes('fax')) {
+            if(fax1.replace(blankPattern, '').length === 0||fax2.replace(blankPattern, '').length === 0||fax3.replace(blankPattern, '').length === 0) {
+                alert('유효한 Fax를 입력해주세요');
+                return;
+            }
+        }
+        if(selectedMethods.includes('post') || selectedMethods.includes('visit')) {
+            if(address.replace(blankPattern, '').length === 0) {
+                alert('주소를 입력해주세요');
+                return;
+            }
+        }
+        // 유효성 검사가 모두 통과되면 확인 팝업을 표시
+        setShowConfirmPopup(true);
+    }
 
-        const eduData = EduList.filter(edu => selectedEdu.includes(edu.id)).map(edu => ({
-            id: edu.id,
-            edName: edu.name
-        }));
-        const careerData = CareerList.filter(career => selectedCareer.includes(career.id)).map(career => ({
-            id: career.id,
-            crName: career.name
-        }));
-        const hiringTypeData = HiringTypeList.filter(hiringType => selectedHiringType.includes(hiringType.id)).map(hiringType => ({
-            id: hiringType.id,
-            hkName: hiringType.name
-        }));
-        const skillData = SkillList.filter(skill => selectedSkill.includes(skill.id)).map(skill => ({
-            id: skill.id,
-            skName: skill.name
-        }));
+    function confirmSubmit() {
         let subType = '';
         selectedMethods.map(method => {
             if(method === 'jobgem') {
@@ -380,6 +401,22 @@ export default function ApplicationForm() {
             }
         });
         let location = [];
+                const eduData = EduList.filter(edu => selectedEdu.includes(edu.id)).map(edu => ({
+            id: edu.id,
+            edName: edu.name
+        }));
+        const careerData = CareerList.filter(career => selectedCareer.includes(career.id)).map(career => ({
+            id: career.id,
+            crName: career.name
+        }));
+        const hiringTypeData = HiringTypeList.filter(hiringType => selectedHiringType.includes(hiringType.id)).map(hiringType => ({
+            id: hiringType.id,
+            hkName: hiringType.name
+        }));
+        const skillData = SkillList.filter(skill => selectedSkill.includes(skill.id)).map(skill => ({
+            id: skill.id,
+            skName: skill.name
+        }));
         subType =  selectedMethods.map(method => method.name).join(', ');
         for(let i = 0; i < selectedLocation.length; i++) {
             if(selectedLocation[i].lgIdx !== 0) {
@@ -409,46 +446,36 @@ export default function ApplicationForm() {
             workDay: selectedWorkDay,
         }
         if(endDate !== '') {
-            if(endDate < startDate) {
-                alert('접수기간이 채용기간보다 길어야 합니다.');
-                return;
-            }
             data.poDeadline = endDate;
         }
         if(selectedMethods.includes('homepage')) {
-            if(homepageUrl.replace(blankPattern, '').length === 0 || !urlRegex.test(homepageUrl)) {
-                alert('유효한 홈페이지 URL을 입력해주세요');
-                return;
-            }
             data.homepageUrl = homepageUrl;
         }
         if(selectedMethods.includes('email')) {
-            if(email.replace(blankPattern, '').length === 0||emailDomain.replace(blankPattern, '').length === 0||email.search("/\W|\s/g") !== -1||emailDomain.search("/\W|\s/g") !== -1) {
-                alert('유효한 이메일을 입력해주세요');
-                return;
-            }
             data.email = email+'@'+emailDomain;
         }
         if(selectedMethods.includes('fax')) {
-            if(fax1.replace(blankPattern, '').length === 0||fax2.replace(blankPattern, '').length === 0||fax3.replace(blankPattern, '').length === 0) {
-                alert('유효한 Fax를 입력해주세요');
-                return;
-            }
-            data.fax = fax1+'-'+fax2+'-'+fax3;
+            data.fax=fax1+"-"+fax2+"-"+fax3;
         }
         if(selectedMethods.includes('post') || selectedMethods.includes('visit')) {
-            if(address.replace(blankPattern, '').length === 0) {
-                alert('주소를 입력해주세요');
-                return;
-            }
             data.address = address+"-"+detailAddress;
         }
+        // 실제 제출 로직
         console.log(data);
         axios.post('/api/post/write', data)
         .then(response => {
             console.log(response);
+            setShowConfirmPopup(false);
+            // 성공 메시지 표시 또는 다른 페이지로 리다이렉트
+            Router.push('/company/posting');
         })
+        .catch(error => {
+            console.error('Error submitting form:', error);
+            setShowConfirmPopup(false);
+            // 에러 메시지 표시
+        });
     }
+
     return (
         <div className="max-w-6xl mx-auto p-6 bg-white  rounded-lg">
             <h1 className="text-2xl font-bold mb-2">채용공고 작성</h1>
@@ -701,6 +728,20 @@ export default function ApplicationForm() {
                 <input type="file" className="border rounded px-3 py-2" />
             </div>
             <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onClick={handleSubmit}>작성완료</button>
+
+            {/* 확인 팝업 */}
+            {showConfirmPopup && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white p-6 rounded-lg">
+                        <h2 className="text-xl font-bold mb-4">작성 완료</h2>
+                        <p className="mb-4">정말로 채용공고를 작성하시겠습니까?</p>
+                        <div className="flex justify-end">
+                            <button className="bg-gray-300 text-black px-4 py-2 rounded mr-2" onClick={() => setShowConfirmPopup(false)}>취소</button>
+                            <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={confirmSubmit}>확인</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
