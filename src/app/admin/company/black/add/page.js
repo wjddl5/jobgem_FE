@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import { TextField, Box, Paper, Button, Typography, Toolbar, List, ListItem, ListItemText, Divider, IconButton, Select, MenuItem, InputLabel, FormControl, FormGroup } from '@mui/material';
+import { TextField, Box, Paper, Button, Typography, Toolbar, List, ListItem, ListItemText, Divider, IconButton, Select, MenuItem, InputLabel, FormControl, CircularProgress ,Dialog} from '@mui/material';
 import { useRouter } from 'next/navigation';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
@@ -13,6 +13,7 @@ export default function Page() {
     const [searchValue, setSearchValue] = useState('');
     const [searchType, setSearchType] = useState('');
     const api_url = "/api/company/notBlack";
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         getCompanyList();
@@ -26,6 +27,9 @@ export default function Page() {
 
     // 검색
     const handleSearch = async (e) => {
+        if (searchType === '') {
+            getCompanyList();
+        }
         try {
             const response = await axios.get(api_url, {
                 params: {
@@ -77,6 +81,15 @@ export default function Page() {
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
             handleSearch();
+        }
+    };
+
+    const handleCancel = () => {
+        if (company) {
+            setCompany('');
+            setReason('');
+        } else {
+            router.push('/admin/company/black');
         }
     };
 
@@ -180,12 +193,15 @@ export default function Page() {
                             />
                             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
                                 <Button variant="contained" color="primary" type="submit">추가</Button>
-                                <Button variant="contained" color="secondary" onClick={() => { if (company) { setCompany(''); setReason(''); } else { router.push('/admin/company/black') } }}>취소</Button>
+                                <Button variant="contained" color="secondary" onClick={handleCancel}>취소</Button>
                             </Box>
                         </Box>
                     </form>
                 </Box>
             </Box>
+            <Dialog open={loading} onClose={handleCancel}>
+                <CircularProgress />
+            </Dialog>
         </Paper>
     );
 }
