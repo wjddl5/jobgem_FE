@@ -10,10 +10,12 @@ export default function DetialPage(props) {
 	const [curPage, setCurPage] = useState(0);
     const [applyment, setApplyment] = useState([]);
     const [totalPages, setTotalPages] = useState(1);
+    const [totalElements, setTotalElements] = useState(0);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-
+    const [title, setTitle] = useState('');
 	useEffect(()=>{
 		getApplymentList();
+		getTitle();
 	},[])
 	
     function getApplymentList(){
@@ -21,6 +23,7 @@ export default function DetialPage(props) {
 			console.log(res);
             setApplyment(res.data.content);
             setTotalPages(res.data.totalPages);
+            setTotalElements(res.data.totalElements);
         })
     }
 
@@ -38,11 +41,17 @@ export default function DetialPage(props) {
 		setShowDeleteConfirm(false);
 	};
 
+	function getTitle(){
+		axios.get(`/api/post/title?id=${props.params.poIdx}`).then((res)=>{
+			setTitle(res.data);
+		})
+	}
+
 	return (
 		<div className='flex gap-4'>
 			<div className='flex-1 ml-4 p-6 bg-gray-50 rounded-lg shadow-lg'>
 				<div className='flex justify-between max-w-7xl mx-auto mb-8'>
-					<h1 className='text-3xl font-bold text-gray-800 mb-4 flex items-center'>입사지원 현황</h1>
+					<h1 className='text-3xl font-bold text-gray-800 mb-4 flex items-center'>{title}</h1>
 					<div className='flex gap-4'>
 						<button className='h-10 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all'>수정</button>
 						<button onClick={handleDelete} className='h-10 px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all'>삭제</button>
@@ -130,38 +139,64 @@ export default function DetialPage(props) {
 					<Button
 						type='button'
 						text='이전'
-						onClick={() => setCurPage(curPage - 1)}
-						disabled={curPage === 0}
+						onClick={() => setCurPage(Math.max(0, curPage - 5))}
+						disabled={curPage < 5}
 						className='px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all'
 					/>
-					<Button type='button' text='다음' onClick={() => setCurPage(curPage + 1)} disabled={curPage === totalPages} className='px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all' />
+					{(() => {
+						const pageButtons = [];
+						const startPage = Math.floor(curPage / 5) * 5;
+						const endPage = Math.min(startPage + 4, totalPages - 1);
+
+						for (let i = startPage; i <= endPage; i++) {
+							pageButtons.push(
+								<Button 
+									key={i}
+									type='button' 
+									text={i + 1} 
+									onClick={() => setCurPage(i)} 
+									className={`px-6 py-2 rounded-lg hover:bg-blue-600 transition-all ${curPage === i ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'}`}
+								/>
+							);
+						}
+
+						return pageButtons;
+					})()}
+					<Button 
+						type='button' 
+						text='다음' 
+						onClick={() => setCurPage(Math.min(totalPages - 1, Math.floor(curPage / 5) * 5 + 5))} 
+						disabled={Math.floor(curPage / 5) * 5 + 5 >= totalPages} 
+						className='px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all' 
+					/>
 				</div>
+				{/* 삭제 확인 팝업 */}
+				{showDeleteConfirm && (
+					<DeleteConfirmPopup
+						onConfirm={confirmDelete}
+						onCancel={() => setShowDeleteConfirm(false)}
+					/>
+				)}
 			</div>
-            {showDeleteConfirm && (
-                <DeleteConfirmPopup
-                    onConfirm={confirmDelete}
-                    onCancel={() => setShowDeleteConfirm(false)}
-                />
-            )}
 		</div>
 	);
 }
 
 function DeleteConfirmPopup({ onConfirm, onCancel }) {
-    return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-6 rounded-lg shadow-xl">
-                <h2 className="text-xl font-bold mb-4">정말 삭제하시겠습니까?</h2>
-                <p className="mb-6">이 작업은 되돌릴 수 없습니다.</p>
-                <div className="flex justify-end space-x-4">
-                    <button onClick={onCancel} className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">
-                        취소
-                    </button>
-                    <button onClick={onConfirm} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
-                        삭제
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
+	return (
+		<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+			<div className="bg-white p-6 rounded-lg shadow-xl">
+				<h2 className="text-xl font-bold mb-4">정말 삭제하시겠습니까?</h2>
+				<p className="mb-6">이 작업은 되돌릴 수 없습니다.</p>
+				<div className="flex justify-end space-x-4">
+					<button onClick={onCancel} className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">
+						취소
+					</button>
+					<button onClick={onConfirm} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+						삭제
+					</button>
+				</div>
+			</div>
+		</div>
+	);
 }
