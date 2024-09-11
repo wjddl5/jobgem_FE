@@ -51,7 +51,6 @@ function EnhancedTable() {
                 alert("검색 실패");
             }
         } catch (error) {
-            console.error('검색 중 오류 발생:', error);
             alert("검색 중 오류 발생");
         }
     };
