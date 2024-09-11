@@ -40,10 +40,9 @@ function Page() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, [handleScroll]);
 
-
     const addWishHandler = (id) => {
         if(confirm("해당 인재를 찜목록에 저장하시겠습니까?")){
-            axios.post('/api/company/wish/add',null, {
+            axios.post('/api/company/wish/add', null, {
                 params: {
                     coIdx: 1,
                     joIdx: id,
@@ -51,25 +50,24 @@ function Page() {
             }).then(res => {
                 alert("저장완료되었습니다");
                 setJobseekers(prevJobseekers =>
-                    prevJobseekers.filter(jobseeker => jobseeker.id !== id) // Corrected the filtering
+                    prevJobseekers.filter(jobseeker => jobseeker.id !== id)
                 );
             })
         }
-    }
-
+    };
 
     return (
-        <div className='flex flex-col p-8'>
+        <div className='flex flex-col p-4 sm:p-8 bg-white min-h-screen rounded-lg'>
             <div className="relative mb-6">
-                <h2 className="text-3xl font-bold text-center text-gray-800 relative z-10">
+                <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 relative z-10">
                     인재 추천
                 </h2>
                 <div
-                    className="absolute left-1/2 transform -translate-x-1/2 w-24 h-1 bg-blue-500 rounded-full mt-2"></div>
+                    className="absolute left-1/2 transform -translate-x-1/2 w-16 sm:w-24 h-1 bg-blue-500 rounded-full mt-2"></div>
             </div>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {jobseekers.map((jobseeker, idx) => (
-                    <div key={idx} className="p-4 bg-white rounded-md shadow-md">
+                    <div key={idx} className="p-6 bg-white border border-gray-300 rounded-lg shadow-xl transition-shadow duration-300 hover:shadow-2xl hover:border-cyan-300">
                         <div className="flex items-center mb-4">
                             <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
                                 <span className="text-gray-400 text-2xl">👤</span>
