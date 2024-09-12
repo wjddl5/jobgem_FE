@@ -133,7 +133,7 @@ export default function Page() {
                                 <Link href='/company/black'><IconButton><DiAptana/></IconButton></Link>
                             </div>
                         </div>
-                        <Table list={companyData.blockList} headers={['번호', '이름', '차단일자', '내용']} isNumber={true}/>
+                        <Table list={companyData.blockList} headers={['번호', '이름', '차단일자', '내용']}/>
                     </div>
 
                     <div className="bg-white p-6 rounded-md shadow">
