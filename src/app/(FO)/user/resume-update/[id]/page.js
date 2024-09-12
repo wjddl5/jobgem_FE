@@ -13,6 +13,7 @@ export default function Page(props) {
 	const [joIdx, setJoIdx] = useState("");
 	const [reTitle, setReTitle] = useState("");
 	const [reContent, setReContent] = useState("");
+	const [reDefault, setReDefault] = useState("");
 
 	const resumeId = props.params.id; // 리뷰 ID를 props에서 가져옴
 
@@ -23,6 +24,7 @@ export default function Page(props) {
 			setJoIdx(data.joIdx); // 유저 ID 설정
 			setReTitle(data.reTitle); // 리뷰 제목 설정
 			setReContent(data.reContent); // 리뷰 내용 설정
+			setReDefault(data.reDefault);
 		});
 	}
 
@@ -40,6 +42,7 @@ export default function Page(props) {
 				coIdx: coIdx,
 				reTitle: reTitle,
 				reContent: reContent,
+				reDefault: reDefault,
 			},
 		}).then((res) => {
 			console.log(res);
