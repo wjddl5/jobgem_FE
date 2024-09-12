@@ -11,6 +11,15 @@
 	background-color: #f9f9f9;
 }
 
+.bbs_header_user {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+	align-items: flex-start;
+	padding: 20px;
+	background-color: #f9f9f9;
+}
+
 .bbs_title {
 	margin-bottom: 20px;
 	font-size: 24px;
@@ -60,6 +69,10 @@
 	display: flex;
 	justify-content: center;
 	margin-top: 13px;
+}
+
+.bbs_table {
+	background-color: #f9f9f9;
 }
 
 /* 게시글 상세보기 */
