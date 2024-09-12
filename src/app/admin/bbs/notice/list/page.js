@@ -9,8 +9,8 @@ import axios from 'axios';
 export default function page(props) {
 	// 초기화
 	const router = useRouter();
-	const [searchType, setSearchType] = useState('title');
-	const [searchValue, setSearchValue] = useState('');
+	const [searchType, setSearchType] = useState(sessionStorage.getItem('searchType') ? sessionStorage.getItem('searchType') : 'title');
+	const [searchValue, setSearchValue] = useState(sessionStorage.getItem('searchValue') ? sessionStorage.getItem('searchValue') : '');
 	const [ar, setAr] = useState([]);
 	const [arLength, setArLength] = useState(0);
 	const API_URL = '/api/bbs/notice/list';
@@ -35,6 +35,8 @@ export default function page(props) {
 	function search() {
 		setPage(0);
 		getData();
+		sessionStorage.setItem('searchType', searchType);
+		sessionStorage.setItem('searchValue', searchValue);
 	}
 
 	function getData() {
@@ -132,7 +134,7 @@ export default function page(props) {
 							<MenuItem value={'writer'}>작성자</MenuItem>
 							<MenuItem value={'content'}>내용</MenuItem>
 						</Select>
-						<TextField className='textfield' variant='outlined' onChange={(event) => setSearchValue(event.target.value)} />
+						<TextField className='textfield' variant='outlined' onChange={(event) => setSearchValue(event.target.value)} defaultValue={searchValue} />
 						<Button className='search_btn' variant='contained' onClick={search}>
 							검색
 						</Button>
