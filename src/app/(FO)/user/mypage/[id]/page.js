@@ -6,8 +6,9 @@ import React, { useEffect, useState } from "react";
 
 export default function Page(props) {
 	const [jobseeker, setJobseeker] = useState({});
-	const router = useRouter();
+	const [myPageCnt, setMyPageCnt] = useState({});
 	const API_URL = `/api/jobseeker?id=${props.params.id}`;
+	const API_URL2 = `/api/getMypageCount?id=${props.params.id}`;
 
 	function getData() {
 		axios.get(API_URL).then((res) => {
@@ -16,8 +17,16 @@ export default function Page(props) {
 		});
 	}
 
+	function getCnt() {
+		axios.get(API_URL2).then((res) => {
+			setMyPageCnt(res.data);
+			console.log(res);
+		});
+	}
+
 	useEffect(() => {
 		getData();
+		getCnt();
 	}, []);
 
 	return (
@@ -46,11 +55,11 @@ export default function Page(props) {
 					{/* 통계 섹션 */}
 					<div className='grid grid-cols-5 gap-4 mb-8 text-center'>
 						{[
-							{ title: "지원완료", value: 0 },
-							{ title: "이력서 열람", value: 0 },
-							{ title: "입사 제안", value: 0 },
-							{ title: "스크랩 공고", value: 1 },
-							{ title: "관심기업공고", value: 6 },
+							{ title: "지원완료", value: [myPageCnt.지원완료] },
+							{ title: "이력서 열람", value: [myPageCnt.이력서열람] },
+							{ title: "입사 제안", value: [myPageCnt.입사제안] },
+							{ title: "스크랩 공고", value: [myPageCnt.스크랩공고] },
+							{ title: "관심기업공고", value: [myPageCnt.관심기업공고] },
 						].map((stat, index) => (
 							<div key={index} className='bg-blue-50 p-4 rounded-lg shadow-sm'>
 								<div className='text-gray-600 font-medium'>{stat.title}</div>
