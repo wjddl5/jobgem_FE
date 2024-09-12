@@ -9,14 +9,17 @@ import { useRouter } from 'next/navigation';
 export default function Posting() {
     const router = useRouter();
     const [list, setList] = useState([])
-    const [data, setData] =useState([])
     const [search, setSearch] = useState('')
     const [searchType, setSearchType] = useState('title')
+    const [listInfo, setListInfo] = useState({})
     const [select, setSelect] = useState(0)
     const [sort, setSort] = useState('poDateDesc')
-    const [page, setPage] = useState(1)
+    const [curPage, setCurPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalElements, setTotalElements] = useState(0);
     useEffect(() => {
         init();
+        getinfo();
     }, [])
     useEffect(() => {
         if(select === 0){
@@ -28,82 +31,80 @@ export default function Posting() {
         }else if(select === 3){
             getCloseList()
         }
-    }, [sort])
-    function init(){
-        axios.get('/api/post')
-        .then(res => {
-            listSet(res)
-        })
-    }
-    function listSet(res){
-        setData(res.data)
-            setList([])
-            res.data.postList.map(item => {
-                let status = '';
-                if(item.poState === 2){
-                    status = '마감'
-                }else if(item.poState === 1){
-                    status = '진행중'
-                }else if(item.poState === 0){
-                    status = '대기중'
-                }
-                const data = {
-                    poIdx: item.id,
-                    poTitle: item.poTitle,
-                    poCount: item.applyCount,
-                    poDate: item.poDate,
-                    poDeadline: item.poDeadline,
-                    status: status
+    }, [sort, curPage])
+
+    function getinfo(){
+        axios.get('/api/post/info',{
+            params: {
+                coIdx: 1
             }
-            setList(prev => [...prev, data])
+        })
+        .then(res => {
+            
+            setListInfo(res.data)
         })
     }
-    function getAllList(){
-        setSelect(0)
+    function init(){
         axios.get('/api/post',{
             params: {
                 sort: sort,
+                curPage: curPage
             }
         })
         .then(res => {
-            listSet(res)
-
+            console.log( res.data)
+            setList(res.data.content)
+        })
+    }
+    function getAllList(){
+        axios.get('/api/post',{
+            params: {
+                sort: sort,
+                curPage: curPage,
+                size: 10
+            }
+        })
+        .then(res => {
+            updateListAndPagination(res);
         })
     }
     function getProgressList(){
-        setSelect(1)
         axios.get('/api/post',{
             params: {
                 state: 1,
-                sort: sort
+                sort: sort,
+                curPage: curPage,
+                size: 10
             }
         })
         .then(res => {
-            listSet(res)
+            updateListAndPagination(res);
         })
     }
     function getDeadlineList(){
-        setSelect(2)
         axios.get('/api/post',{
             params: {
                 deadline: 'today',
-                sort: sort
+                sort: sort,
+                curPage: curPage,
+                size: 10    
             }
         })
         .then(res => {
-            listSet(res)
+            updateListAndPagination(res);
         })
     }
     function getCloseList(){
-        setSelect(3)
         axios.get('/api/post',{
             params: {
                 state: 2,
-                sort: sort
+                sort: sort,
+                curPage: curPage,
+                size: 10
             }
         })
         .then(res => {
-            listSet(res)
+            updateListAndPagination(res);
         })
     }
     
@@ -112,16 +113,17 @@ export default function Posting() {
             alert('검색어를 입력해주세요.')
             return
         }
-        setSelect(0)
         axios.get('/api/post',{
             params: {
                 search: search,
                 searchType: searchType,
                 sort: sort,
+                curPage: curPage,
+                size: 10
             }
         })
         .then(res => {
-            listSet(res)
+            updateListAndPagination(res);
         })
     }
 
@@ -132,7 +134,55 @@ export default function Posting() {
     function detail(poIdx){
         router.push(`/company/posting/detail/${poIdx}`)
     }
+
+    function updateListAndPagination(res) {
+        setList(res.data.content);
+        setTotalPages(res.data.totalPages);
+        setTotalElements(res.data.totalElements);
+        setCurPage(res.data.number);
+    }
+
+    function handlePageChange(newPage) {
+        if (newPage >= 0 && newPage < totalPages) {
+            setCurPage(newPage);
+        }
+    }
     
+    function handleall() {
+        setSelect(0)
+        if(curPage !== 0){
+            setCurPage(0)
+        }else{
+            getAllList()
+        }
+        
+    }
+    function handleprogress() {
+        setSelect(1)
+        if(curPage !== 0){
+            setCurPage(0)
+        }else{
+            getProgressList()
+        }
+    }
+    function handledeadline() {
+        setSelect(2)
+        if(curPage !== 0){
+            setCurPage(0)
+        }else{
+            getDeadlineList()
+        }
+    }
+    function handleclose() {
+        setSelect(3)
+        if(curPage !== 0){
+            setCurPage(0)
+        }else{
+            getCloseList()
+        }
+    }
+
+
 	return (
 		<main className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center">
@@ -143,14 +193,14 @@ export default function Posting() {
         </div>
             
         <div className="flex" >
-            {select === 0  ?<button className="text-blue-500 mr-9 " onClick={getAllList}>전체 {data.all}</button> :
-            <button className="text-gray-600 mr-9 hover:text-blue-500" onClick={getAllList}>전체 {data.all}</button>}
-            {select === 1 ?<button className="text-blue-500 mr-9 hover:text-blue-500" onClick={getProgressList}>진행중 {data.progress}</button> :
-            <button className="text-gray-600 mr-9 hover:text-blue-500" onClick={getProgressList}>진행중 {data.progress}</button>}
-            {select === 2 ?<button className="text-blue-500 mr-9 hover:text-blue-500" onClick={getDeadlineList}>오늘마감 {data.deadline}</button> :
-            <button className="text-gray-600 mr-9 hover:text-blue-500" onClick={getDeadlineList}>오늘마감 {data.deadline}</button>}
-            {select === 3 ?<button className="text-blue-500 mr-9 hover:text-blue-500" onClick={getCloseList}>채용마감 {data.complete}</button> :
-            <button className="text-gray-600 mr-9 hover:text-blue-500" onClick={getCloseList}>채용마감 {data.complete}</button>}
+            {select === 0  ?<button className="text-blue-500 mr-9 " onClick={handleall}>전체 {listInfo.all}</button> :
+            <button className="text-gray-600 mr-9 hover:text-blue-500" onClick={handleall}>전체 {listInfo.all}</button>}
+            {select === 1 ?<button className="text-blue-500 mr-9 hover:text-blue-500" onClick={handleprogress}>진행중 {listInfo.progress}</button> :
+            <button className="text-gray-600 mr-9 hover:text-blue-500" onClick={handleprogress}>진행중 {listInfo.progress}</button>}
+            {select === 2 ?<button className="text-blue-500 mr-9 hover:text-blue-500" onClick={handledeadline}>오늘마감 {listInfo.deadline}</button> :
+            <button className="text-gray-600 mr-9 hover:text-blue-500" onClick={handledeadline}>오늘마감 {listInfo.deadline}</button>}
+            {select === 3 ?<button className="text-blue-500 mr-9 hover:text-blue-500" onClick={handleclose}>채용마감 {listInfo.complete}</button> :
+            <button className="text-gray-600 mr-9 hover:text-blue-500" onClick={handleclose}>채용마감 {listInfo.complete}</button>}
 
         </div>
 
@@ -186,29 +236,72 @@ export default function Posting() {
         
         {/* 진행중인 공고가 있을때 */}
         {list.length > 0 && (
-        <table className='border-collapse w-full'>
-            <thead>
-                <tr>
-                    <th className='p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell'>공고명</th>
-                    <th className='p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell'>지원자</th>
-                    <th className='p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell'>등록일</th>
-                    <th className='p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell'>마감일</th>
-                    <th className='p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell'>상태</th>
-                </tr>
-            </thead>
-            <tbody>
-                {list.map((item, idx) => (
-                    <tr key={idx} onClick={() => detail(item.poIdx)}>
-                        <td className='p-3 border border-gray-300'>{item.poTitle}</td>
-                        <td className='p-3 border border-gray-300'>{item.poCount}</td>
-                        <td className='p-3 border border-gray-300'>{item.poDate}</td>
-                        <td className='p-3 border border-gray-300'>{item.poDeadline}</td>
-                        <td className='p-3 border border-gray-300'>{item.status}</td>
+        <>
+            <table className='border-collapse w-full'>
+                <thead>
+                    <tr>
+                        <th className='p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell'>공고명</th>
+                        <th className='p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell'>지원자</th>
+                        <th className='p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell'>등록일</th>
+                        <th className='p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell'>마감일</th>
+                        <th className='p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell'>상태</th>
                     </tr>
-                ))}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {list.map((item, idx) => (
+                        <tr key={idx} onClick={() => detail(item.id)}>
+                            <td className='p-3 border border-gray-300'>{item.poTitle}</td>
+                            <td className='p-3 border border-gray-300'>{item.applyCount}</td>
+                            <td className='p-3 border border-gray-300'>{item.poDate}</td>
+                            <td className='p-3 border border-gray-300'>{item.poDeadline}</td>
+                            <td className='p-3 border border-gray-300'>{item.poState === 1 ? '진행중' : item.poState === 2 ? '마감' : '종료'}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+            
+            {/* Pagination */}
+            <div className="flex items-center justify-center mt-4">
+                <nav className="inline-flex space-x-2 rounded-md shadow-sm" aria-label="Pagination">
+                    <button
+                        onClick={() => handlePageChange(curPage - 1)}
+                        disabled={curPage === 0}
+                        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                    >
+                        이전
+                    </button>
+                    {[...Array(totalPages).keys()].map((page) => (
+                        <button
+                            key={page}
+                            onClick={() => handlePageChange(page)}
+                            className={`px-4 py-2 rounded-lg ${
+                                page === curPage
+                                    ? 'bg-blue-600 text-white'
+                                    : 'bg-blue-500 text-white hover:bg-blue-600'
+                            }`}
+                        >
+                            {page + 1}
+                        </button>
+                    ))}
+                    <button
+                        onClick={() => handlePageChange(curPage + 1)}
+                        disabled={curPage === totalPages - 1}
+                        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                    >
+                        다음
+                    </button>
+                </nav>
+            </div>
+            <div className="text-center mt-4">
+                <p className="text-sm text-gray-700">
+                    <span className="font-medium">{totalElements}</span> 개 중{' '}
+                    <span className="font-medium">{curPage * 10 + 1}</span> -
+                    <span className="font-medium">{Math.min((curPage + 1) * 10, totalElements)}</span> 표시
+                </p>
+            </div>
+        </>
         )}
+        
         <footer className="mt-16 pt-8 border-t border-gray-200">
 			<p className='text-sm text-gray-600'>채용공고 게재기간은 최소 7일에서 최대 90일까지 가능합니다.</p>
 		</footer>
