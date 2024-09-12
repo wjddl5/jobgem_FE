@@ -25,15 +25,23 @@ export default function Page(props) {
 		});
 	}
 
-	// 이력서 삭제하기
+	// 이력서 삭제하기deleteResume
 	function remove(resumeId) {
-		axios.get(`/api/deleteResume?id=${resumeId}`).then((res) => {
-			console.log(res);
-			if (res.status === 200) {
-				alert("삭제 완료");
-				getData();
-			}
-		});
+		axios
+			.get(`/api/deleteResume?id=${resumeId}`)
+			.then((res) => {
+				console.log(res); // 서버에서 반환한 응답 확인
+				if (res.data === 1) {
+					alert("삭제 완료");
+					getData(); // 데이터 다시 불러오기
+				} else {
+					alert("대표 이력서는 삭제할 수 없습니다.");
+				}
+			})
+			.catch((error) => {
+				console.error("삭제 중 오류 발생:", error);
+				alert("삭제에 실패했습니다.");
+			});
 	}
 
 	// 대표 이력서 설정하기
