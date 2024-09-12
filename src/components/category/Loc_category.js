@@ -88,9 +88,9 @@ export default function page() {
 
 	function changeAddDoName(event) {
 		var n = event.target.value;
-		if (n.length > 5) {
+		if (n.length > 10) {
 			alert('최대 5글자까지 입력할 수 있습니다.');
-			event.target.value = n.substring(0, 5);
+			event.target.value = n.substring(0, 9);
 		} else {
 			setAddDoName(n);
 		}
@@ -99,8 +99,8 @@ export default function page() {
 	function saveAddDoName() {
 		if (addDoName.trim().length < 1) {
 			alert('카테고리명을 입력하세요.');
-		} else if (addDoName.length > 5) {
-			alert('최대 5글자까지 입력할 수 있습니다.');
+		} else if (addDoName.length > 10) {
+			alert('최대 10글자까지 입력할 수 있습니다.');
 		} else {
 			axios
 				.get('/api/category/addLoc', {
@@ -126,9 +126,9 @@ export default function page() {
 	// (도) 수정
 	function changeEditDoName(event) {
 		var n = event.target.value;
-		if (n.length > 5) {
-			alert('최대 5글자까지 입력할 수 있습니다.');
-			event.target.value = n.substring(0, 5);
+		if (n.length > 10) {
+			alert('최대 10글자까지 입력할 수 있습니다.');
+			event.target.value = n.substring(0, 9);
 		} else {
 			setEditDoName(n);
 		}
@@ -137,8 +137,8 @@ export default function page() {
 	function saveEditDoName(id) {
 		if (editDoName.trim().length < 1) {
 			alert('카테고리명을 입력하세요.');
-		} else if (editDoName.length > 5) {
-			alert('최대 5글자까지 입력할 수 있습니다.');
+		} else if (editDoName.length > 10) {
+			alert('최대 10글자까지 입력할 수 있습니다.');
 		} else {
 			axios
 				.get('/api/category/editLoc', {
@@ -244,7 +244,6 @@ export default function page() {
 	function editClick(id) {
 		setEditRow(id);
 		setAddClick(false);
-
 	}
 
 	function changeEditItemName(event) {
@@ -514,8 +513,6 @@ export default function page() {
 								))}
 								<TableRow style={{ height: '90px' }}>
 									<TableCell colSpan={2} style={{ padding: '12px' }}>
-
-
 										<Fab
 											color='primary'
 											size='small'
@@ -525,7 +522,6 @@ export default function page() {
 												setEditRow('');
 											}}
 										>
-
 											{addClick ? <RemoveOutlinedIcon /> : <AddIcon />}
 										</Fab>
 									</TableCell>
