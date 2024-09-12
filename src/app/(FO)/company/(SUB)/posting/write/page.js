@@ -577,8 +577,8 @@ export default function ApplicationForm() {
                                             {row.map((location, colIndex) => (
                                                 <td key={colIndex} className="p-1">
                                                     {(selectedLocation.filter(selected => selected.lgIdx === location.id&&selected.ldIdx === location.ldIdx).length > 0 && location.id !== 0) ? 
-                                                        <div className="w-full px-3 py-1 text-sm bg-blue-100">{location.lgName}</div> : 
-                                                        <button onClick={() => handleLocationClick(location)} className="w-full px-3 py-1 text-sm border rounded hover:bg-blue-100">
+                                                        <div className="w-full px-3 py-1 text-sm bg-blue-100 text-center">{location.lgName}</div> : 
+                                                        <button onClick={() => handleLocationClick(location)} className="w-full px-3 py-1 text-sm border rounded hover:bg-blue-100 text-center">
                                                             {location.lgName}
                                                         </button>}
                                                 </td>
