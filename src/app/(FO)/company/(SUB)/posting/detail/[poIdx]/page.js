@@ -12,6 +12,9 @@ export default function DetialPage(props) {
     const [applyment, setApplyment] = useState([]);
     const [totalPages, setTotalPages] = useState(1);
     const [totalElements, setTotalElements] = useState(0);
+	const [startDate, setStartDate] = useState('');
+	const [endDate, setEndDate] = useState('');
+	const [apRead, setApRead] = useState(1);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [title, setTitle] = useState('');
 	const [applymentCount, setApplymentCount] = useState(0);
@@ -34,12 +37,8 @@ export default function DetialPage(props) {
             setTotalElements(res.data.totalElements);
         })
     }
-	function getResume(){
-		axios.get(`/api/post/resume?id=${props.params.poIdx}&curPage=${curPage}`).then((res)=>{
-			console.log(res);
-		})
-	}
-    useEffect(()=>{
+
+	useEffect(()=>{
         getApplymentList();
     },[curPage])
 
@@ -48,34 +47,60 @@ export default function DetialPage(props) {
 	};
 
 	const confirmDelete = () => {
-		// TODO: Implement actual delete logic here
-		console.log("Deleting...");
 		setShowDeleteConfirm(false);
+		axios.post(`/api/post/delete?id=${props.params.poIdx}`).then((res)=>{
+			console.log(res);
+		})
 	};
 
 	function getDetail(){
 		axios.get(`/api/post/detail?id=${props.params.poIdx}`).then((res)=>{
+			console.log("getDetail",res);
 			setTitle(res.data.title);
-			setApplymentCount(res.data.applymentCount);
+			setApplymentCount(res.data.applyCount);
 			setViewCount(res.data.viewCount);
 			setUnviewCount(res.data.unviewCount);
 		})
 	}
 
+	function search(){
+		console.log(startDate,endDate,apRead);
+        axios.get(`/api/post/applymentSearch`,{
+			params:{
+				poIdx: props.params.poIdx,
+				curPage: curPage,
+				startDate: startDate,
+				endDate: endDate,
+				apRead: apRead
+			}
+		}).then((res)=>{
+			console.log(res);
+            setApplyment(res.data.content);
+            setTotalPages(res.data.totalPages);
+            setTotalElements(res.data.totalElements);
+        })
+	}
+	function onChangeSearch(e){
+		if(e.target.value == "열람"){
+			setApRead(1);
+		}else if(e.target.value == "미열람"){
+			setApRead(0);
+		}
+	}
 	return (
 		<div className='flex gap-4'>
 			<div className='flex-1 ml-4 p-6 '>
 				<div className='flex justify-between max-w-7xl mx-auto mb-8'>
 					<h1 className='text-3xl font-bold text-gray-800 mb-4 flex items-center'>{title}</h1>
 					<div className='flex gap-4'>
-						<button className='h-10 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all'>수정</button>
+						<button className='h-10 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all' onClick={()=>router.push(`/company/posting/edit/${props.params.poIdx}`)}>수정</button>
 						<button onClick={handleDelete} className='h-10 px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all'>삭제</button>
 					</div>
 				</div>
 				{/* 통계 섹션 */}
 				<div className='grid grid-cols-3 gap-6 max-w-7xl mx-auto mb-8'>
 					<div className='bg-white p-6 rounded-lg shadow-md text-center'>
-						<p className='text-4xl font-bold text-blue-600'>{totalElements}</p>
+						<p className='text-4xl font-bold text-blue-600'>{applymentCount}</p>
 						<p className='text-lg text-gray-600 mt-2'>지원자</p>
 					</div>
 					<div className='bg-white p-6 rounded-lg shadow-md text-center'>
@@ -95,17 +120,17 @@ export default function DetialPage(props) {
 						<div className='col-span-2'>
 							<label className='text-sm text-gray-500 block mb-2'>날짜선택</label>
 							<div className='flex space-x-2'>
-								<Input type='date' className='w-full p-2 rounded border' />
-								<Input type='date' className='w-full p-2 rounded border' />
+								<Input type='date' className='w-full p-2 rounded border' onChange={(e)=>setStartDate(e.target.value)} />
+								<Input type='date' className='w-full p-2 rounded border' onChange={(e)=>setEndDate(e.target.value)} />
 							</div>
 						</div>
 						<div className='col-span-2'>
-							<label className='text-sm text-gray-500 block mb-2'>합격여부</label>
-							<Select ar={["합격", "불합격", "대기"]} className='w-full p-2 rounded border' />
+							<label className='text-sm text-gray-500 block mb-2'>열람여부</label>
+							<Select ar={["열람", "미열람"]} className='w-full p-2 rounded border' onChange={onChangeSearch} />
 						</div>
 					</div>
 					<div className='mt-5 text-center'>
-						<Button type='submit' text='검색' className='px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all' />
+						<Button type='submit' text='검색' className='px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all' onClick={search} />
 					</div>
 				</div>
 
@@ -115,7 +140,7 @@ export default function DetialPage(props) {
 						<thead className='bg-blue-400'>
 							<tr>
 								<th className='px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider'>#</th>
-								<th className='px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider'>지원회사</th>
+								<th className='px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider'>지원자</th>
 								<th className='px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider'>열람상태</th>
 								<th className='px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider'>지원날짜</th>
 								<th className='px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider'>이력서보기</th>
@@ -131,7 +156,7 @@ export default function DetialPage(props) {
 											onClick={() => setExpandedRow(expandedRow === index ? null : index)}
 										>
 											<td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>{index + 1}</td>
-											<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>{item.jobseeker.joName}</td>
+											<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>{item.jobseeker&&item.jobseeker.joName}</td>
 											<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>
 												<span className={item.apRead === 1 ? "text-green-600" : "text-red-600"}>{item.apRead === 1 ? "열람" : "미열람"}</span>
 											</td>
