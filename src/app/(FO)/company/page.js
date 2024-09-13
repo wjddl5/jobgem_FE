@@ -10,11 +10,12 @@ import Link from "next/link";
 import axios from "axios";
 
 export default function Page() {
+    const coId = 1;
     const [companyData, setCompanyData] = useState();
 
     // 데이터를 가져오는 함수
     const getData = () => {
-        axios.get(`/api/company?id=${1}`).then((res) => {
+        axios.get(`/api/company?id=${coId}`).then((res) => {
             setCompanyData(res.data);
         })
     }

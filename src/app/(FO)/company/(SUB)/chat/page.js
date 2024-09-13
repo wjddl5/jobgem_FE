@@ -32,6 +32,7 @@ function Page() {
         stompClient.current.connect({}, () => {
             stompClient.current.subscribe(`/sub/chatroom/${chatRoomId}`, (message) => {
                 const newMessage = JSON.parse(message.body);
+                newMessage.chDate = new Date().toLocaleDateString().replaceAll(".", "-");
                 setChatList((prevMessages) => [...prevMessages, newMessage]);
             });
         }, (error) => {
