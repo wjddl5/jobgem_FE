@@ -20,7 +20,7 @@ export default function Sidebar() {
 	// 클릭 이벤트 핸들러를 수정하여 상태를 토글할 수 있도록 함
 	const handleLinkClick = (linkName) => {
 		setActiveLink((prev) => ({
-			...prev,
+			//...prev,
 			[linkName]: !prev[linkName],
 		}));
 	};
