@@ -8,7 +8,7 @@ import { Map, MapMarker, useKakaoLoader } from 'react-kakao-maps-sdk';
 import SunEditor from "suneditor-react";
 import 'suneditor/dist/css/suneditor.min.css';
 
-export default function ApplicationForm() {
+export default function ApplicationForm(params) {
     useKakaoLoader({
         appkey: "50d846af06392a3886e7875ff3d64eca",
         libraries: ["services","clusterer"]
@@ -16,12 +16,6 @@ export default function ApplicationForm() {
     const router = useRouter();
     /*버튼관리*/
     const [selectedPeriod, setSelectedPeriod] = useState(1);
-    const [jobgem, setjobgem] = useState(false);
-    const [homepage, setHomepage] = useState(false);
-    const [post, setPost] = useState(false);
-    const [visit, setVisit] = useState(false);
-    const [mail, setMail] = useState(false);
-    const [fax, setFax] = useState(false);
     let today = new Date();
 
     /* 접수방법 */
@@ -51,8 +45,6 @@ export default function ApplicationForm() {
     /* 근무요일 */
     const [selectedWorkDay, setSelectedWorkDay] = useState([]);
     const workDayList = [{id:1,name:'월'},{id:2,name:'화'},{id:3,name:'수'},{id:4,name:'목'},{id:5,name:'금'},{id:6,name:'토'},{id:7,name:'일'}];
-
-    /* 근무요일 선택 이벤트*/
     const handleWorkDayToggle = (workDayId) => {
         setSelectedWorkDay(prevWorkDay =>
             prevWorkDay.includes(workDayId)
@@ -118,17 +110,8 @@ export default function ApplicationForm() {
     /* 랜더링시 초기화*/
     useEffect(() => {
         init();
-        initPeriod();
+        initData();
     }, []);
-    // Update the corresponding state variables when methods change
-    useEffect(() => {
-        setjobgem(selectedMethods.includes('jobgem'));
-        setHomepage(selectedMethods.includes('homepage'));
-        setPost(selectedMethods.includes('post'));
-        setVisit(selectedMethods.includes('visit'));
-        setMail(selectedMethods.includes('email'));
-        setFax(selectedMethods.includes('fax'));
-    }, [selectedMethods]);
 
     /* 주소 초기화*/
     useEffect(() => {
@@ -149,6 +132,34 @@ export default function ApplicationForm() {
         })
         .catch(error => {
             console.error('Error fetching edu:', error);
+        });
+    }
+    function initData() {
+        axios.get('/api/post/view',{params:{poIdx:params.params.poIdx}})
+        .then(response => {
+            console.log("edit",response.data);
+            setTitle(response.data.poTitle || '');
+            setContent(response.data.poContent || '');
+            setSelectedEdu(response.data.education?.map(edu => edu.id) || []);
+            setSelectedCareer(response.data.career?.map(career => career.id) || []);
+            setSelectedHiringType(response.data.hireKind?.map(hiringType => hiringType.id) || []);
+            setSelectedSkill(response.data.skill?.map(skill => skill.id) || []);
+            setSelectedLocation(response.data.locationGuSi?.map(location => ({
+                lgName: location.lgName,
+                lgIdx: location.id,
+                ldName: location.locationDo.ldName,
+                ldIdx: location.ldIdx
+            })) || []);
+            setSalary(response.data.poSal);
+            setStartDate(response.data.poDate);
+            setEndDate(response.data.poDeadline);
+            setSelectedMethods(response.data.poSubType.split(','));
+            setSelectedWorkDay(response.data.workDays.map(workDay => workDay.id));
+            setWorkStartTime({hour:parseInt(response.data.wsStartTime.split(':')[0]),minute:response.data.wsStartTime.split(':')[1]});
+            setWorkEndTime({hour:parseInt(response.data.wsEndTime.split(':')[0]),minute:response.data.wsEndTime.split(':')[1]});
+        })
+        .catch(error => {
+            console.error('Error fetching post:', error);
         });
     }
     /* 접수기간 초기화*/
@@ -350,10 +361,6 @@ export default function ApplicationForm() {
             alert('접수 방법을 선택해주세요');
             return;
         }
-        if(startDate < today) {
-            alert('접수기간이 오늘보다 이전일 수 없습니다.');
-            return;
-        }
         if(endDate !== '') {
             if(endDate < startDate) {
                 alert('접수기간이 채용기간보다 길어야 합니다.');
@@ -390,9 +397,8 @@ export default function ApplicationForm() {
 
     function confirmSubmit() {
         let subType = '';
-        subType =selectedMethods.map(method => method.name).join(',');
         let location = [];
-        const eduData = EduList.filter(edu => selectedEdu.includes(edu.id)).map(edu => ({
+                const eduData = EduList.filter(edu => selectedEdu.includes(edu.id)).map(edu => ({
             id: edu.id,
             edName: edu.name
         }));
@@ -425,6 +431,7 @@ export default function ApplicationForm() {
             }
         }
         let data = {
+            id: params.params.poIdx,
             coIdx: 1,
             poTitle: title,
             poContent: content,
@@ -476,7 +483,7 @@ export default function ApplicationForm() {
             <h1 className="text-2xl font-bold mb-2">채용공고 작성</h1>
             <div className="mb-8">
                 <label className="block text-sm font-medium text-gray-700 mb-2">채용공고 제목*</label>
-                <input type="text" className="w-full border rounded px-3 py-2" onChange={(e)=>setTitle(e.target.value)}/>
+                <input type="text" className="w-full border rounded px-3 py-2" value={title} onChange={(e)=>setTitle(e.target.value)}/>
                 <label className="block text-sm font-medium text-gray-700 mb-2">채용공고 내용*</label>
                 <SunEditor
                 height="600px"
@@ -489,6 +496,7 @@ export default function ApplicationForm() {
                     ["fullScreen", "showBlocks", "codeView"],
                     ],
                 }}
+                setContents={content}
                 onChange={handleContentChange}
                 />
             </div>
@@ -519,26 +527,26 @@ export default function ApplicationForm() {
                     onToggle={(id) => handleWorkDayToggle(id)}
                 />
                 <label className="block text-sm font-medium text-gray-700 mb-2">근무시간*</label>
-                <select className="border rounded px-2 py-1 mr-2" onChange={handleWorkStartTimeChange}>
+                <select className="border rounded px-2 py-1 mr-2" value={workStartTime.hour} onChange={handleWorkStartTimeChange}>
                         <option>시간</option>
                         {timeOptions.map(hour => (
                         <option key={hour} value={hour}>{hour}</option>
                     ))}
                 </select>
-                <select className="border rounded px-2 py-1 mr-2" onChange={handleWorkStartTimeMiChange}>
+                <select className="border rounded px-2 py-1 mr-2" value={workStartTime.minute} onChange={handleWorkStartTimeMiChange}>
                         <option>분</option>
                         {minuteOptions.map(minute => (
                             <option key={minute} value={minute}>{minute}</option>
                         ))};
                     </select>
                     ~
-                    <select className="border rounded px-2 py-1 ml-2 mr-2" onChange={handleWorkEndTimeChange}>
+                    <select className="border rounded px-2 py-1 ml-2 mr-2" value={workEndTime.hour} onChange={handleWorkEndTimeChange}>
                         <option>시간</option>
                         {timeOptions.map(hour => (
                             <option key={hour} value={hour}>{hour}</option>
                         ))};
                     </select>
-                    <select className="border rounded px-2 py-1" onChange={handleWorkEndTimeMiChange}>
+                    <select className="border rounded px-2 py-1" value={workEndTime.minute} onChange={handleWorkEndTimeMiChange}>
                         <option>분</option>
                         {minuteOptions.map(minute => (
                             <option key={minute} value={minute}>{minute}</option>
@@ -570,12 +578,14 @@ export default function ApplicationForm() {
                                     {LocationSiList && chunk(showLocationSiList(), 3).map((row, rowIndex) => (
                                         <tr key={rowIndex}>
                                             {row.map((location, colIndex) => (
-                                                <td key={colIndex} className="p-1">
-                                                    {(selectedLocation.filter(selected => selected.lgIdx === location.id&&selected.ldIdx === location.ldIdx).length > 0 && location.id !== 0) ? 
-                                                        <div className="w-full px-3 py-1 text-sm bg-blue-100 text-center">{location.lgName}</div> : 
-                                                        <button onClick={() => handleLocationClick(location)} className="w-full px-3 py-1 text-sm border rounded hover:bg-blue-100 text-center">
-                                                            {location.lgName}
-                                                        </button>}
+                                            <td key={colIndex} className="p-1"> 
+                                                {(selectedLocation.some(selected => selected.lgIdx === location.id && selected.ldIdx === location.ldIdx) && location.id !== 0) ? 
+                                                    <div onClick={() => handleLocationDeselect(location)} className="w-full px-3 py-1 text-sm bg-blue-100 text-center cursor-pointer">
+                                                        {location.lgName}
+                                                    </div> : 
+                                                    <button onClick={() => handleLocationClick(location)} className="w-full px-3 py-1 text-sm border rounded hover:bg-blue-100 text-center">
+                                                        {location.lgName}
+                                                    </button>}
                                                 </td>
                                             ))}
                                         </tr>
@@ -606,7 +616,7 @@ export default function ApplicationForm() {
                 />
                 <label className="block text-sm font-medium text-gray-700 mb-2">채용 연봉*</label>
                 <div className="flex items-center">
-                    <input type="number" className="w-500 border rounded px-3 py-2 mr-3" onChange={(e)=>setSalary(e.target.value)}/>
+                    <input type="number" className="w-500 border rounded px-3 py-2 mr-3" value={salary} onChange={(e)=>setSalary(e.target.value)}/>
                     <span>만원</span>
                 </div>
             </div>
@@ -626,25 +636,9 @@ export default function ApplicationForm() {
                     <button onClick={() => handlePeriodClick(-1)} className={`px-3 py-1 border rounded ${-1 === selectedPeriod ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'}`}>상시채용</button>
                 </div>
                 <div className={`flex items-center space-x-2 ${selectedPeriod === -1 ? 'hidden' : ''}`}>
-                    <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="border rounded px-2 py-1" />
+                    <input type="date" value={startDate} disabled={true} className="border rounded px-2 py-1" />
                     <span>~</span>
                     <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="border rounded px-2 py-1" />
-                    <select className="border rounded px-2 py-1 mr-3">
-                        <option>시간</option>
-                        {timeOptions.map(hour => (
-                            <option key={hour} value={hour}>{hour}</option>
-                        ))}
-                    </select>
-                    <select className="border rounded px-2 py-1 ml-3">
-                        <option>분</option>
-                        {minuteOptions.map(minute => (
-                            <option key={minute} value={minute}>{minute}</option>
-                        ))}
-                    </select>
-                    <label className="flex items-center">
-                        <input type="checkbox" className="mr-2" />
-                        <span className="text-sm">채용 시 마감</span>
-                    </label>
                 </div>
             </div>
             
@@ -729,7 +723,7 @@ export default function ApplicationForm() {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                     <div className="bg-white p-6 rounded-lg">
                         <h2 className="text-xl font-bold mb-4">작성 완료</h2>
-                        <p className="mb-4">정말로 채용공고를 작성하시겠습니까?</p>
+                        <p className="mb-4">정말로 채용공고를 수정하시겠습니까?</p>
                         <div className="flex justify-end">
                             <button className="bg-gray-300 text-black px-4 py-2 rounded mr-2" onClick={() => setShowConfirmPopup(false)}>취소</button>
                             <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={confirmSubmit}>확인</button>
