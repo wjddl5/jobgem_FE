@@ -10,11 +10,12 @@ import Link from "next/link";
 import axios from "axios";
 
 export default function Page() {
+    const coId = 1;
     const [companyData, setCompanyData] = useState();
 
     // 데이터를 가져오는 함수
     const getData = () => {
-        axios.get(`/api/company?id=${1}`).then((res) => {
+        axios.get(`/api/company?id=${coId}`).then((res) => {
             setCompanyData(res.data);
         })
     }
@@ -133,7 +134,7 @@ export default function Page() {
                                 <Link href='/company/black'><IconButton><DiAptana/></IconButton></Link>
                             </div>
                         </div>
-                        <Table list={companyData.blockList} headers={['번호', '이름', '차단일자', '내용']} isNumber={true}/>
+                        <Table list={companyData.blockList} headers={['번호', '이름', '차단일자', '내용']}/>
                     </div>
 
                     <div className="bg-white p-6 rounded-md shadow">

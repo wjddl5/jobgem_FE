@@ -1,11 +1,11 @@
 'use client';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from '/public/css/board.css';
 import { Button, TextField } from '@mui/material';
 
-// (관리자) 공지사항 게시글 상세보기
+// 공지사항 게시글 상세보기
 export default function page(props) {
 	// 초기화
 	const router = useRouter();
@@ -15,10 +15,6 @@ export default function page(props) {
 	const [disabled, setDisabled] = useState(true);
 	const API_URL = `/api/bbs/notice/view?id=${props.params.id}`;
 
-	useEffect(() => {
-		getData();
-	}, []);
-
 	function getData() {
 		axios.get(API_URL).then((res) => {
 			setVo(res.data.vo);
@@ -26,25 +22,37 @@ export default function page(props) {
 		});
 	}
 
-	useEffect(() => {
-		if (vo.usIdx == 1 /*(!) 로그인한 유저idx로 변경*/) {
-			setDisabled(false);
-		} else {
-			setDisabled(true);
-		}
-	}, [vo]);
+	// 조회수
+	var chk = useRef(true);
 
-	function removeBbs(id) {
-		if (confirm('게시글을 삭제 하시겠습니까?')) {
-			axios.get(`/api/bbs/remove?id=${id}`).then((res) => {
-				if (res.data == true) {
-					alert('삭제 완료 되었습니다.');
-					router.push('/admin/bbs/notice/list');
-				} else alert('삭제 실패 !');
-			});
+	function hasViewed() {
+		const viewedPosts = sessionStorage.getItem('viewedPosts');
+		return viewedPosts ? JSON.parse(viewedPosts).includes(props.params.id) : false;
+	}
+
+	function markAsViewed() {
+		const viewedPosts = sessionStorage.getItem('viewedPosts');
+		const updatedViewedPosts = viewedPosts ? JSON.parse(viewedPosts) : [];
+
+		if (!updatedViewedPosts.includes(props.params.id)) {
+			updatedViewedPosts.push(props.params.id);
+			sessionStorage.setItem('viewedPosts', JSON.stringify(updatedViewedPosts));
 		}
 	}
 
+	useEffect(() => {
+		if (chk.current) {
+			if (!hasViewed()) {
+				axios.get(`/api/bbs/hitUp?id=${props.params.id}`).then(() => {
+					getData();
+					markAsViewed();
+				});
+			} else getData();
+		}
+		chk = false;
+	}, []);
+
+	// ================
 	// 댓글
 	function removeComment(id) {
 		if (confirm('댓글을 삭제 하시겠습니까?')) {
@@ -126,6 +134,7 @@ export default function page(props) {
 			<div className='post_content'>
 				<p dangerouslySetInnerHTML={{ __html: vo.boContent }}></p>
 			</div>
+
 			<div className='post_comments'>
 				<h2>댓글</h2>
 				<ul>
@@ -150,7 +159,7 @@ export default function page(props) {
 										{/* (!) 로그인한 유저idx로 수정 */}
 										수정
 									</Button>
-									<Button className='delete-button' variant='text' color='error' size='small' onClick={() => removeComment(comment.id)}>
+									<Button className='delete-button' variant='text' color='error' size='small' hidden={comment.usIdx != 1} onClick={() => removeComment(comment.id)}>
 										삭제
 									</Button>
 									<p className='comment_content'>{comment.commContent}</p>
@@ -174,15 +183,12 @@ export default function page(props) {
 				</Button>
 			</div>
 			<div className='btn_group'>
-				<Button variant='outlined' size='small' onClick={() => router.push(`/admin/bbs/notice/list?cPage=${props.searchParams.cPage}`)}>
+				<Button
+					variant='outlined'
+					size='small'
+					onClick={() => router.push(`/user/bbs-notice-list?cPage=${props.searchParams.cPage}&searchType=${props.searchParams.searchType}&searchValue=${props.searchParams.searchValue}`)}
+				>
 					목록
-				</Button>
-				<Button variant='outlined' disabled={disabled} size='small' onClick={() => router.push(`/admin/bbs/notice/edit/${vo.id}`)}>
-					{/*로그인한 유저 idx로 변경 (!)*/}
-					수정
-				</Button>
-				<Button variant='outlined' size='small' color='error' onClick={() => removeBbs(vo.id)}>
-					삭제
 				</Button>
 			</div>
 		</div>

@@ -20,10 +20,16 @@ export default function Sidebar() {
 	// 클릭 이벤트 핸들러를 수정하여 상태를 토글할 수 있도록 함
 	const handleLinkClick = (linkName) => {
 		setActiveLink((prev) => ({
-			...prev,
+			//...prev,
 			[linkName]: !prev[linkName],
 		}));
 	};
+
+	function removeSession() {
+		sessionStorage.removeItem('searchType');
+		sessionStorage.removeItem('searchValue');
+		sessionStorage.removeItem('selectType');
+	}
 
 	return (
 		<ul className='navbar-nav bg-gradient-primary sidebar sidebar-dark accordion' id='accordionSidebar'>
@@ -66,10 +72,10 @@ export default function Sidebar() {
 				<div id='collapseOne' className={`collapse ${activeLink['collapseOne'] ? 'show' : ''}`} style={{ visibility: 'visible' }} aria-labelledby='headingOne' data-parent='#accordionSidebar'>
 					<div className='bg-white py-2 collapse-inner rounded'>
 						<h6 className='collapse-header'>회원관리:</h6>
-						<a className='collapse-item' href='/admin/member'>
+						<a className='collapse-item' href='/admin/member' onClick={removeSession}>
 							회원 리스트
 						</a>
-						<a className='collapse-item' href='/admin/member/black'>
+						<a className='collapse-item' href='/admin/member/black' onClick={removeSession}>
 							블랙 리스트
 						</a>
 					</div>
@@ -95,9 +101,11 @@ export default function Sidebar() {
 					<div className='bg-white py-2 collapse-inner rounded'>
 						<h6 className='collapse-header'>기업관리:</h6>
 						<a className='collapse-item' href='/admin/company'>
+							{' '}
+							onClick={removeSession}
 							기업 리스트
 						</a>
-						<a className='collapse-item' href='/admin/company/black'>
+						<a className='collapse-item' href='/admin/company/black' onClick={removeSession}>
 							블랙 기업 리스트
 						</a>
 					</div>
@@ -122,10 +130,10 @@ export default function Sidebar() {
 				<div id='collapseThree' className={`collapse ${activeLink['collapseThree'] ? 'show' : ''}`} style={{ visibility: 'visible' }} aria-labelledby='headingThree' data-parent='#accordionSidebar'>
 					<div className='bg-white py-2 collapse-inner rounded'>
 						<h6 className='collapse-header'>공고관리:</h6>
-						<a className='collapse-item' href='/admin/post'>
+						<a className='collapse-item' href='/admin/post' onClick={removeSession}>
 							공고 관리
 						</a>
-						<a className='collapse-item' href='/admin/post/chart'>
+						<a className='collapse-item' href='/admin/post/chart' onClick={removeSession}>
 							공고 통계
 						</a>
 					</div>
@@ -150,10 +158,10 @@ export default function Sidebar() {
 				<div id='collapseFour' className={`collapse ${activeLink['collapseFour'] ? 'show' : ''}`} style={{ visibility: 'visible' }} aria-labelledby='headingFour' data-parent='#accordionSidebar'>
 					<div className='bg-white py-2 collapse-inner rounded'>
 						<h6 className='collapse-header'>게시판 관리:</h6>
-						<a className='collapse-item' href='/admin/bbs/notice/list'>
+						<a className='collapse-item' href='/admin/bbs/notice/list' onClick={removeSession}>
 							공지사항
 						</a>
-						<a className='collapse-item' href='/admin/bbs/qna/list'>
+						<a className='collapse-item' href='/admin/bbs/qna/list' onClick={removeSession}>
 							QnA
 						</a>
 					</div>
@@ -178,10 +186,10 @@ export default function Sidebar() {
 				<div id='collapseFive' className={`collapse ${activeLink['collapseFive'] ? 'show' : ''}`} style={{ visibility: 'visible' }} aria-labelledby='headingFive' data-parent='#accordionSidebar'>
 					<div className='bg-white py-2 collapse-inner rounded'>
 						<h6 className='collapse-header'>고객지원:</h6>
-						<a className='collapse-item' href='/question'>
+						<a className='collapse-item' href='/question' onClick={removeSession}>
 							질문 관리
 						</a>
-						<a className='collapse-item' href='/answer'>
+						<a className='collapse-item' href='/answer' onClick={removeSession}>
 							답변 관리
 						</a>
 					</div>
@@ -206,10 +214,10 @@ export default function Sidebar() {
 				<div id='collapseSix' className={`collapse ${activeLink['collapseSix'] ? 'show' : ''}`} style={{ visibility: 'visible' }} aria-labelledby='headingSix' data-parent='#accordionSidebar'>
 					<div className='bg-white py-2 collapse-inner rounded'>
 						<h6 className='collapse-header'>컨텐츠 관리:</h6>
-						<a className='collapse-item' href='/content/job'>
+						<a className='collapse-item' href='/content/job' onClick={removeSession}>
 							취업 정보 관리
 						</a>
-						<a className='collapse-item' href='/content/news'>
+						<a className='collapse-item' href='/content/news' onClick={removeSession}>
 							뉴스 업데이트
 						</a>
 					</div>
@@ -221,7 +229,10 @@ export default function Sidebar() {
 				<a
 					className='nav-link collapsed'
 					href='/admin/category'
-					onClick={() => handleLinkClick('collapseSeven')}
+					onClick={() => {
+						handleLinkClick('collapseSeven');
+						removeSession();
+					}}
 					data-toggle='collapse'
 					data-target='#collapseSeven'
 					aria-expanded={activeLink['collapseSeven']}
