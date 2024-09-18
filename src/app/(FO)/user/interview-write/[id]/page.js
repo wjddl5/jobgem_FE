@@ -10,8 +10,8 @@ export default function Page(props) {
 
 	const [coIdx, setCoIdx] = useState(""); // 초기 선택 상태를 빈 문자열로 설정
 	const [company, setCompany] = useState([]);
-	const [reTitle, setReTitle] = useState("");
-	const [reContent, setReContent] = useState("");
+	const [inTitle, setInTitle] = useState("");
+	const [inContent, setInContent] = useState("");
 
 	function getCompany() {
 		axios.get("/api/companyList").then((res) => {
@@ -34,14 +34,14 @@ export default function Page(props) {
 			params: {
 				joIdx: props.params.id,
 				coIdx: coIdx,
-				reTitle: reTitle,
-				reContent: reContent,
+				inTitle: inTitle,
+				inContent: inContent,
 			},
 		}).then((res) => {
 			console.log(res);
 			if (res.status == 200) {
 				alert("저장완료");
-				router.push(`/user/imterview-list/${props.params.id}`);
+				router.push(`/user/interview-list/${props.params.id}`);
 			}
 		});
 	}
@@ -80,8 +80,8 @@ export default function Page(props) {
 							name='reTitle'
 							placeholder='제목을 입력하세요'
 							className='mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-							value={reTitle}
-							onChange={(e) => setReTitle(e.target.value)}
+							value={inTitle}
+							onChange={(e) => setInTitle(e.target.value)}
 						/>
 					</div>
 
@@ -95,8 +95,8 @@ export default function Page(props) {
 							rows='4'
 							placeholder='내용을 입력하세요'
 							className='mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-							value={reContent}
-							onChange={(e) => setReContent(e.target.value)}
+							value={inContent}
+							onChange={(e) => setInContent(e.target.value)}
 						></textarea>
 					</div>
 
