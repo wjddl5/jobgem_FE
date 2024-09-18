@@ -8,6 +8,7 @@ import Image from "next/image";
 import Table from "@/components/table/Table";
 import Link from "next/link";
 import axios from "axios";
+import TableRow from "@/components/table/TableRow";
 
 export default function Page() {
     const coId = 1;
@@ -142,10 +143,38 @@ export default function Page() {
                             <h2 className="text-lg font-bold">채팅 목록<span className='text-xs font-gray-500 font-light'>( 최신순 )</span>
                             </h2>
                             <div className="hover:rotate-90 transition duration-200 ease-in-out h-6">
-                                <IconButton><DiAptana/></IconButton>
+                                <Link href='/company/chat'><IconButton><DiAptana/></IconButton></Link>
                             </div>
                         </div>
-                        <Table list={[{}]} headers={['프로필', '채팅자', '마지막 채팅 시간']}/>
+                        <table className='border-collapse w-full'>
+                            <thead>
+                            <tr>
+                                <th
+                                    className='p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell'>
+                                    상대방
+                                </th>
+                                <th
+                                    className='p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell'>
+                                    마지막 메시지
+                                </th>
+                                <th
+                                    className='p-3 font-bold uppercase bg-gray-200 text-gray-600 border border-gray-300 hidden lg:table-cell'>
+                                    마지막채팅날짜
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {
+                                companyData.chatList.map((chat) => (
+                                    <tr key={chat.id} className="bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
+                                        <td className="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">{chat.joinUser.usId}</td>
+                                        <td className="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">{chat.chatList[chat.chatList.length - 1].chContent}</td>
+                                        <td className="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">{chat.chatList[chat.chatList.length - 1].chDate}</td>
+                                    </tr>
+                                ))
+                                }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
