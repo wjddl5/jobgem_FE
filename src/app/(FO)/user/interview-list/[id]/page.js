@@ -52,7 +52,7 @@ export default function Page(props) {
 				<div className='bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto'>
 					<div className='flex justify-between items-center'>
 						<h1 className='text-2xl font-bold'>면접후기</h1>
-						<Button type='submit' text='작성하기' onClick={() => router.push(`/user/Interview-review-write/${props.params.id}`)} />
+						<Button type='submit' text='작성하기' onClick={() => router.push(`/user/interview-write/${props.params.id}`)} />
 					</div>
 
 					{/* 테이블 헤더 */}
