@@ -114,6 +114,8 @@ export default function ApplicationForm() {
     const minuteOptions = ['00', '10', '20', '30', '40', '50'];
     /* 확인 팝업 */
     const [showConfirmPopup, setShowConfirmPopup] = useState(false);
+    /* 이미지 */
+    const [image, setImage] = useState();
 
     /* 랜더링시 초기화*/
     useEffect(() => {
@@ -305,6 +307,12 @@ export default function ApplicationForm() {
         return ar;
     }
 
+    function handleImageChange(e) {
+        console.log(e.target.files[0]);
+        setImage(e.target.files[0]);
+    }
+
+    
     function handleSubmit() {
         /* 유효성 검사 */
         const blankPattern = /^\s+|\s+$/g;
@@ -438,7 +446,8 @@ export default function ApplicationForm() {
             subType: subType,
             workStartTime: workStartTime.hour+":"+workStartTime.minute,
             workEndTime: workEndTime.hour+":"+workEndTime.minute,
-            workDay: workDayData
+            workDay: workDayData,
+            imgUrl: image.name
         }
         if(endDate !== '') {
             data.poDeadline = endDate;
@@ -455,13 +464,21 @@ export default function ApplicationForm() {
         if(selectedMethods.includes('post') || selectedMethods.includes('visit')) {
             data.address = address+"-"+detailAddress;
         }
-        // 실제 제출 로직
-        console.log(data);
+        let formData = new FormData();
+        formData.append('file', image);
+        axios.post('/api/files/upload', formData)
+        .then(response => {
+            console.log(response);
+            data.imgUrl = response.data;
+        })
+        .catch(error => {
+            console.error('Error submitting form:', error);
+            setShowConfirmPopup(false);
+        });
         axios.post('/api/post/write', data)
         .then(response => {
             console.log(response);
             setShowConfirmPopup(false);
-            // 성공 메시지 표시 또는 다른 페이지로 리다이렉트
             router.push('/company/posting');
         })
         .catch(error => {
@@ -720,7 +737,21 @@ export default function ApplicationForm() {
             </div>
             <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">공고 이미지</label>
-                <input type="file" className="border rounded px-3 py-2" />
+                <div className="items-center">
+                    <input
+                        type="file"
+                        className="border rounded px-3 py-2 mr-4"
+                        onChange={handleImageChange}
+                        accept="image/*"
+                    />
+                    {image && (
+                        <img
+                            src={URL.createObjectURL(image)}
+                            alt="Preview"
+                            className="w-32 h-32 object-cover rounded"
+                        />
+                    )}
+                </div>
             </div>
             <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onClick={handleSubmit}>작성완료</button>
 

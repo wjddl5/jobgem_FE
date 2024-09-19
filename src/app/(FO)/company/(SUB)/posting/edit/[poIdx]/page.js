@@ -106,6 +106,7 @@ export default function ApplicationForm(params) {
     const minuteOptions = ['00', '10', '20', '30', '40', '50'];
     /* 확인 팝업 */
     const [showConfirmPopup, setShowConfirmPopup] = useState(false);
+    const [image, setImage] = useState('');
 
     /* 랜더링시 초기화*/
     useEffect(() => {
@@ -445,7 +446,8 @@ export default function ApplicationForm(params) {
             subType: subType,
             workStartTime: workStartTime.hour+":"+workStartTime.minute,
             workEndTime: workEndTime.hour+":"+workEndTime.minute,
-            workDay: workDayData
+            workDay: workDayData,
+            imgUrl: image.name
         }
         if(endDate !== '') {
             data.poDeadline = endDate;
@@ -462,8 +464,20 @@ export default function ApplicationForm(params) {
         if(selectedMethods.includes('post') || selectedMethods.includes('visit')) {
             data.address = address+"-"+detailAddress;
         }
-        // 실제 제출 로직
-        console.log(data);
+        let formData = new FormData();
+        formData.append('file', image);
+        let filename='';
+        axios.post('/api/files/upload', formData)
+        .then(response => {
+            console.log("response",response.data);
+            data.imgUrl = response.data;
+        })
+        .catch(error => {
+            console.error('Error submitting form:', error);
+            setShowConfirmPopup(false);
+            // 에러 메시지 표시
+        });
+        console.log("data",data);
         axios.post('/api/post/write', data)
         .then(response => {
             console.log(response);
@@ -714,7 +728,7 @@ export default function ApplicationForm(params) {
             </div>
             <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">공고 이미지</label>
-                <input type="file" className="border rounded px-3 py-2" />
+                <input type="file" className="border rounded px-3 py-2" onChange={(e)=>setImage(e.target.files[0])}/>
             </div>
             <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onClick={handleSubmit}>작성완료</button>
 
