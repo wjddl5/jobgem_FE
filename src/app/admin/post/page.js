@@ -92,7 +92,8 @@ export default function page() {
                             <MenuItem value="date">등록일</MenuItem>
                             <MenuItem value="deadline">마감일</MenuItem>
                             <MenuItem value="sal">월급</MenuItem>
-                            <MenuItem value="workhour">근무시간</MenuItem>
+                            <MenuItem value="starttime">근무시작시간</MenuItem>
+                            <MenuItem value="endtime">근무종료시간</MenuItem>
                             <MenuItem value="type">공고유형</MenuItem>
                             <MenuItem value="addr">주소</MenuItem>
                             <MenuItem value="email">이메일</MenuItem>
