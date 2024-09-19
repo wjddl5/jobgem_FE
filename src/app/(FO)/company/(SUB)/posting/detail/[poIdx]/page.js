@@ -1,46 +1,45 @@
-'use client';
+"use client";
 
 import Button from "@/components/button/Button";
 import Input from "@/components/form/Input";
 import Select from "@/components/form/Select";
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import React from 'react';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import React from "react";
 import { useRouter } from "next/navigation";
 export default function DetialPage(props) {
 	const [curPage, setCurPage] = useState(0);
-    const [applyment, setApplyment] = useState([]);
-    const [totalPages, setTotalPages] = useState(1);
-    const [totalElements, setTotalElements] = useState(0);
-	const [startDate, setStartDate] = useState('');
-	const [endDate, setEndDate] = useState('');
+	const [applyment, setApplyment] = useState([]);
+	const [totalPages, setTotalPages] = useState(1);
+	const [totalElements, setTotalElements] = useState(0);
+	const [startDate, setStartDate] = useState("");
+	const [endDate, setEndDate] = useState("");
 	const [apRead, setApRead] = useState(1);
-    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-    const [title, setTitle] = useState('');
+	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+	const [title, setTitle] = useState("");
 	const [applymentCount, setApplymentCount] = useState(0);
 	const [viewCount, setViewCount] = useState(0);
 	const [unviewCount, setUnviewCount] = useState(0);
 	const [expandedRow, setExpandedRow] = useState(null);
-	useEffect(()=>{
+	useEffect(() => {
 		getApplymentList();
 		getDetail();
-	},[])
-	
+	}, []);
 
 	const router = useRouter();
 
-    function getApplymentList(){
-        axios.get(`/api/post/apply?id=${props.params.poIdx}&curPage=${curPage}`).then((res)=>{
+	function getApplymentList() {
+		axios.get(`/api/post/apply?id=${props.params.poIdx}&curPage=${curPage}`).then((res) => {
 			console.log(res);
-            setApplyment(res.data.content);
-            setTotalPages(res.data.totalPages);
-            setTotalElements(res.data.totalElements);
-        })
-    }
+			setApplyment(res.data.content);
+			setTotalPages(res.data.totalPages);
+			setTotalElements(res.data.totalElements);
+		});
+	}
 
-	useEffect(()=>{
-        getApplymentList();
-    },[curPage])
+	useEffect(() => {
+		getApplymentList();
+	}, [curPage]);
 
 	const handleDelete = () => {
 		setShowDeleteConfirm(true);
@@ -48,42 +47,44 @@ export default function DetialPage(props) {
 
 	const confirmDelete = () => {
 		setShowDeleteConfirm(false);
-		axios.post(`/api/post/delete?id=${props.params.poIdx}`).then((res)=>{
+		axios.post(`/api/post/delete?id=${props.params.poIdx}`).then((res) => {
 			console.log(res);
-		})
+		});
 	};
 
-	function getDetail(){
-		axios.get(`/api/post/detail?id=${props.params.poIdx}`).then((res)=>{
-			console.log("getDetail",res);
+	function getDetail() {
+		axios.get(`/api/post/detail?id=${props.params.poIdx}`).then((res) => {
+			console.log("getDetail", res);
 			setTitle(res.data.title);
 			setApplymentCount(res.data.applyCount);
 			setViewCount(res.data.viewCount);
 			setUnviewCount(res.data.unviewCount);
-		})
+		});
 	}
 
-	function search(){
-		console.log(startDate,endDate,apRead);
-        axios.get(`/api/post/applymentSearch`,{
-			params:{
-				poIdx: props.params.poIdx,
-				curPage: curPage,
-				startDate: startDate,
-				endDate: endDate,
-				apRead: apRead
-			}
-		}).then((res)=>{
-			console.log(res);
-            setApplyment(res.data.content);
-            setTotalPages(res.data.totalPages);
-            setTotalElements(res.data.totalElements);
-        })
+	function search() {
+		console.log(startDate, endDate, apRead);
+		axios
+			.get(`/api/post/applymentSearch`, {
+				params: {
+					poIdx: props.params.poIdx,
+					curPage: curPage,
+					startDate: startDate,
+					endDate: endDate,
+					apRead: apRead,
+				},
+			})
+			.then((res) => {
+				console.log(res);
+				setApplyment(res.data.content);
+				setTotalPages(res.data.totalPages);
+				setTotalElements(res.data.totalElements);
+			});
 	}
-	function onChangeSearch(e){
-		if(e.target.value == "열람"){
+	function onChangeSearch(e) {
+		if (e.target.value == "열람") {
 			setApRead(1);
-		}else if(e.target.value == "미열람"){
+		} else if (e.target.value == "미열람") {
 			setApRead(0);
 		}
 	}
@@ -93,8 +94,15 @@ export default function DetialPage(props) {
 				<div className='flex justify-between max-w-7xl mx-auto mb-8'>
 					<h1 className='text-3xl font-bold text-gray-800 mb-4 flex items-center'>{title}</h1>
 					<div className='flex gap-4'>
-						<button className='h-10 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all' onClick={()=>router.push(`/company/posting/edit/${props.params.poIdx}`)}>수정</button>
-						<button onClick={handleDelete} className='h-10 px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all'>삭제</button>
+						<button
+							className='h-10 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all'
+							onClick={() => router.push(`/company/posting/edit/${props.params.poIdx}`)}
+						>
+							수정
+						</button>
+						<button onClick={handleDelete} className='h-10 px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all'>
+							삭제
+						</button>
 					</div>
 				</div>
 				{/* 통계 섹션 */}
@@ -120,8 +128,8 @@ export default function DetialPage(props) {
 						<div className='col-span-2'>
 							<label className='text-sm text-gray-500 block mb-2'>날짜선택</label>
 							<div className='flex space-x-2'>
-								<Input type='date' className='w-full p-2 rounded border' onChange={(e)=>setStartDate(e.target.value)} />
-								<Input type='date' className='w-full p-2 rounded border' onChange={(e)=>setEndDate(e.target.value)} />
+								<Input type='date' className='w-full p-2 rounded border' onChange={(e) => setStartDate(e.target.value)} />
+								<Input type='date' className='w-full p-2 rounded border' onChange={(e) => setEndDate(e.target.value)} />
 							</div>
 						</div>
 						<div className='col-span-2'>
@@ -151,19 +159,16 @@ export default function DetialPage(props) {
 							{applyment.length > 0 ? (
 								applyment.map((item, index) => (
 									<React.Fragment key={item.id || index}>
-										<tr 
-											className='hover:bg-gray-50 transition-all cursor-pointer'
-											onClick={() => setExpandedRow(expandedRow === index ? null : index)}
-										>
+										<tr className='hover:bg-gray-50 transition-all cursor-pointer' onClick={() => setExpandedRow(expandedRow === index ? null : index)}>
 											<td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>{index + 1}</td>
-											<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>{item.jobseeker&&item.jobseeker.joName}</td>
+											<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>{item.jobseeker && item.jobseeker.joName}</td>
 											<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>
 												<span className={item.apRead === 1 ? "text-green-600" : "text-red-600"}>{item.apRead === 1 ? "열람" : "미열람"}</span>
 											</td>
 											<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>{item.apDate}</td>
 											<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>
-												<button className='text-blue-500 hover:text-blue-600' onClick={()=>router.push(`/company/resume/${item.reIdx}`)}>
-												| 이력서보기 |
+												<button className='text-blue-500 hover:text-blue-600' onClick={() => router.push(`/company/resume/${item.reIdx}`)}>
+													| 이력서보기 |
 												</button>
 											</td>
 										</tr>
@@ -184,13 +189,13 @@ export default function DetialPage(props) {
 															</div>
 														</div>
 														<div className='mt-4 pt-4 border-t border-gray-200'>
-															{item.jobseeker.skills.length > 0 ? 
+															{item.jobseeker.skills.length > 0 ? (
 																<p className='text-md text-gray-700'>
 																	<span className='font-semibold'>보유스킬:</span> {item.jobseeker.skills.map((skill) => skill.skName).join(", ")}
 																</p>
-																:
+															) : (
 																<p className='text-md text-gray-500 italic'>보유스킬 없음</p>
-															}
+															)}
 														</div>
 													</div>
 												</td>
@@ -225,33 +230,28 @@ export default function DetialPage(props) {
 
 						for (let i = startPage; i <= endPage; i++) {
 							pageButtons.push(
-								<Button 
+								<Button
 									key={i}
-									type='button' 
-									text={i + 1} 
-									onClick={() => setCurPage(i)} 
-									className={`px-6 py-2 rounded-lg hover:bg-blue-600 transition-all ${curPage === i ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'}`}
+									type='button'
+									text={i + 1}
+									onClick={() => setCurPage(i)}
+									className={`px-6 py-2 rounded-lg hover:bg-blue-600 transition-all ${curPage === i ? "bg-blue-500 text-white" : "bg-gray-300 text-gray-700"}`}
 								/>
 							);
 						}
 
 						return pageButtons;
 					})()}
-					<Button 
-						type='button' 
-						text='다음' 
-						onClick={() => setCurPage(Math.min(totalPages - 1, Math.floor(curPage / 5) * 5 + 5))} 
-						disabled={Math.floor(curPage / 5) * 5 + 5 >= totalPages} 
-						className='px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all' 
+					<Button
+						type='button'
+						text='다음'
+						onClick={() => setCurPage(Math.min(totalPages - 1, Math.floor(curPage / 5) * 5 + 5))}
+						disabled={Math.floor(curPage / 5) * 5 + 5 >= totalPages}
+						className='px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all'
 					/>
 				</div>
 				{/* 삭제 확인 팝업 */}
-				{showDeleteConfirm && (
-					<DeleteConfirmPopup
-						onConfirm={confirmDelete}
-						onCancel={() => setShowDeleteConfirm(false)}
-					/>
-				)}
+				{showDeleteConfirm && <DeleteConfirmPopup onConfirm={confirmDelete} onCancel={() => setShowDeleteConfirm(false)} />}
 			</div>
 		</div>
 	);
@@ -259,15 +259,15 @@ export default function DetialPage(props) {
 
 function DeleteConfirmPopup({ onConfirm, onCancel }) {
 	return (
-		<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-			<div className="bg-white p-6 rounded-lg shadow-xl">
-				<h2 className="text-xl font-bold mb-4">정말 삭제하시겠습니까?</h2>
-				<p className="mb-6">이 작업은 되돌릴 수 없습니다.</p>
-				<div className="flex justify-end space-x-4">
-					<button onClick={onCancel} className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">
+		<div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center'>
+			<div className='bg-white p-6 rounded-lg shadow-xl'>
+				<h2 className='text-xl font-bold mb-4'>정말 삭제하시겠습니까?</h2>
+				<p className='mb-6'>이 작업은 되돌릴 수 없습니다.</p>
+				<div className='flex justify-end space-x-4'>
+					<button onClick={onCancel} className='px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400'>
 						취소
 					</button>
-					<button onClick={onConfirm} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+					<button onClick={onConfirm} className='px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600'>
 						삭제
 					</button>
 				</div>

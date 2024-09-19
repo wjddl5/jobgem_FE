@@ -12,24 +12,76 @@ export default function Page() {
 
 	const [reTitle, setReTitle] = useState("");
 	const [reContent, setReContent] = useState("");
+	const [selectedFile, setSelectedFile] = useState(null); // 파일이 선택되었는지 추적
+	const API_FILE_UPLOAD = "/api/files/upload"; // 파일 업로드 API
 
-	function send() {
-		axios({
-			url: "/api/addResume",
-			method: "get",
-			params: {
-				joIdx: joIdx,
-				reTitle: reTitle,
-				reContent: reContent,
-				reDefault: 0,
-			},
-		}).then((res) => {
-			console.log(res);
-			if (res.status == 200) {
+	// 파일 업로드 함수
+	async function uploadFile(file) {
+		const formData = new FormData();
+		formData.append("file", file);
+
+		try {
+			const res = await axios.post(API_FILE_UPLOAD, formData, {
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+			});
+
+			// 업로드된 파일의 URL에서 파일 이름만 추출
+			const fileUrl = res.data;
+			const fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1); // '/' 마지막 위치부터 끝까지 잘라내기
+
+			return fileName; // 추출한 파일 이름 반환
+		} catch (error) {
+			console.error("파일 업로드 실패:", error);
+			alert("파일 업로드 중 문제가 발생했습니다.");
+			return null;
+		}
+	}
+
+	// 파일 선택 핸들러
+	function handleFileChange(e) {
+		const file = e.target.files[0];
+		if (file) {
+			setSelectedFile(file); // 선택된 파일 상태 저장
+		}
+	}
+
+	// 데이터 전송 함수
+	async function send() {
+		try {
+			let uploadedFileName = ""; // 파일 업로드 후 반환될 파일 이름을 저장할 변수
+
+			// 파일이 선택된 경우, 파일 업로드
+			if (selectedFile) {
+				uploadedFileName = await uploadFile(selectedFile);
+				if (!uploadedFileName) {
+					// 파일 업로드에 실패한 경우, 함수를 종료
+					return;
+				}
+			}
+
+			// API_URL을 통한 정보 업데이트
+			const res = await axios({
+				url: "/api/addResume",
+				method: "get",
+				params: {
+					joIdx: joIdx,
+					reTitle: reTitle,
+					reContent: reContent,
+					reDefault: 0,
+					reFileUrl: uploadedFileName, // 업로드된 파일 이름을 직접 전달
+				},
+			});
+
+			if (res.status === 200) {
 				alert("저장완료");
 				router.push(`/user/resume-list/${joIdx}`);
 			}
-		});
+		} catch (error) {
+			console.error("에러 발생:", error);
+			alert("저장 중 문제가 발생했습니다.");
+		}
 	}
 
 	return (
@@ -67,6 +119,8 @@ export default function Page() {
 							<input
 								type='file'
 								className='block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-all duration-300'
+								name='reFileUrl'
+								onChange={handleFileChange} // 파일 선택 시 핸들러
 							/>
 						</label>
 					</section>

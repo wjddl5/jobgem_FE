@@ -13,16 +13,19 @@ export default function Page(props) {
 	const [jobseeker, setJobseeker] = useState({});
 	const [user, setUser] = useState({});
 	const [skillList, setSkillList] = useState([]);
-	const [selectedSkills, setSelectedSkills] = useState([]); // To keep track of selected skills
+	const [selectedSkills, setSelectedSkills] = useState([]);
+	const [selectedFile, setSelectedFile] = useState(null); // 파일이 선택되었는지 추적
+	const [previewUrl, setPreviewUrl] = useState(""); // 이미지 미리보기 URL 저장
 	const router = useRouter();
 	const API_URL = `/api/jobseeker?id=${joIdx}`;
+	const API_FILE_UPLOAD = "/api/files/upload";
 
 	// 데이터 가져오는 함수
 	function getData() {
 		axios.get(API_URL).then((res) => {
 			setJobseeker(res.data);
 			setUser(res.data.user);
-			setSelectedSkills(res.data.skills.map((skill) => skill.id)); // Initialize selectedSkills with haveSkill IDs
+			setSelectedSkills(res.data.skills.map((skill) => skill.id));
 			console.log("jobseeker 데이터:", res.data);
 		});
 	}
@@ -35,38 +38,83 @@ export default function Page(props) {
 		});
 	}
 
-	// 데이터 전송 함수
-	function send() {
-		console.log("보내기 전 jobseeker 상태 확인:", jobseeker);
-		console.log("선택된 스킬 목록:", selectedSkills);
+	// 파일 업로드 함수
+	async function uploadFile(file) {
+		const formData = new FormData();
+		formData.append("file", file);
 
-		axios({
-			url: "/api/updateMypage",
-			method: "get",
-			params: {
-				id: joIdx,
-				joName: jobseeker.joName,
-				joGender: jobseeker.joGender,
-				joBirth: jobseeker.joBirth,
-				joTel: jobseeker.joTel,
-				joEdu: jobseeker.joEdu,
-				joSal: jobseeker.joSal,
-				joAddress: jobseeker.joAddress,
-				joImgUrl: jobseeker.joImgUrl,
-				skillIds: selectedSkills.length > 0 ? selectedSkills : [], // 선택된 스킬이 없으면 빈 배열을 전송
-			},
-		})
-			.then((res) => {
-				console.log(res);
-				if (res.status == 200) {
-					alert("수정 완료");
-					router.push(`/user/mypage/${joIdx}`);
-				}
-			})
-			.catch((error) => {
-				console.error("에러 발생:", error);
-				alert("수정 중 문제가 발생했습니다.");
+		try {
+			const res = await axios.post(API_FILE_UPLOAD, formData, {
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
 			});
+
+			// 업로드된 파일의 URL에서 파일 이름만 추출
+			const fileUrl = res.data;
+			const fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1); // '/' 마지막 위치부터 끝까지 잘라내기
+
+			return fileName; // 추출한 파일 이름 반환
+		} catch (error) {
+			console.error("파일 업로드 실패:", error);
+			alert("파일 업로드 중 문제가 발생했습니다.");
+			return null;
+		}
+	}
+
+	// 파일 선택 핸들러
+	function handleFileChange(e) {
+		const file = e.target.files[0];
+		if (file) {
+			setSelectedFile(file); // 선택된 파일 상태 저장
+
+			// 미리보기 이미지 URL 생성
+			const newPreviewUrl = URL.createObjectURL(file);
+			setPreviewUrl(newPreviewUrl); // 미리보기 이미지 URL 업데이트
+		}
+	}
+
+	// 데이터 전송 함수
+	async function send() {
+		try {
+			// 파일이 선택된 경우, 파일 업로드 후 jobseeker 정보 업데이트
+			if (selectedFile) {
+				const fileName = await uploadFile(selectedFile);
+				if (fileName) {
+					// 파일 업로드가 성공하면 jobseeker의 joImgUrl을 업데이트
+					jobseeker.joImgUrl = fileName; // 상태 업데이트 대신 직접 변경
+				}
+			}
+
+			// API_URL을 통한 jobseeker 정보 업데이트
+			console.log("보내기 전 jobseeker 상태 확인:", jobseeker);
+			console.log("선택된 스킬 목록:", selectedSkills);
+
+			const res = await axios({
+				url: "/api/updateMypage",
+				method: "get",
+				params: {
+					id: joIdx,
+					joName: jobseeker.joName,
+					joGender: jobseeker.joGender,
+					joBirth: jobseeker.joBirth,
+					joTel: jobseeker.joTel,
+					joEdu: jobseeker.joEdu,
+					joSal: jobseeker.joSal,
+					joAddress: jobseeker.joAddress,
+					joImgUrl: jobseeker.joImgUrl, // 업로드된 이미지 URL 전송
+					skillIds: selectedSkills.length > 0 ? selectedSkills : [], // 선택된 스킬이 없으면 빈 배열을 전송
+				},
+			});
+
+			if (res.status === 200) {
+				alert("수정 완료");
+				router.push(`/user/mypage/${joIdx}`);
+			}
+		} catch (error) {
+			console.error("에러 발생:", error);
+			alert("수정 중 문제가 발생했습니다.");
+		}
 	}
 
 	// 생년월일 변경 핸들러
@@ -88,7 +136,7 @@ export default function Page(props) {
 
 	// 스킬 선택 변경 핸들러
 	function handleSkillChange(e) {
-		const skillId = Number(e.target.value); // skillId를 숫자로 변환
+		const skillId = Number(e.target.value);
 		if (e.target.checked) {
 			setSelectedSkills((prevSkills) => [...prevSkills, skillId]);
 		} else {
@@ -112,11 +160,18 @@ export default function Page(props) {
 
 						<div className='col-span-1 flex flex-col items-center mb-5'>
 							<div className='relative'>
-								<img src={`/s3/${jobseeker.joImgUrl}`} />
-								<Input id='profilePic' type='file' name='joImgUrl' className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer' accept='image/*' />
+								{/* 미리보기 이미지가 있으면 해당 이미지 사용, 없으면 서버에서 가져온 이미지 사용 */}
+								<img src={previewUrl || (jobseeker.joImgUrl ? `/s3/${jobseeker.joImgUrl}` : "/s3/default_image.jpg")} alt='Profile' />
+								<Input
+									id='profilePic'
+									type='file'
+									name='joImgUrl'
+									className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer'
+									accept='image/*'
+									onChange={handleFileChange} // 파일 선택 시 핸들러
+								/>
 							</div>
 						</div>
-
 						<div className='grid grid-cols-2 gap-4'>
 							<div>
 								<label className='block text-sm font-medium text-gray-700' htmlFor='email'>
@@ -191,8 +246,8 @@ export default function Page(props) {
 
 							{/* Skill List */}
 							<div className='col-span-2'>
-								<h3 className='text-sm font-medium text-gray-700'>보유 기술</h3>
-								<div className='mt-2 grid grid-cols-2 gap-2'>
+								<h3 className='text-sm font-medium text-gray-700 mb-2'>보유 기술</h3>
+								<div className='grid grid-cols-5 gap-2'>
 									{skillList.map((skill) => (
 										<div key={skill.id} className='flex items-center'>
 											<input
@@ -201,10 +256,15 @@ export default function Page(props) {
 												value={skill.id}
 												checked={selectedSkills.includes(skill.id)} // Skill is checked if it's in selectedSkills
 												onChange={handleSkillChange}
-												className='h-4 w-4 text-blue-600 border-gray-300 rounded'
+												className='hidden' // 기본 체크박스 숨기기
 											/>
-											<label htmlFor={`skill-${skill.id}`} className='ml-2 block text-sm text-gray-900'>
-												{skill.skName} {/* 객체의 skName 속성만 렌더링 */}
+											<label
+												htmlFor={`skill-${skill.id}`}
+												className={`flex items-center cursor-pointer px-3 py-2  text-sm rounded-full border ${
+													selectedSkills.includes(skill.id) ? "bg-blue-500 text-white border-transparent" : "bg-white text-gray-700 border-gray-300"
+												}`}
+											>
+												{skill.skName}
 											</label>
 										</div>
 									))}
@@ -215,7 +275,7 @@ export default function Page(props) {
 
 					<div className='text-center'>
 						<Button type='submit' text='수정' onClick={send} />
-						<Button text='취소' onClick={() => router.push(`/user/resume-list/${joIdx}`)} />
+						<Button text='취소' onClick={() => router.push(`/user/mypage/${joIdx}`)} />
 					</div>
 				</div>
 			</div>

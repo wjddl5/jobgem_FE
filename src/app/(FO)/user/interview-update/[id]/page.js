@@ -12,6 +12,7 @@ export default function Page(props) {
 	const [joIdx, setJoIdx] = useState("");
 	const [company, setCompany] = useState([]);
 	const [inContent, setInContent] = useState("");
+	const [inLevel, setInLevel] = useState(0); // 난이도 상태 추가
 
 	const interviewId = props.params.id; // 리뷰 ID를 props에서 가져옴
 
@@ -27,6 +28,7 @@ export default function Page(props) {
 			setCoIdx(data.coIdx); // 회사 ID 설정
 			setJoIdx(data.joIdx); // 유저 ID 설정
 			setInContent(data.inContent); // 리뷰 내용 설정
+			setInLevel(data.inLevel); // 난이도 설정
 			setCompany(res.data.companyList); // 회사 목록을 상태에 설정
 		});
 	}
@@ -43,12 +45,13 @@ export default function Page(props) {
 		}
 		axios({
 			url: "/api/updateInterview",
-			method: "get", // 업데이트를 위한 PUT 요청
+			method: "get", // 업데이트를 위한 GET 요청
 			params: {
 				id: interviewId,
 				joIdx: joIdx,
 				coIdx: coIdx,
 				inContent: inContent,
+				inLevel: inLevel, // 난이도 추가
 			},
 		}).then((res) => {
 			console.log(res);
@@ -58,6 +61,11 @@ export default function Page(props) {
 			}
 		});
 	}
+
+	// 난이도 선택 핸들러
+	const handleLevelSelect = (level) => {
+		setInLevel(level);
+	};
 
 	return (
 		<div className='flex gap-2'>
@@ -101,6 +109,26 @@ export default function Page(props) {
 							value={inContent}
 							onChange={(e) => setInContent(e.target.value)}
 						></textarea>
+					</div>
+
+					{/* 난이도 선택 */}
+					<div className='mb-4'>
+						<label htmlFor='inLevel' className='block text-sm font-medium text-gray-700'>
+							난이도
+						</label>
+						<div className='flex items-center justify-center mt-2 space-x-1'>
+							{[1, 2, 3, 4, 5].map((level) => (
+								<svg
+									key={level}
+									className={`w-8 h-8 cursor-pointer ${inLevel >= level ? "text-yellow-500" : "text-gray-300"}`}
+									fill='currentColor'
+									viewBox='0 0 24 24'
+									onClick={() => handleLevelSelect(level)}
+								>
+									<path d='M12 .587l3.668 7.431 8.167 1.184-5.894 5.741 1.389 8.091L12 18.897l-7.33 3.853 1.389-8.091L.167 9.202l8.167-1.184z' />
+								</svg>
+							))}
+						</div>
 					</div>
 
 					<div className='flex justify-center'>

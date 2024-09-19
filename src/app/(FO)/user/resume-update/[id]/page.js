@@ -4,102 +4,136 @@ import Input from "@/components/form/Input";
 import SideMenu from "@/components/sidemenu/SideMenu";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import Button from "@/components/button/Button";
 
 export default function Page(props) {
 	const router = useRouter();
 
 	const [coIdx, setCoIdx] = useState("");
 	const [joIdx, setJoIdx] = useState("");
-	const [reTitle, setReTitle] = useState("");
-	const [reContent, setReContent] = useState("");
-	const [reDefault, setReDefault] = useState("");
+	const [company, setCompany] = useState([]);
+	const [inContent, setInContent] = useState("");
+	const [inLevel, setInLevel] = useState(0); // 난이도 상태 추가
 
-	const resumeId = props.params.id; // 리뷰 ID를 props에서 가져옴
+	const interviewId = props.params.id; // 리뷰 ID를 props에서 가져옴
 
-	function getResume() {
-		axios.get(`/api/getResume?id=${resumeId}`).then((res) => {
+	function getCompany() {
+		axios.get("/api/companyList").then((res) => {
+			setCompany(res.data); // 받아온 데이터를 상태에 저장
+		});
+	}
+
+	function getInterview() {
+		axios.get(`/api/getInterview?id=${interviewId}`).then((res) => {
 			const data = res.data;
 			setCoIdx(data.coIdx); // 회사 ID 설정
 			setJoIdx(data.joIdx); // 유저 ID 설정
-			setReTitle(data.reTitle); // 리뷰 제목 설정
-			setReContent(data.reContent); // 리뷰 내용 설정
-			setReDefault(data.reDefault);
+			setInContent(data.inContent); // 리뷰 내용 설정
+			setInLevel(data.inLevel); // 난이도 설정
+			setCompany(res.data.companyList); // 회사 목록을 상태에 설정
 		});
 	}
 
 	useEffect(() => {
-		getResume(); // 컴포넌트가 마운트될 때 한 번만 실행
+		getCompany();
+		getInterview(); // 컴포넌트가 마운트될 때 한 번만 실행
 	}, []);
 
 	function send() {
+		if (!coIdx) {
+			alert("회사명을 선택해 주세요.");
+			return;
+		}
 		axios({
-			url: "/api/updateResume",
-			method: "get", // 업데이트를 위한 PUT 요청
+			url: "/api/updateInterview",
+			method: "get", // 업데이트를 위한 GET 요청
 			params: {
-				id: resumeId,
+				id: interviewId,
 				joIdx: joIdx,
 				coIdx: coIdx,
-				reTitle: reTitle,
-				reContent: reContent,
-				reDefault: reDefault,
+				inContent: inContent,
+				inLevel: inLevel, // 난이도 추가
 			},
 		}).then((res) => {
 			console.log(res);
 			if (res.status === 200) {
 				alert("수정 완료");
-				router.push(`/user/resume-list/${joIdx}`);
+				router.push(`/user/interview-list/${joIdx}`);
 			}
 		});
 	}
 
-	return (
-		<div className='flex'>
-			<SideMenu />
-			<div className='flex-1 ml-4 p-4 bg-gray-100'>
-				<div className='bg-white p-8 rounded-lg shadow-md'>
-					<h2 className='text-2xl font-bold mb-6'>이력서 작성</h2>
+	// 난이도 선택 핸들러
+	const handleLevelSelect = (level) => {
+		setInLevel(level);
+	};
 
-					{/* 제목 입력란 */}
+	return (
+		<div className='flex gap-2'>
+			<SideMenu />
+			<div className='bg-gray-100 flex-1 ml-2 '>
+				<div className='bg-white p-8 rounded-lg '>
+					<h2 className='text-2xl font-bold text-center mb-6'>면접후기 수정하기</h2>
+
 					<div className='mb-4'>
-						<label htmlFor='reTitle' className='block text-sm font-medium text-gray-700'>
-							제목
+						<label htmlFor='coIdx' className='block text-sm font-medium text-gray-700'>
+							회사명
 						</label>
-						<Input
-							type='text'
-							id='reTitle'
-							name='reTitle'
-							placeholder='제목을 입력하세요'
-							className='mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-							value={reTitle}
-							onChange={(e) => setReTitle(e.target.value)}
-						/>
+						<select
+							value={coIdx}
+							onChange={(e) => setCoIdx(e.target.value)}
+							className='w-full rounded py-3 px-[14px] text-body-color text-base border border-[f0f0f0] outline-none focus-visible:shadow-none focus:border-primary'
+						>
+							<option value=''>회사선택</option>
+							{company && company.length > 0 ? (
+								company.map((companyItem) => (
+									<option key={companyItem.id} value={companyItem.id}>
+										{companyItem.coName}
+									</option>
+								))
+							) : (
+								<option value=''>회사 정보가 없습니다</option>
+							)}
+						</select>
 					</div>
 
-					<section className='mb-8'>
-						<h2 className='text-lg font-semibold text-gray-700 mb-4'>포트폴리오</h2>
-						<Input id='portfolio' type='file' />
-					</section>
+					{/* 난이도 선택 */}
+					<div className='mb-4'>
+						<label htmlFor='inLevel' className='block text-sm font-medium text-gray-700'>
+							난이도
+						</label>
+						{/* 이 부분을 두 번째 파일의 형태로 변경 */}
+						<div className='flex'>
+							{[1, 2, 3, 4, 5].map((level) => (
+								<span
+									key={level}
+									onClick={() => handleLevelSelect(level)}
+									className={`cursor-pointer text-3xl transition-colors duration-200 ${level <= inLevel ? "text-yellow-400" : "text-gray-300"}`}
+								>
+									★
+								</span>
+							))}
+						</div>
+					</div>
 
 					<div className='mb-4'>
-						<label htmlFor='reContent' className='block text-sm font-medium text-gray-700'>
-							내용
+						<label htmlFor='inContent' className='block text-sm font-medium text-gray-700'>
+							리뷰 내용
 						</label>
 						<textarea
-							id='reContent'
-							name='reContent'
-							rows='6'
-							placeholder='여기에 이력서 내용을 입력하세요.'
-							className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-							value={reContent}
-							onChange={(e) => setReContent(e.target.value)}
+							id='inContent'
+							name='inContent'
+							rows='4'
+							placeholder='내용을 입력하세요'
+							className='mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+							value={inContent}
+							onChange={(e) => setInContent(e.target.value)}
 						></textarea>
 					</div>
 
-					{/* 버튼 */}
-					<div className='flex justify-center gap-4'>
-						<Button type='submit' text='작성' onClick={send} />
-						<Button text='취소' onClick={() => router.push(`/user/resume-list/${joIdx}`)} />
+					<div className='flex justify-center'>
+						<button className='w-full px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600' onClick={send}>
+							수정하기
+						</button>
 					</div>
 				</div>
 			</div>

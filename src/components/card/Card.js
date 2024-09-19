@@ -18,7 +18,7 @@ function Card({ item }) {
 			<div className='relative mb-4 rounded-2xl'>
 				<img
 					className='max-h-80 rounded-2xl w-full object-cover transition-transform duration-300 transform group-hover:scale-105'
-					src={"https://jobgem-bucket.s3.amazonaws.com/" + item.company.coThumbimgUrl}
+					src={`/s3/${item.company.coThumbimgUrl}`}
 					width={"100"}
 					height={"100"}
 					alt='썸네일이미지'
