@@ -124,6 +124,7 @@ export default function page(props) {
 				</div>
 			</div>
 			<div className='post_content'>
+				{!vo.boImage ? '이미지없더' : <img src={`${vo.boImage}`} />}
 				<p dangerouslySetInnerHTML={{ __html: vo.boContent }}></p>
 			</div>
 			<div className='post_comments'>
