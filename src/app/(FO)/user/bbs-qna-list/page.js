@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import styles from '/public/css/board.css';
 import axios from 'axios';
+import SideMenu from '@/components/sidemenu/SideMenu';
 
 // QnA 게시판 리스트
 export default function page(props) {
@@ -51,7 +52,8 @@ export default function page(props) {
 
 	// 페이지
 	return (
-		<div>
+		<div className='flex gap-2'>
+			<SideMenu />
 			<div className='bbs_header'>
 				<h2 className='bbs_title'>Q & A</h2>
 			</div>

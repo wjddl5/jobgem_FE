@@ -14,6 +14,8 @@ export default function page(props) {
 	const [title, setTitle] = useState('');
 	const [content, setContent] = useState('');
 	const [disabled, setDisabled] = useState(true);
+	const [boImage, setBoImage] = useState('');
+	const [imageFile, setImageFile] = useState('');
 
 	function changeContent(content) {
 		setContent(content);
@@ -42,6 +44,7 @@ export default function page(props) {
 					usIdx: 1, //로그인한 유저 idx로 변경 (!)
 					title: title,
 					content: content,
+					boImage: boImage,
 				},
 			})
 			.then((res) => {
@@ -50,15 +53,6 @@ export default function page(props) {
 					router.push('/admin/bbs/notice/list');
 				}
 			});
-	}
-
-	function handleImageUploadBefore(files, info, uploadHandler) {
-		// uploadHandler is a function
-		console.log(files, info);
-	}
-
-	function handleImageUpload(targetImgElement, index, state, imageInfo, remainingFilesCount) {
-		console.log(targetImgElement, index, state, imageInfo, remainingFilesCount);
 	}
 
 	useEffect(() => {
@@ -75,6 +69,44 @@ export default function page(props) {
 			setDisabled(true);
 		}
 	}, [title, content]);
+
+	function handleImageUpload(targetImgElement) {
+		console.log(targetImgElement);
+
+		// 이미지 src 속성에서 Base64 데이터를 추출
+		const src = targetImgElement.src;
+
+		// src가 Base64인지 확인
+		if (src.startsWith('data:image')) {
+			// Base64 데이터를 Blob으로 변환
+			const base64Data = src.split(',')[1]; // Base64 부분만 추출
+			const contentType = src.match(/data:(.*);base64/)[1]; // MIME 타입 추출
+			const byteCharacters = atob(base64Data); // Base64 디코딩
+			const byteNumbers = new Array(byteCharacters.length);
+
+			for (let i = 0; i < byteCharacters.length; i++) {
+				byteNumbers[i] = byteCharacters.charCodeAt(i);
+			}
+
+			const byteArray = new Uint8Array(byteNumbers);
+			const file = new Blob([byteArray], { type: contentType });
+
+			const formData = new FormData();
+			formData.append('file', file, targetImgElement.getAttribute('data-file-name') || 'image.png');
+
+			axios
+				.post('/api/files/upload', formData, {
+					headers: {
+						'Content-Type': 'multipart/form-data',
+					},
+				})
+				.then((res) => {
+					setBoImage(res.data);
+				});
+		} else {
+			console.error('이미지 src가 Base64 형식이 아닙니다.');
+		}
+	}
 
 	// 페이지
 	return (
@@ -93,8 +125,6 @@ export default function page(props) {
 				<Divider style={{ margin: '10px 0' }} />
 				<SunEditor
 					sunEditorStyle='height:700px'
-					//onImageUploadBefore={handleImageUploadBefore}
-					onImageUpload={handleImageUpload}
 					setOptions={{
 						buttonList: [
 							['undo', 'redo', 'bold', 'underline', 'italic', 'strike', 'subscript', 'superscript'],
@@ -105,6 +135,7 @@ export default function page(props) {
 						],
 					}}
 					onChange={changeContent}
+					onImageUpload={handleImageUpload}
 				/>
 				<div className='btn_group'>
 					<Button
