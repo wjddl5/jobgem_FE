@@ -16,9 +16,9 @@ function Card({ item }) {
 		<article className='bg-white p-6 mb-6 shadow transition duration-300 group transform hover:-translate-y-2 hover:shadow-2xl rounded-2xl cursor-pointer border'>
 			<a target='_self' href='/blog/slug' className='absolute opacity-0 top-0 right-0 left-0 bottom-0'></a>
 			<div className='relative mb-4 rounded-2xl'>
-				<Image
+				<img
 					className='max-h-80 rounded-2xl w-full object-cover transition-transform duration-300 transform group-hover:scale-105'
-					src={`/img/1.jpg`}
+					src={"https://jobgem-bucket.s3.amazonaws.com/" + item.company.coThumbimgUrl}
 					width={"100"}
 					height={"100"}
 					alt='썸네일이미지'

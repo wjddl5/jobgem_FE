@@ -112,7 +112,7 @@ export default function Page(props) {
 
 						<div className='col-span-1 flex flex-col items-center mb-5'>
 							<div className='relative'>
-								<Image id='profilePreview' className='w-32 h-32 rounded-full border border-gray-300 object-cover' src='' alt='Profile Preview' />
+								<img src={`/s3/${jobseeker.joImgUrl}`} />
 								<Input id='profilePic' type='file' name='joImgUrl' className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer' accept='image/*' />
 							</div>
 						</div>
