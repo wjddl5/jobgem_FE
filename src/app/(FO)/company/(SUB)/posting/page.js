@@ -5,6 +5,7 @@ import Table from '@/components/table/Table';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import Pagination from '@/components/pagination/Pagination';
 
 export default function Posting() {
     const router = useRouter();
@@ -14,7 +15,7 @@ export default function Posting() {
     const [listInfo, setListInfo] = useState({})
     const [select, setSelect] = useState(0)
     const [sort, setSort] = useState('poDateDesc')
-    const [curPage, setCurPage] = useState(0);
+    const [loadPage, setLoadPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
     const [totalElements, setTotalElements] = useState(0);
     useEffect(() => {
@@ -31,7 +32,7 @@ export default function Posting() {
         }else if(select === 3){
             getCloseList()
         }
-    }, [sort, curPage])
+    }, [sort, loadPage])
 
     function getinfo(){
         axios.get('/api/post/info',{
@@ -48,7 +49,7 @@ export default function Posting() {
         axios.get('/api/post',{
             params: {
                 sort: sort,
-                curPage: curPage
+                curPage: loadPage
             }
         })
         .then(res => {
@@ -60,7 +61,7 @@ export default function Posting() {
         axios.get('/api/post',{
             params: {
                 sort: sort,
-                curPage: curPage,
+                curPage: loadPage,
                 size: 10
             }
         })
@@ -73,7 +74,7 @@ export default function Posting() {
             params: {
                 state: 1,
                 sort: sort,
-                curPage: curPage,
+                curPage: loadPage,
                 size: 10
             }
         })
@@ -86,7 +87,7 @@ export default function Posting() {
             params: {
                 deadline: 'today',
                 sort: sort,
-                curPage: curPage,
+                curPage: loadPage,
                 size: 10    
             }
         })
@@ -99,7 +100,7 @@ export default function Posting() {
             params: {
                 state: 2,
                 sort: sort,
-                curPage: curPage,
+                curPage: loadPage,
                 size: 10
             }
         })
@@ -118,7 +119,7 @@ export default function Posting() {
                 search: search,
                 searchType: searchType,
                 sort: sort,
-                curPage: curPage,
+                curPage: loadPage,
                 size: 10
             }
         })
@@ -139,19 +140,19 @@ export default function Posting() {
         setList(res.data.content);
         setTotalPages(res.data.totalPages);
         setTotalElements(res.data.totalElements);
-        setCurPage(res.data.number);
+        setLoadPage(res.data.number);
     }
 
     function handlePageChange(newPage) {
         if (newPage >= 0 && newPage < totalPages) {
-            setCurPage(newPage);
+            setLoadPage(newPage);
         }
     }
     
     function handleall() {
         setSelect(0)
-        if(curPage !== 0){
-            setCurPage(0)
+        if(loadPage !== 0){
+            setLoadPage(0)
         }else{
             getAllList()
         }
@@ -159,24 +160,24 @@ export default function Posting() {
     }
     function handleprogress() {
         setSelect(1)
-        if(curPage !== 0){
-            setCurPage(0)
+        if(loadPage !== 0){
+            setLoadPage(0)
         }else{
             getProgressList()
         }
     }
     function handledeadline() {
         setSelect(2)
-        if(curPage !== 0){
-            setCurPage(0)
+        if(loadPage !== 0){
+            setLoadPage(0)
         }else{
             getDeadlineList()
         }
     }
     function handleclose() {
         setSelect(3)
-        if(curPage !== 0){
-            setCurPage(0)
+        if(loadPage !== 0){
+            setLoadPage(0)
         }else{
             getCloseList()
         }
@@ -260,43 +261,17 @@ export default function Posting() {
                 </tbody>
             </table>
             
-            {/* Pagination */}
-            <div className="flex items-center justify-center mt-4">
-                <nav className="inline-flex space-x-2 rounded-md shadow-sm" aria-label="Pagination">
-                    <button
-                        onClick={() => handlePageChange(curPage - 1)}
-                        disabled={curPage === 0}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
-                    >
-                        이전
-                    </button>
-                    {[...Array(totalPages).keys()].map((page) => (
-                        <button
-                            key={page}
-                            onClick={() => handlePageChange(page)}
-                            className={`px-4 py-2 rounded-lg ${
-                                page === curPage
-                                    ? 'bg-blue-600 text-white'
-                                    : 'bg-blue-500 text-white hover:bg-blue-600'
-                            }`}
-                        >
-                            {page + 1}
-                        </button>
-                    ))}
-                    <button
-                        onClick={() => handlePageChange(curPage + 1)}
-                        disabled={curPage === totalPages - 1}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
-                    >
-                        다음
-                    </button>
-                </nav>
-            </div>
+            <Pagination
+                totalPages={totalPages}
+                currentPage={loadPage}
+                setCurrentPage={setLoadPage}
+            />
+            
             <div className="text-center mt-4">
                 <p className="text-sm text-gray-700">
                     <span className="font-medium">{totalElements}</span> 개 중{' '}
-                    <span className="font-medium">{curPage * 10 + 1}</span> -
-                    <span className="font-medium">{Math.min((curPage + 1) * 10, totalElements)}</span> 표시
+                    <span className="font-medium">{loadPage * 10 + 1}</span> -
+                    <span className="font-medium">{Math.min((loadPage + 1) * 10, totalElements)}</span> 표시
                 </p>
             </div>
         </>
