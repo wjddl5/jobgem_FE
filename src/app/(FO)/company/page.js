@@ -8,22 +8,79 @@ import Image from "next/image";
 import Table from "@/components/table/Table";
 import Link from "next/link";
 import axios from "axios";
-import TableRow from "@/components/table/TableRow";
 
 export default function Page() {
     const coId = 1;
     const [companyData, setCompanyData] = useState();
+    const [isChangeLogo, setIsChangeLogo] = useState(true);
+    const [logo, setLogo] = useState(null);
+    const [file, setFile] = useState("");
+    const [preview, setPreview] = useState(null);
 
     // 데이터를 가져오는 함수
     const getData = () => {
         axios.get(`/api/company?id=${coId}`).then((res) => {
             setCompanyData(res.data);
+            setLogo(res.data.company.coThumbimgUrl);
         })
     }
-    // 페이지 번호가 변경될 때마다 데이터를 가져옴
+
+    const handleLogoChange = (e) => {
+        const selectedFile = e.target.files[0];
+        if(/\s/.test(selectedFile.name)){
+            alert("파일명에 공백이 존재합니다.");
+            e.target.value = null;
+            return;
+        }
+        setFile(selectedFile);
+        setIsChangeLogo(false);
+
+        // 선택된 파일이 이미지일 경우 미리보기 URL 생성
+        if (selectedFile) {
+            const previewUrl = URL.createObjectURL(selectedFile);
+            setPreview(previewUrl);
+        }
+    };
+
+    const handleLogoSave = async () => {
+        if (confirm("로고를 수정하시겠습니까?")) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const uploadRes = await axios.post('/api/files/upload', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+
+                if (uploadRes.status === 200) {
+                    const fileName = file.name;
+
+                    // 이미지 업로드가 완료된 후 회사 정보를 업데이트합니다.
+                    const updateRes = await axios.post('/api/company/update/logo', null, {
+                        params: {
+                            id: coId,
+                            coThumbimgUrl: fileName
+                        }
+                    });
+
+                    if (updateRes.status === 200) {
+                        alert("수정되었습니다.");
+                        setPreview(null);
+                        setLogo(fileName);
+                        setIsChangeLogo(true);
+                    }
+                }
+            } catch (err) {
+                console.error("파일 업로드 중 오류 발생:", err);
+            }
+        }
+    };
+
     useEffect(() => {
         getData();
-    }, []);
+    }, [logo]);
 
     if (!companyData) return <div className='flex justify-center'><img src='/img/loading.gif' alt='로딩' /></div>;
 
@@ -32,15 +89,18 @@ export default function Page() {
             <div className="bg-gray-100">
                 <div className="flex items-center justify-between p-4 bg-white rounded-md shadow-md">
                     <div className="flex gap-6">
-                        <Image src="/img/1.jpg" width='100' height='100' alt="등록된 로고"
+                        <Image src={`/s3/${logo ? logo : '1.jpg'}`} width='100' height='100' alt="등록된 로고"
                                className="w-12 h-12 rounded-full object-cover border border-gray-300"/>
-                        <button
+                        {preview &&
+                            <Image src={preview} width='100' height='100' className="w-12 h-12 rounded-full object-cover border border-gray-300" alt="수정로고 미리보기" />
+                        }
+                        <div
                             className="flex items-center border border-dashed border-gray-300 px-4 py-2 rounded-md hover:bg-gray-50">
-                            <label className="text-gray-600"><input type='file' className='appearance-none hidden'/>로고 등록 +</label>
-                        </button>
+                            <label className="text-gray-600"><input type='file' className='appearance-none hidden' onChange={handleLogoChange} />로고 등록 +</label>
+                        </div>
                     </div>
-                    <div className="hover:rotate-90 transition duration-200 ease-in-out">
-                        <IconButton><DiAptana/></IconButton>
+                    <div>
+                        <Button text={'로고 저장'} disabled={isChangeLogo} onClick={handleLogoSave} />
                     </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mt-6">
