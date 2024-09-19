@@ -1,7 +1,8 @@
 import React from "react";
-import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 function Card({ item }) {
+	const router = useRouter();
 	const date = new Date();
 	const nowDate = new Date(date.getFullYear(), date.getMonth(), date.getDate()); // Get the current date without time
 
@@ -14,7 +15,7 @@ function Card({ item }) {
 
 	return (
 		<article className='bg-white p-6 mb-6 shadow transition duration-300 group transform hover:-translate-y-2 hover:shadow-2xl rounded-2xl cursor-pointer border'>
-			<a target='_self' href='/blog/slug' className='absolute opacity-0 top-0 right-0 left-0 bottom-0'></a>
+			<a target='_self' onClick={() => router.push(`/user/mypage`)} className='absolute opacity-0 top-0 right-0 left-0 bottom-0'></a>
 			<div className='relative mb-4 rounded-2xl'>
 				<img
 					className='max-h-80 rounded-2xl w-full object-cover transition-transform duration-300 transform group-hover:scale-105'
@@ -32,7 +33,7 @@ function Card({ item }) {
 
 				<a
 					className='flex justify-center items-center bg-cyan-200 bg-opacity-80 z-10 absolute top-0 left-0 w-full h-full text-gray-700 rounded-2xl opacity-0 transition-all duration-300 transform group-hover:scale-105 text-xl group-hover:opacity-100'
-					href='/blog/slug'
+					onClick={() => router.push(`/user/post/view/${item.id}`)}
 					target='_self'
 					rel='noopener noreferrer'
 				>

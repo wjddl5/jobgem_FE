@@ -1,10 +1,9 @@
-'use client';
-import React, { useState } from 'react';
-import { FiMenu } from 'react-icons/fi';
-import { useRouter } from 'next/navigation';
+"use client";
+import React, { useState } from "react";
+import { FiMenu } from "react-icons/fi";
+import { useRouter } from "next/navigation";
 
 export default function Sidebar() {
-	const joIdx = 1;
 	const [isOpen, setIsOpen] = useState(false);
 	const router = useRouter(); // useRouter 훅 사용
 
@@ -16,14 +15,14 @@ export default function Sidebar() {
 			</button>
 
 			{/* 사이드바 - 큰 화면에서는 항상 표시, 작은 화면에서는 토글 가능 */}
-			<aside className={`${isOpen ? 'block' : 'hidden'} w-64 bg-white p-6 shadow-md rounded-lg md:block md:w-64`}>
+			<aside className={`${isOpen ? "block" : "hidden"} w-64 bg-white p-6 shadow-md rounded-lg md:block md:w-64`}>
 				<nav className='space-y-6'>
 					<div>
 						<h2 className='font-bold text-lg text-gray-900 mb-4'>개인회원 홈</h2>
 						<div className='space-y-1'>
 							<h3 className='font-semibold text-gray-700 mb-3'>
 								{/* 마이페이지로 이동 */}
-								<span onClick={() => router.push(`/user/mypage/${joIdx}`)} className='hover:text-blue-600 cursor-pointer'>
+								<span onClick={() => router.push(`/user/mypage`)} className='hover:text-blue-600 cursor-pointer'>
 									마이페이지
 								</span>
 							</h3>
@@ -33,13 +32,13 @@ export default function Sidebar() {
 							<ul className='space-y-1 text-gray-600'>
 								<li>
 									{/* 이력서 등록 */}
-									<span onClick={() => router.push(`/user/resume-write/${joIdx}`)} className='hover:text-blue-600 cursor-pointer'>
+									<span onClick={() => router.push(`/user/resume-write`)} className='hover:text-blue-600 cursor-pointer'>
 										이력서 등록
 									</span>
 								</li>
 								<li>
 									{/* 이력서 현황 */}
-									<span onClick={() => router.push(`/user/resume-list/${joIdx}`)} className='hover:text-blue-600 cursor-pointer'>
+									<span onClick={() => router.push(`/user/resume-list`)} className='hover:text-blue-600 cursor-pointer'>
 										이력서 현황
 									</span>
 								</li>
@@ -52,13 +51,13 @@ export default function Sidebar() {
 						<ul className='space-y-1 text-gray-600'>
 							<li>
 								{/* 입사지원 현황 */}
-								<span onClick={() => router.push(`/user/apply-company/${joIdx}`)} className='hover:text-blue-600 cursor-pointer'>
+								<span onClick={() => router.push(`/user/apply-company`)} className='hover:text-blue-600 cursor-pointer'>
 									입사지원 현황
 								</span>
 							</li>
 							<li>
 								{/* 입사제안 목록 */}
-								<span onClick={() => router.push(`/user/job-offer/${joIdx}`)} className='hover:text-blue-600 cursor-pointer'>
+								<span onClick={() => router.push(`/user/job-offer`)} className='hover:text-blue-600 cursor-pointer'>
 									입사제안 목록
 								</span>
 							</li>
@@ -70,13 +69,13 @@ export default function Sidebar() {
 						<ul className='space-y-1 text-gray-600'>
 							<li>
 								{/* 스크랩 공고 */}
-								<span onClick={() => router.push(`/user/scrap/${joIdx}`)} className='hover:text-blue-600 cursor-pointer'>
+								<span onClick={() => router.push(`/user/scrap`)} className='hover:text-blue-600 cursor-pointer'>
 									스크랩 공고
 								</span>
 							</li>
 							<li>
 								{/* 관심기업 */}
-								<span onClick={() => router.push(`/user/favorite-companies/${joIdx}`)} className='hover:text-blue-600 cursor-pointer'>
+								<span onClick={() => router.push(`/user/favorite-companies`)} className='hover:text-blue-600 cursor-pointer'>
 									관심기업
 								</span>
 							</li>
@@ -106,13 +105,13 @@ export default function Sidebar() {
 						<ul className='space-y-1 text-gray-600'>
 							<li>
 								{/* 기업후기 */}
-								<span onClick={() => router.push(`/user/company-review-list/${joIdx}`)} className='hover:text-blue-600 cursor-pointer'>
+								<span onClick={() => router.push(`/user/company-review-list`)} className='hover:text-blue-600 cursor-pointer'>
 									기업후기
 								</span>
 							</li>
 							<li>
 								{/* 면접후기 */}
-								<span onClick={() => router.push(`/user/interview-list/${joIdx}`)} className='hover:text-blue-600 cursor-pointer'>
+								<span onClick={() => router.push(`/user/interview-list`)} className='hover:text-blue-600 cursor-pointer'>
 									면접후기
 								</span>
 							</li>
@@ -124,13 +123,13 @@ export default function Sidebar() {
 						<ul className='space-y-1 text-gray-600'>
 							<li>
 								{/* 회원정보 수정 */}
-								<span onClick={() => router.push(`/user/mypage-update/${joIdx}`)} className='hover:text-blue-600 cursor-pointer'>
+								<span onClick={() => router.push(`/user/mypage-update`)} className='hover:text-blue-600 cursor-pointer'>
 									회원정보 수정
 								</span>
 							</li>
 							<li>
 								{/* 비밀번호 변경 */}
-								<span onClick={() => router.push(`/user/pwd-check/${joIdx}`)} className='hover:text-blue-600 cursor-pointer'>
+								<span onClick={() => router.push(`/user/pwd-check`)} className='hover:text-blue-600 cursor-pointer'>
 									비밀번호 변경
 								</span>
 							</li>
@@ -143,7 +142,7 @@ export default function Sidebar() {
 						<ul className='space-y-1 text-gray-600'>
 							<li>
 								{/* 회원탈퇴 */}
-								<span onClick={() => router.push(`/user/delete-account/${joIdx}`)} className='hover:text-red-600 cursor-pointer'>
+								<span onClick={() => router.push(`/user/delete-account`)} className='hover:text-red-600 cursor-pointer'>
 									회원탈퇴하기
 								</span>
 							</li>
