@@ -13,14 +13,12 @@ export default function Page(props) {
 	function getData() {
 		axios.get(API_URL).then((res) => {
 			setJobseeker(res.data);
-			console.log(res);
 		});
 	}
 
 	function getCnt() {
 		axios.get(API_URL2).then((res) => {
 			setMyPageCnt(res.data);
-			console.log(res);
 		});
 	}
 
@@ -37,9 +35,7 @@ export default function Page(props) {
 					{/* 프로필 섹션 */}
 					<div className='flex items-center gap-5 mb-8'>
 						<div className='flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full'>
-							<svg className='w-12 h-12 text-blue-500' fill='currentColor' viewBox='0 0 24 24'>
-								<path d='M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z' />
-							</svg>
+							<img src={`/s3/${jobseeker.joImgUrl}`} />
 						</div>
 						<div>
 							<h1 className='text-3xl font-extrabold text-gray-900 mb-2'>안녕하세요, {jobseeker.joName}입니다!</h1>
