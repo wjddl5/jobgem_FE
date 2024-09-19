@@ -1,7 +1,8 @@
-import axios from "axios"
+import axios from "axios";
 
-export async function searchAction(keyword, curPage) {
+export async function searchAction(keyword, curPage = 0) {
     const API_URL = "http://localhost:8080/api/post/search"
+
     try {
         const result = await axios.get(API_URL, {
             params: {
