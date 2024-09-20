@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import React from "react";
 import { useRouter } from "next/navigation";
+import InputPopup from "@/components/popup/InputPopup";
 export default function DetialPage(props) {
 	const [curPage, setCurPage] = useState(0);
 	const [applyment, setApplyment] = useState([]);
@@ -21,6 +22,13 @@ export default function DetialPage(props) {
 	const [viewCount, setViewCount] = useState(0);
 	const [unviewCount, setUnviewCount] = useState(0);
 	const [expandedRow, setExpandedRow] = useState(null);
+	const [isPopupOpen, setPopupOpen] = useState(false);
+	const [selectRow, setSelectRow] = useState({});
+
+	const inputs = [
+		{ label: '메시지', name: 'blContent', placeholder: '메시지를 입력하세요', type: 'textarea' },
+	];
+
 	useEffect(() => {
 		getApplymentList();
 		getDetail();
@@ -88,8 +96,38 @@ export default function DetialPage(props) {
 			setApRead(0);
 		}
 	}
+
+	const handleaddBlock = (e, item) => {
+		e.preventDefault();
+		setPopupOpen(true);
+		setSelectRow(item);
+	}
+
+	const handleSubmit = (formData) => {
+		if(confirm("차단 추가하시겠습니까?")){
+			console.log(selectRow);
+			axios.post(`/api/company/block/${selectRow.joIdx}`, null, {
+				params: {
+					coIdx: selectRow.post.coIdx,
+					joIdx: selectRow.joIdx,
+					blContent: formData.blContent
+				}
+			}).then((res) => {
+				if(res.status === 200)
+					alert("차단 추가완료");
+			})
+		}
+	}
+
 	return (
 		<div className='flex gap-4'>
+			<InputPopup
+				isOpen={isPopupOpen}
+				onClose={() => setPopupOpen(false)}
+				title="차단사유를 입력하세요"
+				inputs={inputs} // 여러 개의 입력 필드 전달
+				onSubmit={handleSubmit}
+			/>
 			<div className='flex-1 ml-4 p-6 '>
 				<div className='flex justify-between max-w-7xl mx-auto mb-8'>
 					<h1 className='text-3xl font-bold text-gray-800 mb-4 flex items-center'>{title}</h1>
@@ -196,6 +234,10 @@ export default function DetialPage(props) {
 															) : (
 																<p className='text-md text-gray-500 italic'>보유스킬 없음</p>
 															)}
+
+														</div>
+														<div className='text-right'>
+															<Button text={"차단"} onClick={(e) => handleaddBlock(e, item)}/>
 														</div>
 													</div>
 												</td>
