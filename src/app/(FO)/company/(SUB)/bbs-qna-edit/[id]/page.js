@@ -6,13 +6,16 @@ import SunEditor from 'suneditor-react';
 import sunEditorStyle from 'suneditor/dist/css/suneditor.min.css';
 import '/public/css/board.css';
 import axios from 'axios';
+import { data } from 'autoprefixer';
 
-// (관리자) 공지사항 게시글 작성
+// qna 게시글 수정
 export default function page(props) {
 	const router = useRouter();
 	const [title, setTitle] = useState('');
 	const [content, setContent] = useState('');
 	const [disabled, setDisabled] = useState(true);
+	const [vo, setVo] = useState({});
+	const API_URL = `/api/bbs/qna/view?id=${props.params.id}`;
 	const editorRef = useRef(null);
 
 	function changeContent(content) {
@@ -36,19 +39,17 @@ export default function page(props) {
 
 	function saveBbs(title, content) {
 		axios
-			.get('/api/bbs/notice/write', {
+			.get('/api/bbs/notice/edit', {
 				params: {
-					boType: 1, // 1: 공지사항
-					usIdx: 1, //로그인한 유저 idx로 변경 (!)
+					boId: props.params.id,
 					title: title,
 					content: content,
-					//boImage: boImage,
 				},
 			})
 			.then((res) => {
 				if (res.data == true) {
 					alert('저장완료');
-					router.push('/admin/bbs/notice/list');
+					router.push('/user/bbs-qna-list');
 				}
 			});
 	}
@@ -68,7 +69,13 @@ export default function page(props) {
 		}
 	}, [title, content]);
 
-	// ===============
+	useEffect(() => {
+		axios.get(API_URL).then((res) => {
+			setVo(res.data.vo);
+			setTitle(res.data.vo.boTitle);
+			setContent(res.data.vo.boContent);
+		});
+	}, []);
 
 	const getSunEditorInstance = (sunEditor) => {
 		editorRef.current = sunEditor; // SunEditor 인스턴스를 ref에 저장
@@ -110,20 +117,21 @@ export default function page(props) {
 	return (
 		<div className='write_container'>
 			<form>
-				<h2 className='h2'>공지사항 작성</h2>
+				<h2 className='h2'>QnA 수정</h2>
 				<TextField
 					id='boTitle'
-					label='제목'
 					variant='outlined'
 					style={{ width: '940px' }}
+					defaultValue={vo.boTitle}
 					onChange={(event) => {
 						setTitle(event.target.value);
 					}}
 				/>
 				<Divider style={{ margin: '10px 0' }} />
 				<SunEditor
-					getSunEditorInstance={getSunEditorInstance}
 					sunEditorStyle='height:700px'
+					onImageUploadBefore={toImg}
+					getSunEditorInstance={getSunEditorInstance}
 					setOptions={{
 						buttonList: [
 							['undo', 'redo', 'bold', 'underline', 'italic', 'strike', 'subscript', 'superscript'],
@@ -133,8 +141,8 @@ export default function page(props) {
 							['fullScreen', 'showBlocks', 'codeView'],
 						],
 					}}
+					setContents={vo.boContent}
 					onChange={changeContent}
-					onImageUploadBefore={toImg}
 				/>
 				<div className='btn_group'>
 					<Button
@@ -151,7 +159,7 @@ export default function page(props) {
 					<Button
 						variant='outlined'
 						onClick={() => {
-							confirm('작성한 내용은 저장되지 않습니다. \n이동하시겠습니까?') ? router.push('/admin/bbs/notice/list') : '';
+							confirm('작성한 내용은 저장되지 않습니다. \n이동하시겠습니까?') ? router.push('/user/bbs-qna-list') : '';
 						}}
 					>
 						목록

@@ -100,9 +100,7 @@ export default function Sidebar() {
 				<div id='collapseTwo' className={`collapse ${activeLink['collapseTwo'] ? 'show' : ''}`} style={{ visibility: 'visible' }} aria-labelledby='headingTwo' data-parent='#accordionSidebar'>
 					<div className='bg-white py-2 collapse-inner rounded'>
 						<h6 className='collapse-header'>기업관리:</h6>
-						<a className='collapse-item' href='/admin/company'>
-							{' '}
-							onClick={removeSession}
+						<a className='collapse-item' href='/admin/company' onClick={removeSession}>
 							기업 리스트
 						</a>
 						<a className='collapse-item' href='/admin/company/black' onClick={removeSession}>

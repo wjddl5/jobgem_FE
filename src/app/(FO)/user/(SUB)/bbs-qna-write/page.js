@@ -1,21 +1,20 @@
 'use client';
 import { Button, TextField, Divider } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import SunEditor from 'suneditor-react';
 import sunEditorStyle from 'suneditor/dist/css/suneditor.min.css';
 import '/public/css/board.css';
 import axios from 'axios';
 import { data } from 'autoprefixer';
 
-// qna 게시글 수정
+// QnA 게시글 작성
 export default function page(props) {
 	const router = useRouter();
 	const [title, setTitle] = useState('');
 	const [content, setContent] = useState('');
 	const [disabled, setDisabled] = useState(true);
-	const [vo, setVo] = useState({});
-	const API_URL = `/api/bbs/qna/view?id=${props.params.id}`;
+	const editorRef = useRef(null);
 
 	function changeContent(content) {
 		setContent(content);
@@ -38,9 +37,10 @@ export default function page(props) {
 
 	function saveBbs(title, content) {
 		axios
-			.get('/api/bbs/notice/edit', {
+			.get('/api/bbs/notice/write', {
 				params: {
-					boId: props.params.id,
+					boType: 2, // 2: QnA
+					usIdx: 1, //로그인한 유저 idx로 변경 (!)
 					title: title,
 					content: content,
 				},
@@ -51,6 +51,15 @@ export default function page(props) {
 					router.push('/user/bbs-qna-list');
 				}
 			});
+	}
+
+	function handleImageUploadBefore(files, info, uploadHandler) {
+		// uploadHandler is a function
+		console.log(files, info);
+	}
+
+	function handleImageUpload(targetImgElement, index, state, imageInfo, remainingFilesCount) {
+		console.log(targetImgElement, index, state, imageInfo, remainingFilesCount);
 	}
 
 	useEffect(() => {
@@ -68,24 +77,52 @@ export default function page(props) {
 		}
 	}, [title, content]);
 
-	useEffect(() => {
-		axios.get(API_URL).then((res) => {
-			setVo(res.data.vo);
-			setTitle(res.data.vo.boTitle);
-			setContent(res.data.vo.boContent);
-		});
-	}, []);
+	// =================
+	const getSunEditorInstance = (sunEditor) => {
+		editorRef.current = sunEditor; // SunEditor 인스턴스를 ref에 저장
+	};
 
+	function toImg(files, info, uploadHandler) {
+		const file = files[0];
+
+		const formData = new FormData();
+		formData.append('file', file);
+
+		fetch('/api/files/upload', {
+			method: 'POST',
+			body: formData,
+		})
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}
+				return response.text(); // 서버에서 반환된 텍스트(S3 URL)를 처리
+			})
+			.then((s3Url) => {
+				console.log('S3 URL:', s3Url); // S3 URL이 잘 출력되는지 확인
+
+				if (editorRef.current) {
+					console.log('에디터에 이미지 삽입');
+					// SunEditor 인스턴스에서 이미지 삽입
+					editorRef.current.insertHTML(`<img src="${s3Url}" alt="image">`);
+					uploadHandler(); // 업로드 완료 후 uploadHandler 호출
+				}
+			})
+			.catch((error) => {
+				console.error('Error uploading image:', error);
+				uploadHandler(null); // 에러 발생 시 uploadHandler에 null 전달
+			});
+	}
 	// 페이지
 	return (
 		<div className='write_container'>
 			<form>
-				<h2 className='h2'>QnA 수정</h2>
+				<h2 className='h2'>1:1 문의</h2>
 				<TextField
 					id='boTitle'
+					label='제목'
 					variant='outlined'
 					style={{ width: '940px' }}
-					defaultValue={vo.boTitle}
 					onChange={(event) => {
 						setTitle(event.target.value);
 					}}
@@ -93,8 +130,8 @@ export default function page(props) {
 				<Divider style={{ margin: '10px 0' }} />
 				<SunEditor
 					sunEditorStyle='height:700px'
-					//onImageUploadBefore={handleImageUploadBefore}
-					//onImageUpload={handleImageUpload}
+					onImageUploadBefore={toImg}
+					getSunEditorInstance={getSunEditorInstance}
 					setOptions={{
 						buttonList: [
 							['undo', 'redo', 'bold', 'underline', 'italic', 'strike', 'subscript', 'superscript'],
@@ -104,7 +141,6 @@ export default function page(props) {
 							['fullScreen', 'showBlocks', 'codeView'],
 						],
 					}}
-					setContents={vo.boContent}
 					onChange={changeContent}
 				/>
 				<div className='btn_group'>

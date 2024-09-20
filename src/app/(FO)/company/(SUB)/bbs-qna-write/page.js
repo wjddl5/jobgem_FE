@@ -6,8 +6,9 @@ import SunEditor from 'suneditor-react';
 import sunEditorStyle from 'suneditor/dist/css/suneditor.min.css';
 import '/public/css/board.css';
 import axios from 'axios';
+import { data } from 'autoprefixer';
 
-// (관리자) 공지사항 게시글 작성
+// QnA 게시글 작성 z
 export default function page(props) {
 	const router = useRouter();
 	const [title, setTitle] = useState('');
@@ -38,19 +39,27 @@ export default function page(props) {
 		axios
 			.get('/api/bbs/notice/write', {
 				params: {
-					boType: 1, // 1: 공지사항
+					boType: 2, // 2: QnA
 					usIdx: 1, //로그인한 유저 idx로 변경 (!)
 					title: title,
 					content: content,
-					//boImage: boImage,
 				},
 			})
 			.then((res) => {
 				if (res.data == true) {
 					alert('저장완료');
-					router.push('/admin/bbs/notice/list');
+					router.push('/user/bbs-qna-list');
 				}
 			});
+	}
+
+	function handleImageUploadBefore(files, info, uploadHandler) {
+		// uploadHandler is a function
+		console.log(files, info);
+	}
+
+	function handleImageUpload(targetImgElement, index, state, imageInfo, remainingFilesCount) {
+		console.log(targetImgElement, index, state, imageInfo, remainingFilesCount);
 	}
 
 	useEffect(() => {
@@ -67,8 +76,6 @@ export default function page(props) {
 			setDisabled(true);
 		}
 	}, [title, content]);
-
-	// ===============
 
 	const getSunEditorInstance = (sunEditor) => {
 		editorRef.current = sunEditor; // SunEditor 인스턴스를 ref에 저장
@@ -110,7 +117,7 @@ export default function page(props) {
 	return (
 		<div className='write_container'>
 			<form>
-				<h2 className='h2'>공지사항 작성</h2>
+				<h2 className='h2'>1:1 문의</h2>
 				<TextField
 					id='boTitle'
 					label='제목'
@@ -122,8 +129,9 @@ export default function page(props) {
 				/>
 				<Divider style={{ margin: '10px 0' }} />
 				<SunEditor
-					getSunEditorInstance={getSunEditorInstance}
 					sunEditorStyle='height:700px'
+					onImageUploadBefore={toImg}
+					getSunEditorInstance={getSunEditorInstance}
 					setOptions={{
 						buttonList: [
 							['undo', 'redo', 'bold', 'underline', 'italic', 'strike', 'subscript', 'superscript'],
@@ -134,7 +142,6 @@ export default function page(props) {
 						],
 					}}
 					onChange={changeContent}
-					onImageUploadBefore={toImg}
 				/>
 				<div className='btn_group'>
 					<Button
@@ -151,7 +158,7 @@ export default function page(props) {
 					<Button
 						variant='outlined'
 						onClick={() => {
-							confirm('작성한 내용은 저장되지 않습니다. \n이동하시겠습니까?') ? router.push('/admin/bbs/notice/list') : '';
+							confirm('작성한 내용은 저장되지 않습니다. \n이동하시겠습니까?') ? router.push('/user/bbs-qna-list') : '';
 						}}
 					>
 						목록
