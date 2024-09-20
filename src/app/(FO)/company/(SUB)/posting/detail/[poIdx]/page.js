@@ -105,8 +105,7 @@ export default function DetialPage(props) {
 
 	const handleSubmit = (formData) => {
 		if(confirm("차단 추가하시겠습니까?")){
-			console.log(selectRow);
-			axios.post(`/api/company/block/${selectRow.joIdx}`, null, {
+			axios.post('/api/company/block', null, {
 				params: {
 					coIdx: selectRow.post.coIdx,
 					joIdx: selectRow.joIdx,

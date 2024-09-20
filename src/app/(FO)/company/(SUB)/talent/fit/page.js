@@ -55,7 +55,7 @@ function Page() {
     // 찜 하기
     const addWishHandler = (id) => {
         if(confirm("해당 인재를 찜목록에 저장하시겠습니까?")){
-            axios.post('/api/company/wish/add', null, {
+            axios.post('/api/company/wish', null, {
                 params: {
                     coIdx: userId,
                     joIdx: id,
@@ -71,7 +71,7 @@ function Page() {
 
     // 폼 확인 시 제출
     const handleSubmit = async (formData) => {
-        axios.post("/api/company/offer/add",null,{params:
+        axios.post("/api/company/offer",null,{params:
                 {
                     coIdx: userId,
                     joIdx: jobseekerId,
