@@ -8,14 +8,12 @@ import "/public/css/board.css";
 import axios from "axios";
 import { data } from "autoprefixer";
 
-// qna 게시글 수정 z
+// QnA 게시글 작성 z
 export default function page(props) {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [disabled, setDisabled] = useState(true);
-  const [vo, setVo] = useState({});
-  const API_URL = `/api/bbs/qna/view?id=${props.params.id}`;
 
   function changeContent(content) {
     setContent(content);
@@ -38,9 +36,10 @@ export default function page(props) {
 
   function saveBbs(title, content) {
     axios
-      .get("/api/bbs/notice/edit", {
+      .get("/api/bbs/notice/write", {
         params: {
-          boId: props.params.id,
+          boType: 2, // 2: QnA
+          usIdx: 1, //로그인한 유저 idx로 변경 (!)
           title: title,
           content: content,
         },
@@ -51,6 +50,15 @@ export default function page(props) {
           router.push("/user/bbs-qna-list");
         }
       });
+  }
+
+  function handleImageUploadBefore(files, info, uploadHandler) {
+    // uploadHandler is a function
+    console.log(files, info);
+  }
+
+  function handleImageUpload(targetImgElement, index, state, imageInfo, remainingFilesCount) {
+    console.log(targetImgElement, index, state, imageInfo, remainingFilesCount);
   }
 
   useEffect(() => {
@@ -68,24 +76,16 @@ export default function page(props) {
     }
   }, [title, content]);
 
-  useEffect(() => {
-    axios.get(API_URL).then((res) => {
-      setVo(res.data.vo);
-      setTitle(res.data.vo.boTitle);
-      setContent(res.data.vo.boContent);
-    });
-  }, []);
-
   // 페이지
   return (
     <div className="write_container">
       <form>
-        <h2 className="h2">QnA 수정</h2>
+        <h2 className="h2">1:1 문의</h2>
         <TextField
           id="boTitle"
+          label="제목"
           variant="outlined"
           style={{ width: "940px" }}
-          defaultValue={vo.boTitle}
           onChange={(event) => {
             setTitle(event.target.value);
           }}
@@ -94,7 +94,7 @@ export default function page(props) {
         <SunEditor
           sunEditorStyle="height:700px"
           //onImageUploadBefore={handleImageUploadBefore}
-          //onImageUpload={handleImageUpload}
+          onImageUpload={handleImageUpload}
           setOptions={{
             buttonList: [
               ["undo", "redo", "bold", "underline", "italic", "strike", "subscript", "superscript"],
@@ -104,7 +104,6 @@ export default function page(props) {
               ["fullScreen", "showBlocks", "codeView"],
             ],
           }}
-          setContents={vo.boContent}
           onChange={changeContent}
         />
         <div className="btn_group">

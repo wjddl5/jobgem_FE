@@ -8,7 +8,7 @@ import "/public/css/board.css";
 import axios from "axios";
 import { data } from "autoprefixer";
 
-// qna 게시글 수정 z
+// qna 게시글 수정
 export default function page(props) {
   const router = useRouter();
   const [title, setTitle] = useState("");
@@ -93,7 +93,7 @@ export default function page(props) {
         <Divider style={{ margin: "10px 0" }} />
         <SunEditor
           sunEditorStyle="height:700px"
-          //onImageUploadBefore={handleImageUploadBefore}
+          //onImageUploadBefore={handleImageUploadBefore}c
           //onImageUpload={handleImageUpload}
           setOptions={{
             buttonList: [
