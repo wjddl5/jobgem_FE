@@ -47,13 +47,14 @@ export default function ChatPage() {
 		<Box
 			sx={{
 				width: '100%',
-				maxWidth: '600px',
-				margin: '0 auto',
+				maxWidth: '650px',
+				height: '840px',
+				margin: '20px auto',
 				padding: '20px',
 				boxSizing: 'border-box',
 				backgroundColor: '#f5f5f5',
 				borderRadius: '8px',
-				boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+				boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
 			}}
 		>
 			<Typography variant='h5' gutterBottom>
@@ -65,7 +66,7 @@ export default function ChatPage() {
 				elevation={3}
 				sx={{
 					padding: '15px',
-					height: '400px', // 고정된 높이로 스크롤 가능하게 설정
+					height: '600px', // 고정된 높이로 스크롤 가능하게 설정
 					overflowY: 'auto',
 					marginBottom: '20px',
 				}}
