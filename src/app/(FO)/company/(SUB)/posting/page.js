@@ -35,7 +35,7 @@ export default function Posting() {
     }, [sort, loadPage])
 
     function getinfo(){
-        axios.get('/api/post/info',{
+        axios.get('/api/posts/info',{
             params: {
                 coIdx: 1
             }
@@ -46,7 +46,7 @@ export default function Posting() {
         })
     }
     function init(){
-        axios.get('/api/post',{
+        axios.get('/api/posts',{
             params: {
                 sort: sort,
                 curPage: loadPage
@@ -58,7 +58,7 @@ export default function Posting() {
         })
     }
     function getAllList(){
-        axios.get('/api/post',{
+        axios.get('/api/posts',{
             params: {
                 sort: sort,
                 curPage: loadPage,
@@ -70,7 +70,7 @@ export default function Posting() {
         })
     }
     function getProgressList(){
-        axios.get('/api/post',{
+        axios.get('/api/posts',{
             params: {
                 state: 1,
                 sort: sort,
@@ -83,7 +83,7 @@ export default function Posting() {
         })
     }
     function getDeadlineList(){
-        axios.get('/api/post',{
+        axios.get('/api/posts',{
             params: {
                 deadline: 'today',
                 sort: sort,
@@ -96,7 +96,7 @@ export default function Posting() {
         })
     }
     function getCloseList(){
-        axios.get('/api/post',{
+        axios.get('/api/posts',{
             params: {
                 state: 2,
                 sort: sort,
@@ -114,7 +114,7 @@ export default function Posting() {
             alert('검색어를 입력해주세요.')
             return
         }
-        axios.get('/api/post',{
+        axios.get('/api/posts',{
             params: {
                 search: search,
                 searchType: searchType,

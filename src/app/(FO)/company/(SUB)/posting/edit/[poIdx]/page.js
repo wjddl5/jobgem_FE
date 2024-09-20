@@ -3,14 +3,19 @@
 import SelectButton from '@/components/selector/SelectButton';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { Map, MapMarker, useKakaoLoader } from 'react-kakao-maps-sdk';
 import SunEditor from "suneditor-react";
 import 'suneditor/dist/css/suneditor.min.css';
+import SunEditorCore from "suneditor/src/lib/core";
 
 export default function ApplicationForm(params) {
+    const kakaoRestKey = process.env.NEXT_PUBLIC_KAKOMAP_API_REST_KEY
+    const kakaoJavascriptKey = process.env.NEXT_PUBLIC_KAKOMAP_API_JAVASCRIPT_KEY
+
     useKakaoLoader({
-        appkey: "50d846af06392a3886e7875ff3d64eca",
+        appkey: kakaoJavascriptKey,
         libraries: ["services","clusterer"]
     })
     const router = useRouter();
@@ -29,7 +34,50 @@ export default function ApplicationForm(params) {
         { id: 'email', name: 'e-메일' },
         { id: 'fax', name: 'Fax' },
     ];
+    const makeBase64ImageToFile = (base64Image) => {
+        const mimeType = base64Image.split(";")[0].split(":")[1];
+        const extension = mimeType.split("/")[1];
+        const byteString = atob(base64Image.split(",")[1]);
+        const arrayBuffer = new ArrayBuffer(byteString.length);
+        const uint8Array = new Uint8Array(arrayBuffer);
+        console.log("base64");
+        for (let i = 0; i < byteString.length; i++) {
+          uint8Array[i] = byteString.charCodeAt(i);
+        }
+      
+        const blob = new Blob([arrayBuffer], { type: mimeType });
+        const fileName = `${uuidv4()}.${extension}`;
+        const file = new File([blob], fileName, { type: mimeType });
+      
+        return { file, fileName };
+      };
 
+        // Editor 내용 처리
+        const processEditorContent = () => {
+            let processedContent = content;
+            const base64ImageRegex = /<img src="(data:image\/[^;]+;base64[^"]+)"/g;
+            let match;
+    
+            while ((match = base64ImageRegex.exec(content)) !== null) {
+                const base64Image = match[1];
+                const { file,fileName } = makeBase64ImageToFile(base64Image);
+                
+                let url;
+                axios.post('/api/files/upload', formData)
+                .then(response => {
+                    console.log(response);
+                    data.imgUrl = response.data;
+                })
+                .catch(error => {
+                    console.error('Error submitting form:', error);
+                    setShowConfirmPopup(false);
+                });
+    
+                processedContent = processedContent.replace(base64Image, url);
+            }
+    
+            return processedContent;
+        };
     const handleMethodToggle = (methodId) => {
         setSelectedMethods(prevMethods =>
             prevMethods.includes(methodId)
@@ -107,6 +155,7 @@ export default function ApplicationForm(params) {
     /* 확인 팝업 */
     const [showConfirmPopup, setShowConfirmPopup] = useState(false);
     const [image, setImage] = useState('');
+    const [contentImageList, setContentImageList] = useState([]);
 
     /* 랜더링시 초기화*/
     useEffect(() => {
@@ -121,7 +170,7 @@ export default function ApplicationForm(params) {
 
     /* 초기화*/
     function init() {
-        axios.get('/api/post/set')
+        axios.get('/api/posts/set')
         .then(response => {
             console.log(response.data);
             setEduList(response.data.education);
@@ -136,7 +185,7 @@ export default function ApplicationForm(params) {
         });
     }
     function initData() {
-        axios.get('/api/post/view',{params:{poIdx:params.params.poIdx}})
+        axios.get(`/api/posts/${params.params.poIdx}`)
         .then(response => {
             console.log("edit",response.data);
             setTitle(response.data.poTitle || '');
@@ -179,7 +228,7 @@ export default function ApplicationForm(params) {
                 size: 1
             },
             headers: {
-                Authorization: `KakaoAK 990c8d937be4d53cc487628c2776da49`
+                Authorization: `KakaoAK ${kakaoRestKey}`
             }
         })
         .then(response => {
@@ -197,6 +246,8 @@ export default function ApplicationForm(params) {
             console.error('Error fetching address:', error);
         });
     };
+
+
     /* 접수기간 클릭 이벤트*/
     const handlePeriodClick = (index) => {
         const newDate = new Date(today);
@@ -257,7 +308,6 @@ export default function ApplicationForm(params) {
     /* 채용공고 내용 변경 이벤트*/
     const handleContentChange = (content) => {
         setContent(content);
-        console.log(content);
     };
     /* 이메일 도메인 변경 이벤트*/
     const handleEmailDomainChange = (e) => {
@@ -292,7 +342,7 @@ export default function ApplicationForm(params) {
                     input_coord: 'WGS84'
                 },
                 headers: {
-                    Authorization: `KakaoAK 990c8d937be4d53cc487628c2776da49`
+                    Authorization: `KakaoAK ${kakaoRestKey}`
                 }
             });
             setAddress(response.data.documents[0].address.address_name);
@@ -316,6 +366,7 @@ export default function ApplicationForm(params) {
         }
         return ar;
     }
+
 
     function handleSubmit() {
         /* 유효성 검사 */
@@ -431,11 +482,13 @@ export default function ApplicationForm(params) {
                 location = location.concat(LocationSiList.filter(location => location.ldIdx === selectedLocation[i].ldIdx));
             }
         }
+        const processedContent = processEditorContent();
+        console.log(processedContent)
         let data = {
             id: params.params.poIdx,
             coIdx: 1,
             poTitle: title,
-            poContent: content,
+            poContent: processedContent,
             education: eduData,
             career: careerData,
             hireKind: hiringTypeData,
@@ -467,18 +520,20 @@ export default function ApplicationForm(params) {
         let formData = new FormData();
         formData.append('file', image);
         let filename='';
-        axios.post('/api/files/upload', formData)
-        .then(response => {
+        if(image) { 
+            axios.post('/api/files/upload', formData)
+            .then(response => {
             console.log("response",response.data);
             data.imgUrl = response.data;
         })
         .catch(error => {
             console.error('Error submitting form:', error);
             setShowConfirmPopup(false);
-            // 에러 메시지 표시
-        });
+                // 에러 메시지 표시
+            });
+        }
         console.log("data",data);
-        axios.post('/api/post/write', data)
+        axios.post(`/api/posts`, data)
         .then(response => {
             console.log(response);
             setShowConfirmPopup(false);
@@ -488,7 +543,6 @@ export default function ApplicationForm(params) {
         .catch(error => {
             console.error('Error submitting form:', error);
             setShowConfirmPopup(false);
-            // 에러 메시지 표시
         });
     }
 
@@ -730,6 +784,13 @@ export default function ApplicationForm(params) {
                 <label className="block text-sm font-medium text-gray-700 mb-2">공고 이미지</label>
                 <input type="file" className="border rounded px-3 py-2" onChange={(e)=>setImage(e.target.files[0])}/>
             </div>
+            {image && (
+                        <img
+                            src={URL.createObjectURL(image)}
+                            alt="Preview"
+                            className="w-32 h-32 object-cover rounded"
+                />
+            )}
             <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onClick={handleSubmit}>작성완료</button>
 
             {/* 확인 팝업 */}

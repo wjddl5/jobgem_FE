@@ -3,14 +3,85 @@
 import SelectButton from '@/components/selector/SelectButton';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Map, MapMarker, useKakaoLoader } from 'react-kakao-maps-sdk';
 import SunEditor from "suneditor-react";
 import 'suneditor/dist/css/suneditor.min.css';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function ApplicationForm() {
+    const kakaoRestKey = process.env.NEXT_PUBLIC_KAKOMAP_API_REST_KEY
+    const kakaoJavascriptKey = process.env.NEXT_PUBLIC_KAKOMAP_API_JAVASCRIPT_KEY
+    const [value, setValue] = useState('');
+	const editor = useRef();
+    const [imgUrl, setImgUrl] = useState('');
+	const getSunEditorInstance = (sunEditor) => {
+        editor.current = sunEditor;
+    };
+
+    const handleImageUploadBefore = (file,sunEditor) => {
+        // console.log(file[0]);
+        // console.log(sunEditor);
+        return true;
+    }
+
+    const makeBase64ImageToFile = (base64Image) => {
+        const mimeType = base64Image.split(";")[0].split(":")[1];
+        const extension = mimeType.split("/")[1];
+        const byteString = atob(base64Image.split(",")[1]);
+        const arrayBuffer = new ArrayBuffer(byteString.length);
+        const uint8Array = new Uint8Array(arrayBuffer);
+        console.log("base64");
+        for (let i = 0; i < byteString.length; i++) {
+          uint8Array[i] = byteString.charCodeAt(i);
+        }
+      
+        const blob = new Blob([arrayBuffer], { type: mimeType });
+        const fileName = `${uuidv4()}.${extension}`;
+        const file = new File([blob], fileName, { type: mimeType });
+      
+        return { file, fileName };
+      };
+
+        // Editor 내용 처리
+        const processEditorContent = () => {
+            let processedContent = content;
+            const base64ImageRegex = /<img src="(data:image\/[^;]+;base64[^"]+)"/g;
+            let match;
+            while ((match = base64ImageRegex.exec(content)) !== null) {
+                const base64Image = match[1];
+                const { file,fileName } = makeBase64ImageToFile(base64Image);
+                let formData = new FormData();
+                formData.append('file', file);
+                
+                axios.post('/api/files/upload', formData)
+                .then(response => {
+                    console.log(response);
+                    setImgUrl(response.data);
+                })
+                .catch(error => {
+                    console.error('Error submitting form:', error);
+                    setShowConfirmPopup(false);
+                });
+    
+                processedContent = processedContent.replace(base64Image, imgUrl);
+            }
+    
+            return processedContent;
+        };
+
+
+    function handleImageUpload(targetImgElement, index, state, imageInfo) {
+        // console.log(targetImgElement);
+        // console.log(index);
+        // console.log(state);
+        // console.log(imageInfo);
+        console.log("imageInfo",editor.current?.getImagesInfo());
+    }
+
+    
     useKakaoLoader({
-        appkey: "50d846af06392a3886e7875ff3d64eca",
+        appkey: kakaoJavascriptKey,
         libraries: ["services","clusterer"]
     })
     const router = useRouter();
@@ -139,7 +210,7 @@ export default function ApplicationForm() {
 
     /* 초기화*/
     function init() {
-        axios.get('/api/post/set')
+        axios.get('/api/posts/set')
         .then(response => {
             console.log(response.data);
             setEduList(response.data.education);
@@ -169,7 +240,7 @@ export default function ApplicationForm() {
                 size: 1
             },
             headers: {
-                Authorization: `KakaoAK 990c8d937be4d53cc487628c2776da49`
+                Authorization: `KakaoAK ${kakaoRestKey}`
             }
         })
         .then(response => {
@@ -241,13 +312,10 @@ export default function ApplicationForm() {
         } else {
             setSelectedLocation([...selectedLocation.filter(selected => selected.lgIdx !== 0||selected.ldIdx !==location.ldIdx), newLocation]);
         }   
-
-        console.log(selectedLocation);
     };
     /* 채용공고 내용 변경 이벤트*/
     const handleContentChange = (content) => {
         setContent(content);
-        console.log(content);
     };
     /* 이메일 도메인 변경 이벤트*/
     const handleEmailDomainChange = (e) => {
@@ -282,11 +350,10 @@ export default function ApplicationForm() {
                     input_coord: 'WGS84'
                 },
                 headers: {
-                    Authorization: `KakaoAK 990c8d937be4d53cc487628c2776da49`
+                    Authorization: `KakaoAK ${kakaoRestKey}`
                 }
             });
             setAddress(response.data.documents[0].address.address_name);
-            console.log(address);
         } catch (error) {
             console.error('Error fetching address:', error);
         }
@@ -432,10 +499,12 @@ export default function ApplicationForm() {
                 location = location.concat(LocationSiList.filter(location => location.ldIdx === selectedLocation[i].ldIdx));
             }
         }
+
+        const processedContent = processEditorContent(); 
         let data = {
             coIdx: 1,
             poTitle: title,
-            poContent: content,
+            poContent: processedContent,
             education: eduData,
             career: careerData,
             hireKind: hiringTypeData,
@@ -447,8 +516,11 @@ export default function ApplicationForm() {
             workStartTime: workStartTime.hour+":"+workStartTime.minute,
             workEndTime: workEndTime.hour+":"+workEndTime.minute,
             workDay: workDayData,
-            imgUrl: image.name
         }
+        if(image !== null&&image !== '') {
+            data.imgUrl = image.name;
+        }
+
         if(endDate !== '') {
             data.poDeadline = endDate;
         }
@@ -475,11 +547,12 @@ export default function ApplicationForm() {
             console.error('Error submitting form:', error);
             setShowConfirmPopup(false);
         });
-        axios.post('/api/post/write', data)
+        axios.post('/api/posts', data)
         .then(response => {
             console.log(response);
             setShowConfirmPopup(false);
-            router.push('/company/posting');
+            router.push('/company/posting')
+            ;
         })
         .catch(error => {
             console.error('Error submitting form:', error);
@@ -506,7 +579,11 @@ export default function ApplicationForm() {
                     ["fullScreen", "showBlocks", "codeView"],
                     ],
                 }}
+                lang="ko"
                 onChange={handleContentChange}
+                getSunEditorInstance={getSunEditorInstance}
+                onImageUploadBefore={handleImageUploadBefore}
+                onImageUpload={handleImageUpload}
                 />
             </div>
             <h1 className="text-2xl font-bold mb-2">채용 정보</h1>
