@@ -66,6 +66,15 @@ export default function page(props) {
 						>
 							1:1 문의
 						</Button>
+						<Button
+							className='search_btn'
+							variant='outlined'
+							onClick={() => {
+								router.push('clovaChat');
+							}}
+						>
+							Ai 상담
+						</Button>
 					</div>
 				</div>
 				<Table className='bbs_table'>
