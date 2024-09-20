@@ -8,6 +8,7 @@ import axios from "axios";
 import React from "react";
 import { useRouter } from "next/navigation";
 import InputPopup from "@/components/popup/InputPopup";
+import Link from "next/link";
 export default function DetialPage(props) {
 	const [curPage, setCurPage] = useState(0);
 	const [applyment, setApplyment] = useState([]);
@@ -36,8 +37,9 @@ export default function DetialPage(props) {
 
 	const router = useRouter();
 
-	function getApplymentList() {
-		axios.get(`/api/post/apply?id=${props.params.poIdx}&curPage=${curPage}`).then((res) => {
+
+    function getApplymentList(){
+        axios.get(`/api/posts/${props.params.poIdx}/applyments?curPage=${curPage}`).then((res)=>{
 			console.log(res);
 			setApplyment(res.data.content);
 			setTotalPages(res.data.totalPages);
@@ -60,9 +62,10 @@ export default function DetialPage(props) {
 		});
 	};
 
-	function getDetail() {
-		axios.get(`/api/post/detail?id=${props.params.poIdx}`).then((res) => {
-			console.log("getDetail", res);
+
+	function getDetail(){
+		axios.get(`/api/posts/${props.params.poIdx}`).then((res)=>{
+			console.log("getDetail",res);
 			setTitle(res.data.title);
 			setApplymentCount(res.data.applyCount);
 			setViewCount(res.data.viewCount);
@@ -70,24 +73,22 @@ export default function DetialPage(props) {
 		});
 	}
 
-	function search() {
-		console.log(startDate, endDate, apRead);
-		axios
-			.get(`/api/post/applymentSearch`, {
-				params: {
-					poIdx: props.params.poIdx,
-					curPage: curPage,
-					startDate: startDate,
-					endDate: endDate,
-					apRead: apRead,
-				},
-			})
-			.then((res) => {
-				console.log(res);
-				setApplyment(res.data.content);
-				setTotalPages(res.data.totalPages);
-				setTotalElements(res.data.totalElements);
-			});
+	function search(){
+		console.log(startDate,endDate,apRead);
+        axios.get(`/api/post/applyments/search`,{
+			params:{
+				poIdx: props.params.poIdx,
+				curPage: curPage,
+				startDate: startDate,
+				endDate: endDate,
+				apRead: apRead
+			}
+		}).then((res)=>{
+			console.log(res);
+            setApplyment(res.data.content);
+            setTotalPages(res.data.totalPages);
+            setTotalElements(res.data.totalElements);
+        })
 	}
 	function onChangeSearch(e) {
 		if (e.target.value == "열람") {
@@ -129,7 +130,7 @@ export default function DetialPage(props) {
 			/>
 			<div className='flex-1 ml-4 p-6 '>
 				<div className='flex justify-between max-w-7xl mx-auto mb-8'>
-					<h1 className='text-3xl font-bold text-gray-800 mb-4 flex items-center'>{title}</h1>
+					<Link href={`/company/posting/view/${props.params.poIdx}`}><h1 className='text-3xl font-bold text-gray-800 mb-4 flex items-center'>{title}</h1></Link>
 					<div className='flex gap-4'>
 						<button
 							className='h-10 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all'
@@ -215,7 +216,7 @@ export default function DetialPage(props) {
 													<div className='bg-gray-100 p-6 rounded-lg shadow-md'>
 														<div className='flex justify-between items-center'>
 															<div className='w-1/3 flex justify-center'>
-																<img src={item.jobseeker.joImgUrl} alt='프로필' className='w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg' />
+																<img src='/S3/${item.jobseeker.joImgUrl}' alt='프로필' className='w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg' />
 															</div>
 															<div className='flex flex-col w-2/3 space-y-2'>
 																<p className='text-lg font-semibold text-gray-800'>이름: {item.jobseeker.joName}</p>

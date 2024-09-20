@@ -13,10 +13,10 @@ const ResumePreview = ({params}) => {
 	useEffect(() => {
 		getResume();
 	}, []);
-
+	
 
 	function getResume() {
-		axios.get(`/api/post/resume`,{params:{id:params.reIdx}}).then((res) => {
+		axios.get(`/api/posts/${params.params.reIdx}/resume`).then((res) => {
 			console.log(res.data);
 			setResume(res.data.resume);
 			setJobSeeker(res.data.jobseeker);
