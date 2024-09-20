@@ -56,22 +56,13 @@ function Page() {
     // 차단 해제
     const handleUnblock = () => {
         if(confirm("차단 해제 하시겠습니까?")){
-            axios.post('/api/company/block/delete', null, {params:{
+            axios.delete('/api/company/block', {params:{
                 selectList,
             }}).then((res) => {
                 alert("차단 해제되었습니다.");
                 setData();
             })
         }
-    };
-
-    const handlePageChange = (page) => {
-        setLoadPage(page);
-    };
-
-    const handleBlockChange = (block) => {
-        const newPage = block * 5;
-        setLoadPage(newPage);
     };
 
     return (

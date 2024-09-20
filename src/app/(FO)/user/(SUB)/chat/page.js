@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Stomp } from "@stomp/stompjs";
 
 function Page() {
-    const userId = 1;
+    const userId = 68;
     const stompClient = useRef(null); // 웹소켓 채팅
     const [chatRooms, setChatRooms] = useState([]);
     const [inputValue, setInputValue] = useState('');
@@ -16,7 +16,6 @@ function Page() {
         try {
             const res = await axios.get("/api/chatroom", { params: { id: userId } });
             setChatRooms(res.data);
-            console.log(res.data);
         } catch (err) {
             console.error('Failed to fetch chat rooms:', err);
         }
@@ -127,9 +126,9 @@ function Page() {
                             <div className="flex-grow space-y-4 overflow-y-auto">
                                 {chatList?.map((chat, index) => (
                                     <div key={index}
-                                         className={`flex ${chat.usIdx == userId ? 'justify-end' : 'justify-start'}`}>
+                                         className={`flex ${chat.usIdx === userId ? 'justify-end' : 'justify-start'}`}>
                                         <div
-                                            className={`rounded-lg p-3 ${chat.usIdx == userId ? 'bg-yellow-100' : 'bg-gray-200'}`}>
+                                            className={`rounded-lg p-3 ${chat.usIdx === userId ? 'bg-yellow-100' : 'bg-gray-200'}`}>
                                             <p className="text-sm">{chat.chContent}</p>
                                             <div className="text-xs text-gray-400 text-right">{chat.chDate}</div>
                                         </div>
