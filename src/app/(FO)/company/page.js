@@ -148,7 +148,7 @@ export default function Page() {
                         </div>
                         <div className="bg-gray-50 p-4 rounded-md flex items-center justify-center gap-2">
                             <Link href='/company/posting' className='btn submit'>공고목록</Link>
-                            <Link href='/(SUB)/posting/write' className='btn'>공고등록</Link>
+                            <Link href='/company/posting/write' className='btn'>공고등록</Link>
                         </div>
                     </div>
 

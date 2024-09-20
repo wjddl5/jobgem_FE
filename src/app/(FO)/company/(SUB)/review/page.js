@@ -3,22 +3,66 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import axios from 'axios';
 import {AiFillAlert} from "react-icons/ai";
+import Pagination from "@/components/pagination/Pagination";
+import InputPopup from "@/components/popup/InputPopup";
 
 function Page() {
+    const coId = 1;
+    const usId = 1;
+    const [loadPage, setLoadPage] = useState(0);
     const [reviews, setReviews] = useState([]);
+    const [totalPage, setTotalPage] = useState(0);
+    const [isPopupOpen, setPopupOpen] = useState(false);
+    const [black, setBlack] = useState(null);
+
+    const inputs = [
+        { label: '제목', name: 'blTitle', placeholder: '제목을 입력하세요', type: 'input' },
+        { label: '내용', name: 'blContent', placeholder: '내용를 입력하세요', type: 'textarea' }
+    ];
 
     const getData = () => {
-        axios.get('/api/company/review', { params: { coIdx: 1 } }).then((res) => {
-            setReviews(res.data);
+        axios.get('/api/company/review', { params: { coIdx: coId, loadPage } }).then((res) => {
+            setReviews(res.data.content);
+            setTotalPage(res.data.totalPages);
         });
     };
 
+    // 폼 확인 시 제출
+    const handleSubmit = async (formData) => {
+        if(confirm("신고 접수 하시겠습니까?")){
+            axios.post("/api/company/blackList/add",null,{params:
+                        {
+                            usIdx: usId,
+                            joIdx: black,
+                            blTitle: formData.blTitle,
+                            blContent: formData.blContent
+                        }
+                }
+            ).then((res) => {
+                if(res.status === 200)
+                    alert("신고 완료되었습니다.")
+            })
+        }
+    };
+
+    const handleBlack = (id) => {
+        setBlack(id);
+        setPopupOpen(true);
+    }
+
     useEffect(() => {
         getData();
-    }, []);
+    }, [loadPage]);
 
     return (
         <div className="bg-gray-50 min-h-screen flex-1 flex flex-col items-center">
+            <InputPopup
+                isOpen={isPopupOpen}
+                onClose={() => setPopupOpen(false)}
+                title="신고내용을 입력하세요"
+                inputs={inputs} // 여러 개의 입력 필드 전달
+                onSubmit={handleSubmit}
+            />
             <div className="bg-white w-full max-w-3xl md:max-w-5xl p-4 md:p-8 rounded-lg shadow-lg">
                 <div className="md:flex justify-between items-start mb-8 border-b pb-6">
                     <div className="mb-4 md:mb-0">
@@ -51,11 +95,12 @@ function Page() {
                         </div>
                     </div>
                     <Image
-                        src="/img/1.jpg"
+                        src={`/s3/1.jpg`}
                         alt="img"
                         width={80}
                         height={80}
                         className="rounded-lg shadow-md border border-gray-200 md:w-100 md:h-100"
+                        priority={true}
                     />
                 </div>
 
@@ -92,7 +137,7 @@ function Page() {
                                     <span key={index}>{review.reScore >= index + 1 ? '★' : '☆'}</span>
                                 ))}
                             </div>
-                            <button className="flex items-center gap-1 top-2 right-2 text-red-600 text-xs md:text-sm hover:underline">
+                            <button className="flex items-center gap-1 top-2 right-2 text-red-600 text-xs md:text-sm hover:underline" onClick={() => handleBlack(review.joIdx)}>
                                 <AiFillAlert/>신고하기
                             </button>
                         </div>
@@ -109,6 +154,11 @@ function Page() {
 
                     </div>
                 ))}
+                <Pagination
+                    totalPages={totalPage}
+                    currentPage={loadPage}
+                    setLoadPage={setLoadPage}
+                />
             </div>
         </div>
     );
