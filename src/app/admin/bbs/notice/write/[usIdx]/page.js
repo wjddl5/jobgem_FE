@@ -1,12 +1,11 @@
 'use client';
 import { Button, TextField, Divider } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import SunEditor from 'suneditor-react';
 import sunEditorStyle from 'suneditor/dist/css/suneditor.min.css';
 import '/public/css/board.css';
 import axios from 'axios';
-import { data } from 'autoprefixer';
 
 // (관리자) 공지사항 게시글 작성
 export default function page(props) {
@@ -14,8 +13,7 @@ export default function page(props) {
 	const [title, setTitle] = useState('');
 	const [content, setContent] = useState('');
 	const [disabled, setDisabled] = useState(true);
-	const [boImage, setBoImage] = useState('');
-	const [imageFile, setImageFile] = useState('');
+	const editorRef = useRef(null);
 
 	function changeContent(content) {
 		setContent(content);
@@ -44,7 +42,7 @@ export default function page(props) {
 					usIdx: 1, //로그인한 유저 idx로 변경 (!)
 					title: title,
 					content: content,
-					boImage: boImage,
+					//boImage: boImage,
 				},
 			})
 			.then((res) => {
@@ -70,42 +68,42 @@ export default function page(props) {
 		}
 	}, [title, content]);
 
-	function handleImageUpload(targetImgElement) {
-		console.log(targetImgElement);
+	// ===============
 
-		// 이미지 src 속성에서 Base64 데이터를 추출
-		const src = targetImgElement.src;
+	const getSunEditorInstance = (sunEditor) => {
+		editorRef.current = sunEditor; // SunEditor 인스턴스를 ref에 저장
+	};
 
-		// src가 Base64인지 확인
-		if (src.startsWith('data:image')) {
-			// Base64 데이터를 Blob으로 변환
-			const base64Data = src.split(',')[1]; // Base64 부분만 추출
-			const contentType = src.match(/data:(.*);base64/)[1]; // MIME 타입 추출
-			const byteCharacters = atob(base64Data); // Base64 디코딩
-			const byteNumbers = new Array(byteCharacters.length);
+	function toImg(files, info, uploadHandler) {
+		const file = files[0];
 
-			for (let i = 0; i < byteCharacters.length; i++) {
-				byteNumbers[i] = byteCharacters.charCodeAt(i);
-			}
+		const formData = new FormData();
+		formData.append('file', file);
 
-			const byteArray = new Uint8Array(byteNumbers);
-			const file = new Blob([byteArray], { type: contentType });
+		fetch('/api/files/upload', {
+			method: 'POST',
+			body: formData,
+		})
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}
+				return response.text(); // 서버에서 반환된 텍스트(S3 URL)를 처리
+			})
+			.then((s3Url) => {
+				console.log('S3 URL:', s3Url); // S3 URL이 잘 출력되는지 확인
 
-			const formData = new FormData();
-			formData.append('file', file, targetImgElement.getAttribute('data-file-name') || 'image.png');
-
-			axios
-				.post('/api/files/upload', formData, {
-					headers: {
-						'Content-Type': 'multipart/form-data',
-					},
-				})
-				.then((res) => {
-					setBoImage(res.data);
-				});
-		} else {
-			console.error('이미지 src가 Base64 형식이 아닙니다.');
-		}
+				if (editorRef.current) {
+					console.log('에디터에 이미지 삽입');
+					// SunEditor 인스턴스에서 이미지 삽입
+					editorRef.current.insertHTML(`<img src="${s3Url}" alt="image">`);
+					uploadHandler(); // 업로드 완료 후 uploadHandler 호출
+				}
+			})
+			.catch((error) => {
+				console.error('Error uploading image:', error);
+				uploadHandler(null); // 에러 발생 시 uploadHandler에 null 전달
+			});
 	}
 
 	// 페이지
@@ -124,6 +122,7 @@ export default function page(props) {
 				/>
 				<Divider style={{ margin: '10px 0' }} />
 				<SunEditor
+					getSunEditorInstance={getSunEditorInstance}
 					sunEditorStyle='height:700px'
 					setOptions={{
 						buttonList: [
@@ -135,7 +134,7 @@ export default function page(props) {
 						],
 					}}
 					onChange={changeContent}
-					onImageUpload={handleImageUpload}
+					onImageUploadBefore={toImg}
 				/>
 				<div className='btn_group'>
 					<Button

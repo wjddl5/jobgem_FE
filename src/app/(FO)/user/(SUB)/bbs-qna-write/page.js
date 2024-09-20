@@ -8,7 +8,7 @@ import '/public/css/board.css';
 import axios from 'axios';
 import { data } from 'autoprefixer';
 
-// QnA 게시글 작성 z
+// QnA 게시글 작성
 export default function page(props) {
 	const router = useRouter();
 	const [title, setTitle] = useState('');
@@ -77,6 +77,7 @@ export default function page(props) {
 		}
 	}, [title, content]);
 
+	// =================
 	const getSunEditorInstance = (sunEditor) => {
 		editorRef.current = sunEditor; // SunEditor 인스턴스를 ref에 저장
 	};
@@ -112,7 +113,6 @@ export default function page(props) {
 				uploadHandler(null); // 에러 발생 시 uploadHandler에 null 전달
 			});
 	}
-
 	// 페이지
 	return (
 		<div className='write_container'>
