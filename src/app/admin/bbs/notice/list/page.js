@@ -13,7 +13,7 @@ export default function page(props) {
 	const [searchValue, setSearchValue] = useState(sessionStorage.getItem('searchValue') ? sessionStorage.getItem('searchValue') : '');
 	const [ar, setAr] = useState([]);
 	const [arLength, setArLength] = useState(0);
-	const API_URL = '/api/bbs/notice/list';
+	const API_URL = '/api/bbs/notice';
 
 	// 페이징
 	const [cPage, setCPage] = useState(Number(props.searchParams.cPage));
@@ -75,7 +75,7 @@ export default function page(props) {
 		const chkAraay = Array.from(chkList);
 		if (confirm('체크한 게시글을 삭제하시겠습니까?')) {
 			axios
-				.get('/api/bbs/removeList', {
+				.delete('/api/bbs/removeList', {
 					params: {
 						chkList: chkAraay,
 					},

@@ -13,7 +13,7 @@ export default function page(props) {
 	const [commentList, setCommentList] = useState([]);
 	const [commentContent, setCommentContent] = useState('');
 	const [disabled, setDisabled] = useState(true);
-	const API_URL = `/api/bbs/notice/view?id=${props.params.id}`;
+	const API_URL = `/api/bbs/${props.params.id}`;
 
 	useEffect(() => {
 		getData();
@@ -36,7 +36,7 @@ export default function page(props) {
 
 	function removeBbs(id) {
 		if (confirm('게시글을 삭제 하시겠습니까?')) {
-			axios.get(`/api/bbs/remove?id=${id}`).then((res) => {
+			axios.delete(`/api/bbs/${id}`).then((res) => {
 				if (res.data == true) {
 					alert('삭제 완료 되었습니다.');
 					router.push('/admin/bbs/notice/list');
@@ -48,7 +48,7 @@ export default function page(props) {
 	// 댓글
 	function removeComment(id) {
 		if (confirm('댓글을 삭제 하시겠습니까?')) {
-			axios.get(`/api/comment/remove?id=${id}`).then((res) => {
+			axios.delete(`/api/comment/${id}`).then((res) => {
 				if (res.data == true) alert('삭제 완료 되었습니다.');
 				else alert('삭제 실패 !');
 				getData();
@@ -63,12 +63,10 @@ export default function page(props) {
 			alert('최대 100글자까지 입력할 수 있습니다.');
 		} else {
 			axios
-				.get('/api/comment/write', {
-					params: {
-						content: commentContent,
-						usIdx: 1, //로그인한 유저 idx로 변경 (!)
-						boIdx: props.params.id,
-					},
+				.post('/api/comment/write', {
+					content: commentContent,
+					usIdx: 1, //로그인한 유저 idx로 변경 (!)
+					boIdx: props.params.id,
 				})
 				.then((res) => {
 					document.getElementById('commentWrite').value = '';
@@ -102,9 +100,8 @@ export default function page(props) {
 
 	function updateComment(id, content) {
 		axios
-			.get('/api/comment/edit', {
+			.put(`/api/comment/${id}`, {
 				params: {
-					id: id,
 					content: content,
 				},
 			})
