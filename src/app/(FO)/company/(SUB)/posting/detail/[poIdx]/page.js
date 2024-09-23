@@ -57,8 +57,11 @@ export default function DetialPage(props) {
 
 	const confirmDelete = () => {
 		setShowDeleteConfirm(false);
-		axios.delete(`/api/${props.params.poIdx}/posts`).then((res) => {
+		axios.delete(`/api/posts/${props.params.poIdx}`).then((res) => {
 			console.log(res);
+			if(res.status === 200){
+				router.push('/company/posting');
+			}
 		});
 	};
 
