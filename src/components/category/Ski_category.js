@@ -119,7 +119,7 @@ export default function page() {
 		const chkAraay = Array.from(chkList);
 		if (confirm('체크한 항목을 삭제하시겠습니까?')) {
 			axios
-				.get('/api/category/removeSki', {
+				.delete('/api/category/ski', {
 					params: {
 						chkList: chkAraay,
 					},
@@ -155,9 +155,8 @@ export default function page() {
 			alert('최대 30글자까지 입력할 수 있습니다.');
 		} else {
 			axios
-				.get('/api/category/editSki', {
+				.put(`/api/category/ski/${id}`, null, {
 					params: {
-						id: id,
 						editItemName: editItemName,
 					},
 				})
@@ -204,7 +203,7 @@ export default function page() {
 			alert('최대 30글자까지 입력할 수 있습니다.');
 		} else {
 			axios
-				.get('/api/category/addSki', {
+				.post('/api/category/ski', null, {
 					params: {
 						itemName: itemName,
 					},

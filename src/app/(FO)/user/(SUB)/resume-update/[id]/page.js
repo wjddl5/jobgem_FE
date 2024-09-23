@@ -20,7 +20,7 @@ export default function Page(props) {
 	const resumeId = props.params.id;
 
 	function getResume() {
-		axios.get(`/api/getResume?id=${resumeId}`).then((res) => {
+		axios.get(`/api/resume?id=${resumeId}`).then((res) => {
 			const data = res.data;
 			setCoIdx(data.coIdx); // 회사 ID 설정
 			setReTitle(data.reTitle); // 이력서 제목 설정
@@ -81,8 +81,8 @@ export default function Page(props) {
 
 			// API_URL을 통한 정보 업데이트
 			const res = await axios({
-				url: "/api/updateResume",
-				method: "get", // 업데이트를 위한 GET 요청
+				url: "/api/resume",
+				method: "put", // 업데이트를 위한 GET 요청
 				params: {
 					id: resumeId,
 					joIdx: login,

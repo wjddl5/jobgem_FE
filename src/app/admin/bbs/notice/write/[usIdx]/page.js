@@ -36,13 +36,12 @@ export default function page(props) {
 
 	function saveBbs(title, content) {
 		axios
-			.get('/api/bbs/notice/write', {
+			.post('/api/bbs/write', null, {
 				params: {
 					boType: 1, // 1: 공지사항
 					usIdx: 1, //로그인한 유저 idx로 변경 (!)
 					title: title,
 					content: content,
-					//boImage: boImage,
 				},
 			})
 			.then((res) => {
@@ -91,10 +90,9 @@ export default function page(props) {
 				return response.text(); // 서버에서 반환된 텍스트(S3 URL)를 처리
 			})
 			.then((s3Url) => {
-				console.log('S3 URL:', s3Url); // S3 URL이 잘 출력되는지 확인
-
+				//console.log('S3 URL:', s3Url); // S3 URL이 잘 출력되는지 확인
 				if (editorRef.current) {
-					console.log('에디터에 이미지 삽입');
+					//console.log('에디터에 이미지 삽입');
 					// SunEditor 인스턴스에서 이미지 삽입
 					editorRef.current.insertHTML(`<img src="${s3Url}" alt="image">`);
 					uploadHandler(); // 업로드 완료 후 uploadHandler 호출

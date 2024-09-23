@@ -9,7 +9,7 @@ import { Button } from '@mui/material';
 export default function page(props) {
 	// 초기화
 	const router = useRouter();
-	const API_URL = '/api/blackList/view';
+	const API_URL = `/api/blackList/${props.params.id}`;
 	const [vo, setVo] = useState({});
 
 	useEffect(() => {
@@ -17,33 +17,26 @@ export default function page(props) {
 	}, []);
 
 	function getData() {
-		axios.get(API_URL, { params: { id: props.params.id } }).then((res) => {
+		axios.get(API_URL).then((res) => {
 			setVo(res.data);
 		});
 	}
 
 	function removeList() {
 		if (confirm('게시글을 삭제하시겠습니까?')) {
-			axios
-				.get('/api/blackList/remove', {
-					params: {
-						id: props.params.id,
-					},
-				})
-				.then((res) => {
-					if (res.data == true) alert('삭제 완료 되었습니다.');
-					else alert('삭제 실패 !');
-					router.push('/admin/blackList/list');
-				});
+			axios.delete(`/api/blackList/${props.params.id}`).then((res) => {
+				if (res.data == true) alert('삭제 완료 되었습니다.');
+				else alert('삭제 실패 !');
+				router.push('/admin/blackList/list');
+			});
 		}
 	}
 
 	function changeProcess(process) {
 		if (confirm('처리상태를 변경하시겠습니까?')) {
 			axios
-				.get('/api/blackList/process', {
+				.put(`/api/blackList/process/${props.params.id}`, null, {
 					params: {
-						id: props.params.id,
 						nowProcess: process,
 					},
 				})
@@ -82,7 +75,15 @@ export default function page(props) {
 				<Button variant='outlined' size='small' onClick={() => changeProcess(vo.blProcess)}>
 					상태변경
 				</Button>
-				<Button variant='outlined' size='small' onClick={() => router.push('/admin/blackList/list')}>
+				<Button
+					variant='outlined'
+					size='small'
+					onClick={() =>
+						router.push(
+							`/admin/blackList/list?cPage=${props.searchParams.cPage}&searchType=${props.searchParams.searchType}&searchValue=${props.searchParams.searchValue}&selectType=${props.searchParams.selectType}`
+						)
+					}
+				>
 					목록
 				</Button>
 				<Button variant='outlined' size='small' color='error' onClick={removeList}>

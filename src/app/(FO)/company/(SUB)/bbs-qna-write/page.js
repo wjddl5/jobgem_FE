@@ -37,7 +37,7 @@ export default function page(props) {
 
 	function saveBbs(title, content) {
 		axios
-			.get('/api/bbs/notice/write', {
+			.post('/api/bbs/write', null, {
 				params: {
 					boType: 2, // 2: QnA
 					usIdx: 1, //로그인한 유저 idx로 변경 (!)

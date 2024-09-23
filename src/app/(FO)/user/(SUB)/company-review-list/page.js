@@ -14,18 +14,18 @@ export default function Page() {
 	const [curPage, setCurPage] = useState(0);
 	const router = useRouter();
 	const [review, setReview] = useState([]);
-	const API_URL = `/api/reviewList?id=${login}&curPage=${curPage}`;
+	const API_URL = `/api/reviews?id=${login}&curPage=${curPage}`;
 
 	function getData() {
 		axios.get(API_URL).then((res) => {
-			setReview(res.data.content); // 데이터를 상태에 저장
+			setReview(res.data.content);
 			setTotalPages(res.data.totalPages);
 			console.log(res);
 		});
 	}
 
 	function remove(reviewId) {
-		axios.get(`/api/deleteReview?id=${reviewId}`).then((res) => {
+		axios.delete(`/api/review?id=${reviewId}`).then((res) => {
 			console.log(res);
 			if (res.status === 200) {
 				alert("삭제 완료");
