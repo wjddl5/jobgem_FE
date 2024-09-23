@@ -101,9 +101,8 @@ export default function Page(props) {
 					setReason('');
 					if (props.searchParams) {
 						console.log('a');
-						axios.get('/api/blackList/process', {
+						axios.put(`/api/blackList/process/${props.searchParams.blIdx}`, null, {
 							params: {
-								id: props.searchParams.blIdx,
 								nowProcess: 0,
 							},
 						});

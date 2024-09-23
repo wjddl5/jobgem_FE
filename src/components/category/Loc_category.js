@@ -103,7 +103,7 @@ export default function page() {
 			alert('최대 10글자까지 입력할 수 있습니다.');
 		} else {
 			axios
-				.get('/api/category/addLoc', {
+				.post('/api/category/loc', null, {
 					params: {
 						itemName: addDoName,
 					},
@@ -141,9 +141,8 @@ export default function page() {
 			alert('최대 10글자까지 입력할 수 있습니다.');
 		} else {
 			axios
-				.get('/api/category/editLoc', {
+				.put(`/api/category/loc/${id}`, null, {
 					params: {
-						id: id,
 						editDoName: editDoName,
 					},
 				})
@@ -152,7 +151,7 @@ export default function page() {
 						alert('수정완료');
 						setEditDoRow('');
 						setEditDoName('');
-						getData();
+						getData(ldIdx);
 					} else {
 						alert('오류가 발생했습니다.\n 다시 시도해주세요.');
 					}
@@ -161,19 +160,13 @@ export default function page() {
 	}
 
 	// (도) 삭제
-	function removeDoName(id, ldIdx) {
+	function removeDoName(id) {
 		if (confirm('해당 항목에 포함된 하위 항목들도 모두 삭제됩니다.\n삭제하시겠습니까?')) {
-			axios
-				.get('/api/category/removeLoc', {
-					params: {
-						id: id,
-					},
-				})
-				.then((res) => {
-					if (res.data == true) alert('삭제 완료 되었습니다.');
-					else alert('오류가 발생했습니다.\n 다시 시도해주세요.');
-					getData();
-				});
+			axios.delete(`/api/category/loc/${id}`).then((res) => {
+				if (res.data == true) alert('삭제 완료 되었습니다.');
+				else alert('오류가 발생했습니다.\n 다시 시도해주세요.');
+				getData();
+			});
 		}
 	}
 	// ========================
@@ -186,8 +179,8 @@ export default function page() {
 	const [editItemName, setEditItemName] = useState('');
 	const [ldIdx, setLdIdx] = useState(0);
 
-	function getGuSi(id) {
-		axios.get('/api/category/locGuSi', { params: { ldIdx: id } }).then((res) => {
+	function getGuSi(ldIdx) {
+		axios.get(`/api/category/locGuSi/${ldIdx}`).then((res) => {
 			setLoc_gusi(res.data);
 		});
 	}
@@ -221,10 +214,9 @@ export default function page() {
 			alert('최대 10글자까지 입력할 수 있습니다.');
 		} else {
 			axios
-				.get('/api/category/addLocGuSi', {
+				.post(`/api/category/locGuSi/${ldIdx}`, null, {
 					params: {
 						itemName: itemName,
-						ldIdx: ldIdx,
 					},
 				})
 				.then((res) => {
@@ -263,9 +255,8 @@ export default function page() {
 			alert('최대 10글자까지 입력할 수 있습니다.');
 		} else {
 			axios
-				.get('/api/category/editLocGuSi', {
+				.put(`/api/category/locGuSi/${id}`, null, {
 					params: {
-						id: id,
 						editItemName: editItemName,
 					},
 				})
@@ -288,7 +279,7 @@ export default function page() {
 		const chkAraay = Array.from(chkList);
 		if (confirm('체크한 항목을 삭제하시겠습니까?')) {
 			axios
-				.get('/api/category/removeLocGuSi', {
+				.delete('/api/category/locGuSi', {
 					params: {
 						chkList: chkAraay,
 					},
@@ -298,7 +289,7 @@ export default function page() {
 					else alert('오류가 발생했습니다.\n 다시 시도해주세요.');
 					setChkSet(new Set());
 					setChkAll(false);
-					getData();
+					getData(ldIdx);
 				});
 		}
 	}

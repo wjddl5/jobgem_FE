@@ -63,10 +63,12 @@ export default function page(props) {
 			alert('최대 100글자까지 입력할 수 있습니다.');
 		} else {
 			axios
-				.post('/api/comment/write', {
-					content: commentContent,
-					usIdx: 1, //로그인한 유저 idx로 변경 (!)
-					boIdx: props.params.id,
+				.post('/api/comment/write', null, {
+					params: {
+						content: commentContent,
+						usIdx: 1, //로그인한 유저 idx로 변경 (!)
+						boIdx: props.params.id,
+					},
 				})
 				.then((res) => {
 					document.getElementById('commentWrite').value = '';
@@ -100,7 +102,7 @@ export default function page(props) {
 
 	function updateComment(id, content) {
 		axios
-			.put(`/api/comment/${id}`, {
+			.put(`/api/comment/${id}`, null, {
 				params: {
 					content: content,
 				},
@@ -171,7 +173,11 @@ export default function page(props) {
 				</Button>
 			</div>
 			<div className='btn_group'>
-				<Button variant='outlined' size='small' onClick={() => router.push(`/admin/bbs/notice/list?cPage=${props.searchParams.cPage}`)}>
+				<Button
+					variant='outlined'
+					size='small'
+					onClick={() => router.push(`/admin/bbs/notice/list?cPage=${props.searchParams.cPage}&searchType=${props.searchParams.searchType}&searchValue=${props.searchParams.searchValue}`)}
+				>
 					목록
 				</Button>
 				<Button variant='outlined' disabled={disabled} size='small' onClick={() => router.push(`/admin/bbs/notice/edit/${vo.id}`)}>
