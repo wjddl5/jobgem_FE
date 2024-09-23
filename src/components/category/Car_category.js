@@ -215,7 +215,12 @@ export default function page() {
 						setItemName('');
 						document.getElementById('itemNameField').value = '';
 						setEditRow('');
-						getData();
+						axios.get('/api/category/car').then((res) => {
+							setRows(res.data);
+							const totalItems = res.data.length;
+							const lastPage = Math.ceil(totalItems / rowsPerPage) - 1;
+							setPage(lastPage);
+						});
 					} else {
 						alert('오류가 발생했습니다.\n 다시 시도해주세요.');
 					}
