@@ -13,7 +13,7 @@ import SunEditorCore from "suneditor/src/lib/core";
 export default function ApplicationForm(params) {
     const kakaoRestKey = process.env.NEXT_PUBLIC_KAKOMAP_API_REST_KEY
     const kakaoJavascriptKey = process.env.NEXT_PUBLIC_KAKOMAP_API_JAVASCRIPT_KEY
-
+    
     useKakaoLoader({
         appkey: kakaoJavascriptKey,
         libraries: ["services","clusterer"]
@@ -57,25 +57,22 @@ export default function ApplicationForm(params) {
             let processedContent = content;
             const base64ImageRegex = /<img src="(data:image\/[^;]+;base64[^"]+)"/g;
             let match;
-    
             while ((match = base64ImageRegex.exec(content)) !== null) {
                 const base64Image = match[1];
                 const { file,fileName } = makeBase64ImageToFile(base64Image);
+                let formData = new FormData();
+                formData.append('file', file);
                 
-                let url;
                 axios.post('/api/files/upload', formData)
                 .then(response => {
-                    console.log(response);
-                    data.imgUrl = response.data;
+                    console.log("이미지처리",response);
                 })
                 .catch(error => {
                     console.error('Error submitting form:', error);
-                    setShowConfirmPopup(false);
                 });
-    
-                processedContent = processedContent.replace(base64Image, url);
+                processedContent = processedContent.replace(base64Image, process.env.NEXT_PUBLIC_BACKEND_URL + fileName);
+                
             }
-    
             return processedContent;
         };
     const handleMethodToggle = (methodId) => {
@@ -483,7 +480,6 @@ export default function ApplicationForm(params) {
             }
         }
         const processedContent = processEditorContent();
-        console.log(processedContent)
         let data = {
             id: params.params.poIdx,
             coIdx: 1,

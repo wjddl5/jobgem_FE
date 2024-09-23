@@ -57,14 +57,14 @@ export default function DetialPage(props) {
 
 	const confirmDelete = () => {
 		setShowDeleteConfirm(false);
-		axios.post(`/api/post/delete?id=${props.params.poIdx}`).then((res) => {
+		axios.delete(`/api/${props.params.poIdx}/posts`).then((res) => {
 			console.log(res);
 		});
 	};
 
 
 	function getDetail(){
-		axios.get(`/api/posts/${props.params.poIdx}`).then((res)=>{
+		axios.get(`/api/posts/${props.params.poIdx}/detail`).then((res)=>{
 			console.log("getDetail",res);
 			setTitle(res.data.title);
 			setApplymentCount(res.data.applyCount);
