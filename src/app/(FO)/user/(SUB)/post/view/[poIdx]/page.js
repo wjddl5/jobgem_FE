@@ -13,7 +13,7 @@ export default function ViewPage(props) {
 	function getPosting() {
 		console.log(props.params.poIdx);
 		axios
-			.get(`/api/post/view?poIdx=${props.params.poIdx}`)
+			.get(`/api/posts/${props.params.poIdx}`)
 			.then((response) => {
 				console.log(response.data);
 				setPosting(response.data);
