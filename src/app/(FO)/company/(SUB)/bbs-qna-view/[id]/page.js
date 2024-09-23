@@ -5,14 +5,14 @@ import React, { useEffect, useState } from 'react';
 import styles from '/public/css/board.css';
 import { Button, TextField } from '@mui/material';
 
-// 문의사항 게시글 상세보기
+// 문의사항 게시글 상세보기 z
 export default function page(props) {
 	// 초기화
 	const router = useRouter();
 	const [vo, setVo] = useState({});
 	const [commentList, setCommentList] = useState([]);
 	const [disabled, setDisabled] = useState(true);
-	const API_URL = `/api/bbs/qna/view?id=${props.params.id}`;
+	const API_URL = `/api/bbs/${props.params.id}`;
 
 	useEffect(() => {
 		getData();
@@ -35,7 +35,7 @@ export default function page(props) {
 
 	function removeBbs(id) {
 		if (confirm('게시글을 삭제 하시겠습니까?')) {
-			axios.get(`/api/bbs/remove?id=${id}`).then((res) => {
+			axios.delete(`/api/bbs/${id}`).then((res) => {
 				if (res.data == true) {
 					alert('삭제 완료 되었습니다.');
 					router.push('/user/bbs-qna-list');

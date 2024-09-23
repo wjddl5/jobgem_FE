@@ -4,13 +4,14 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import styles from '/public/css/board.css';
 import axios from 'axios';
+import SideMenu from '@/components/sidemenu/SideMenu';
 
 // QnA 게시판 리스트
 export default function page(props) {
 	// 초기화
 	const router = useRouter();
 	const [ar, setAr] = useState([]);
-	const API_URL = '/api/bbs/qna/myList';
+	const API_URL = '/api/bbs/qna/my';
 
 	// 페이징
 	const [cPage, setCPage] = useState(Number(props.searchParams.cPage));
@@ -20,7 +21,7 @@ export default function page(props) {
 
 	function changePage(event, value) {
 		setPage(value - 1);
-		router.replace(`/user/bbs-qna-list?cPage=${value - 1}`, { shallow: true }); // 뒤로가기에도 원래 페이지로 갈 수 있게 URL수정
+		router.replace(`/company/bbs/bbs-qna-list?cPage=${value - 1}`, { shallow: true }); // 뒤로가기에도 원래 페이지로 갈 수 있게 URL수정
 	}
 
 	useEffect(() => {
@@ -47,15 +48,35 @@ export default function page(props) {
 	useEffect(() => {
 		getData();
 	}, [page]);
-	//========================
+	//=========================
 
 	// 페이지
 	return (
-		<div>
-			<div className='bbs_header'>
-				<h2 className='bbs_title'>Q & A</h2>
+		<div className='container mx-auto px-4 py-8'>
+			<div className='flex justify-between items-center mb-6'>
+				<h1 className='text-3xl font-bold text-gray-800'>Q & A</h1>
+				<div className='bbs_search'>
+					<Button
+						className='search_btn'
+						variant='contained'
+						onClick={() => {
+							router.push('bbs-qna-write');
+						}}
+					>
+						1:1 문의
+					</Button>
+					<Button
+						className='search_btn'
+						variant='outlined'
+						onClick={() => {
+							router.push('clovaChat');
+						}}
+					>
+						Ai 상담
+					</Button>
+				</div>
 			</div>
-			<Table>
+			<Table className='bbs_table'>
 				<TableHead>
 					<TableRow>
 						<TableCell sx={{ width: '80px' }} align='center'>

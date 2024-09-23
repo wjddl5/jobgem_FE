@@ -1,19 +1,21 @@
 "use client";
-import SideMenu from "@/components/sidemenu/SideMenu";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function ViewPage(props) {
+	const login = 1;
 	useEffect(() => {
 		getPosting();
 	}, []);
 	const [posting, setPosting] = useState(null);
 	const [timeLeft, setTimeLeft] = useState("");
 
+	const router = useRouter();
+
 	function getPosting() {
-		console.log(props.params.poIdx);
 		axios
-			.get(`/api/post/view?poIdx=${props.params.poIdx}`)
+			.get(`/api/posts/${props.params.poIdx}`)
 			.then((response) => {
 				console.log(response.data);
 				setPosting(response.data);
@@ -24,9 +26,31 @@ export default function ViewPage(props) {
 			});
 	}
 
+	function send() {
+		axios({
+			url: "/api/applyment",
+			method: "post",
+			params: {
+				joIdx: login,
+				poIdx: props.params.poIdx,
+			},
+		}).then((res) => {
+			console.log(res);
+			if (res.data == "0") {
+				alert("이미 지원한 공고입니다.");
+			} else {
+				if (res.status == 200) {
+					alert("지원완료");
+					router.push(`/user/apply-company`);
+				}
+			}
+		});
+	}
+
 	useEffect(() => {
 		getPosting();
 	}, []);
+
 	useEffect(() => {
 		const timer = setInterval(() => {
 			updateTimeLeft();
@@ -101,7 +125,9 @@ export default function ViewPage(props) {
 								<h2 className='text-2xl font-semibold'>{posting && posting.poTitle}</h2>
 							</div>
 							<div className='flex items-center'>
-								<button className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'>지원하기</button>
+								<button onClick={send} className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'>
+									지원하기
+								</button>
 							</div>
 						</div>
 						<hr className='my-4' />
@@ -151,7 +177,10 @@ export default function ViewPage(props) {
 					</div>
 				</div>
 				<div className='w-1/2 flex mb-4 mx-auto space-x-1 mb-5'>
-					<button className='flex-1 py-3 px-4 bg-orange-500 text-white font-semibold rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50'>
+					<button
+						className='flex-1 py-3 px-4 bg-orange-500 text-white font-semibold rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50'
+						onClick={send}
+					>
 						<span className='mr-2'>✓</span>즉시지원
 					</button>
 					<button className='flex-1 py-3 px-4 bg-white text-gray-700 font-semibold rounded-md border border-gray-300 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50'>
@@ -224,7 +253,9 @@ export default function ViewPage(props) {
 								<h3 className='text-xl font-semibold mb-2'>지원방법</h3>
 								<p className='text-gray-600'>지원방법: {posting && posting.poSubType}</p>
 							</div>
-							<button className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'>바로지원</button>
+							<button className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600' onClick={send}>
+								바로지원
+							</button>
 						</div>
 
 						{posting && posting.poSubType.includes("homepage") && (

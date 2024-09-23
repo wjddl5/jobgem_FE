@@ -13,7 +13,7 @@ export default function page(props) {
 	const [commentList, setCommentList] = useState([]);
 	const [commentContent, setCommentContent] = useState('');
 	const [disabled, setDisabled] = useState(true);
-	const API_URL = `/api/bbs/notice/view?id=${props.params.id}`;
+	const API_URL = `/api/bbs/${props.params.id}`;
 
 	function getData() {
 		axios.get(API_URL).then((res) => {
@@ -43,7 +43,7 @@ export default function page(props) {
 	useEffect(() => {
 		if (chk.current) {
 			if (!hasViewed()) {
-				axios.get(`/api/bbs/hitUp?id=${props.params.id}`).then(() => {
+				axios.put(`/api/bbs/hit/${props.params.id}`).then(() => {
 					getData();
 					markAsViewed();
 				});
@@ -52,11 +52,11 @@ export default function page(props) {
 		chk = false;
 	}, []);
 
-	// ================
+	// =================
 	// 댓글
 	function removeComment(id) {
 		if (confirm('댓글을 삭제 하시겠습니까?')) {
-			axios.get(`/api/comment/remove?id=${id}`).then((res) => {
+			axios.delete(`/api/comment/${id}`).then((res) => {
 				if (res.data == true) alert('삭제 완료 되었습니다.');
 				else alert('삭제 실패 !');
 				getData();
@@ -71,7 +71,7 @@ export default function page(props) {
 			alert('최대 100글자까지 입력할 수 있습니다.');
 		} else {
 			axios
-				.get('/api/comment/write', {
+				.post('/api/comment/write', null, {
 					params: {
 						content: commentContent,
 						usIdx: 1, //로그인한 유저 idx로 변경 (!)
@@ -110,9 +110,8 @@ export default function page(props) {
 
 	function updateComment(id, content) {
 		axios
-			.get('/api/comment/edit', {
+			.put(`/api/comment/${id}`, null, {
 				params: {
-					id: id,
 					content: content,
 				},
 			})
@@ -145,7 +144,7 @@ export default function page(props) {
 							</p>
 							{editingCommentId === comment.id ? (
 								<>
-									<input className='editCommentInput' type='text' value={newContent} onChange={(e) => setNewContent(e.target.value)} />
+									<input style={{ width: '830px', height: '30px', marginTop: '10px' }} type='text' value={newContent} onChange={(e) => setNewContent(e.target.value)} />
 									<Button className='edit-button' variant='text' size='small' onClick={() => SaveClick(comment.id)}>
 										저장
 									</Button>
@@ -169,7 +168,7 @@ export default function page(props) {
 						</li>
 					))}
 				</ul>
-				<TextField id='commentWrite' label='댓글작성' variant='outlined' style={{ width: '870px' }} onChange={changeComment} />
+				<TextField id='commentWrite' label='댓글작성' variant='outlined' style={{ width: '765px' }} onChange={changeComment} />
 
 				<Button
 					className='commentSaveBtn'
@@ -186,7 +185,7 @@ export default function page(props) {
 				<Button
 					variant='outlined'
 					size='small'
-					onClick={() => router.push(`/company/bbs-notice-list?cPage=${props.searchParams.cPage}&searchType=${props.searchParams.searchType}&searchValue=${props.searchParams.searchValue}`)}
+					onClick={() => router.push(`/user/bbs-notice-list?cPage=${props.searchParams.cPage}&searchType=${props.searchParams.searchType}&searchValue=${props.searchParams.searchValue}`)}
 				>
 					목록
 				</Button>

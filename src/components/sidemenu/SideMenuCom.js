@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from "next/link";
 
 export default function SideMenuCom() {
 	const [isOpen, setIsOpen] = useState(false);
@@ -11,11 +12,16 @@ export default function SideMenuCom() {
 			<aside className={`hidden md:block w-64 bg-white p-6 shadow-lg rounded-lg`}>
 				<nav className='space-y-8'>
 					<div>
-						<h2 className='font-bold text-lg text-gray-900 mb-6'>기업회원 홈</h2>
+						<h2 className='font-bold text-lg text-gray-900 mb-6'><Link href='/company'>기업회원 홈</Link></h2>
 						<ul className='space-y-4'>
 							<li>
 								<span onClick={() => router.push(`/company`)} className='text-gray-700 hover:text-blue-600 cursor-pointer'>
 									마이페이지
+								</span>
+							</li>
+							<li>
+								<span onClick={() => router.push(`/company/chat`)} className='text-gray-700 hover:text-blue-600 cursor-pointer'>
+									채팅목록
 								</span>
 							</li>
 						</ul>

@@ -99,10 +99,10 @@ export default function Page(props) {
 					getCompanyList();
 					setCompany('');
 					setReason('');
-					if (searchParams.length > 0) {
-						axios.get('/api/blackList/process', {
+					if (props.searchParams) {
+						console.log('a');
+						axios.put(`/api/blackList/process/${props.searchParams.blIdx}`, null, {
 							params: {
-								id: props.searchParams.blIdx,
 								nowProcess: 0,
 							},
 						});

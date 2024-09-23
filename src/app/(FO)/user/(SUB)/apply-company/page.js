@@ -21,16 +21,15 @@ export default function page() {
 		미열람: 0,
 	});
 
-	const API_URL = `/api/applymentList?id=${login}&curPage=${curPage}`;
-	const APPLYMENT_COUNT_URL = `/api/applymentCount?id=${login}`;
-	const FILTER_API_URL = `/api/applymentSearch?joIdx=${login}`;
+	const API_URL = `/api/applyments?id=${login}&curPage=${curPage}`;
+	const APPLYMENT_COUNT_URL = `/api/applyment/count?id=${login}`;
+	const FILTER_API_URL = `/api/search/applyment`;
 
 	// 데이터 가져오기
 	function getData() {
 		axios.get(API_URL).then((res) => {
 			setApplyment(res.data.content); // 데이터를 상태에 저장
 			setTotalPages(res.data.totalPages);
-			console.log(res);
 		});
 	}
 
@@ -38,7 +37,6 @@ export default function page() {
 	function getApplymentCount() {
 		axios.get(APPLYMENT_COUNT_URL).then((res) => {
 			setApplymentCount(res.data); // applymentCount 데이터를 상태에 저장
-			console.log(res.data);
 		});
 	}
 
@@ -47,15 +45,15 @@ export default function page() {
 		axios
 			.get(FILTER_API_URL, {
 				params: {
+					joIdx: login,
+					apRead: apRead,
 					startDate: startDate,
 					endDate: endDate,
-					apRead: apRead,
 					curPage: curPage,
 				},
 			})
 			.then((res) => {
 				setApplyment(res.data.content);
-				console.log(res.data);
 			})
 			.catch((err) => {
 				console.error("Error fetching filtered data:", err);

@@ -8,7 +8,7 @@ export default function Sidebar() {
 	const router = useRouter(); // useRouter 훅 사용
 
 	return (
-		<div className='flex'>
+		<div className='sticky top-24'>
 			{/* 메뉴 버튼 - 작은 화면에서는 표시됨 */}
 			<button className='block md:hidden p-4 focus:outline-none' onClick={() => setIsOpen(!isOpen)}>
 				<FiMenu size={24} />

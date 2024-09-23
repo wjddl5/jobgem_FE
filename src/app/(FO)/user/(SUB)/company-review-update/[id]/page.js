@@ -15,13 +15,14 @@ export default function Page(props) {
 	const [selectedStars, setSelectedStars] = useState(0);
 
 	function getCompany() {
-		axios.get("/api/companyList").then((res) => {
+		axios.get("/api/companies").then((res) => {
 			setCompany(res.data); // 받아온 데이터를 상태에 저장
 		});
 	}
 
 	function getReview() {
-		axios.get(`/api/getReview?id=${props.params.id}`).then((res) => {
+		axios.get(`/api/review?id=${props.params.id}`).then((res) => {
+			getCompany();
 			const data = res.data;
 			setCoIdx(data.coIdx); // 회사 ID 설정
 			setReTitle(data.reTitle); // 리뷰 제목 설정
@@ -32,7 +33,6 @@ export default function Page(props) {
 	}
 
 	useEffect(() => {
-		getCompany();
 		getReview(); // 컴포넌트가 마운트될 때 한 번만 실행
 	}, []);
 
@@ -42,8 +42,8 @@ export default function Page(props) {
 			return;
 		}
 		axios({
-			url: "/api/updateReview",
-			method: "get", // 업데이트를 위한 PUT 요청
+			url: "/api/review",
+			method: "put", // 업데이트를 위한 PUT 요청
 			params: {
 				id: props.params.id,
 				joIdx: login,

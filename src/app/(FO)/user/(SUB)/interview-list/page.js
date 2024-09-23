@@ -14,7 +14,7 @@ export default function Page() {
 	const [curPage, setCurPage] = useState(0);
 	const router = useRouter();
 	const [interview, setInterview] = useState([]);
-	const API_URL = `/api/interviewList?id=${login}&curPage=${curPage}`;
+	const API_URL = `/api/interviews?id=${login}&curPage=${curPage}`;
 
 	function getData() {
 		axios.get(API_URL).then((res) => {
@@ -25,7 +25,7 @@ export default function Page() {
 	}
 
 	function remove(interviewId) {
-		axios.get(`/api/deleteInterview?id=${interviewId}`).then((res) => {
+		axios.delete(`/api/interview?id=${interviewId}`).then((res) => {
 			console.log(res);
 			if (res.status === 200) {
 				alert("삭제 완료");
@@ -57,6 +57,7 @@ export default function Page() {
 				<div className='flex justify-between items-center mt-5 px-5 py-2 font-bold bg-gray-200'>
 					<p className='flex-1 text-center'>회사명</p>
 					<p className='flex-1 text-center'>내용</p>
+					<p className='flex-1 text-center'>난이도</p>
 					<p className='flex-1 text-center'>작성일</p>
 					<div style={{ width: "81px" }}></div>
 				</div>
@@ -66,6 +67,7 @@ export default function Page() {
 						<div key={index} className='flex justify-between items-center mb-6 mt-5 px-5 py-1'>
 							<p className='flex-1 text-center'>{interview.coName}</p>
 							<p className='flex-1 text-center'>{shortenText(interview.inContent, 7)}</p> {/* 7글자 초과 시 ...으로 표시 */}
+							<p className='flex-1 text-center'>{interview.inLevel}</p>
 							<p className='flex-1 text-center'>{interview.inWriteDate}</p>
 							<div className='flex gap-2 border-l border-l-gray-300 px-3'>
 								<IconButton>
