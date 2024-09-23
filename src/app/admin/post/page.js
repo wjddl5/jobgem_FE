@@ -11,7 +11,7 @@ import SearchIcon from '@mui/icons-material/Search';
 
 export default function page() {
     const [ar, setAr] = useState([]);
-    const [apiUrl, setApiUrl] = useState("/api/post/all?size=6");
+    const [apiUrl, setApiUrl] = useState("/api/admin/posts?size=6");
     const [page, setPage] = useState(0);
     const [totalPage, setTotalPage] = useState(0);
     const [searchType, setSearchType] = useState('title'); // 기본 선택으로 설정
@@ -23,7 +23,6 @@ export default function page() {
     function getPosts() {
         axios.get(apiUrl)
             .then(response => {
-                console.log(response.data);
                 setAr(response.data.content);
                 setTotalPage(response.data.totalPages);
                 setPage(response.data.pageable.pageNumber);
@@ -35,7 +34,7 @@ export default function page() {
 
     const changePage = (event, value) => {
         setPage(value - 1); // 페이지 번호는 0부터 시작하므로 1을 빼줍니다.
-        setApiUrl("/api/post/all?size=6&page=" + (value - 1));
+        setApiUrl("/api/admin/posts?size=6&page=" + (value - 1));
         getPosts();
     };
 
@@ -116,9 +115,9 @@ export default function page() {
             </Box>
             <CardLayout list={ar} />
             <Pagination
-                onChange={changePage} // onClick 대신 onChange 사용
-                page={page + 1} // 현재 페이지 번호
-                count={totalPage} // 총 페이지 수
+                onChange={changePage}
+                page={page + 1} 
+                count={totalPage} 
                 color="primary"
                 style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}
                 className="pagination"

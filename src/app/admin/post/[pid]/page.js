@@ -5,7 +5,7 @@ import { Card, CardContent, Typography, Button, Paper } from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 export default function page(props) {
-    const api_url = "/api/post/view?poIdx=" + props.params.pid;
+    const api_url = "/api/posts/" + props.params.pid;
     const [ar, setAr] = useState([]);
     const [education, setEducation] = useState([]);
     const [career, setCareer] = useState([]);

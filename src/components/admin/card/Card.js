@@ -22,7 +22,7 @@ function Card({ item }) {
 		if (confirmDelete) {
 			try {
 				// params를 axios 요청과 함께 올바르게 전달
-				const response = await axios.post(`/api/post/delete?id=${item.id}`);
+				const response = await axios.delete(`/api/posts/${item.id}`);
 				if (response.status === 200) {
 					alert("삭제 완료");
 					window.location.reload();

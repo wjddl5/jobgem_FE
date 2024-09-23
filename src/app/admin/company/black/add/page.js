@@ -25,13 +25,14 @@ import axios from 'axios';
 
 export default function Page(props) {
 	const router = useRouter();
+	const api_url = '/api/admin/unblocked-companies';
 	const [company, setCompany] = useState('');
 	const [reason, setReason] = useState('');
 	const [ar, setAr] = useState([]);
 	const [searchValue, setSearchValue] = useState('');
-	const [searchType, setSearchType] = useState('');
-	const api_url = '/api/company/notBlack';
+	const [searchType, setSearchType] = useState('name');
 	const [loading, setLoading] = useState(false);
+	const searchParams = props.searchParams;
 
 	useEffect(() => {
 		getCompanyList();
@@ -87,10 +88,10 @@ export default function Page(props) {
 			return;
 		} else {
 			try {
-				const response = await axios.get('/api/company/addcompanyBlock', {
+				const response = await axios.post('/api/admin/company-blocks',{}, {
 					params: {
-						coIdx: company.id,
-						blContent: reason,
+						id: company.id,
+						value: reason,
 					},
 				});
 				if (response.status === 200) {
@@ -98,8 +99,7 @@ export default function Page(props) {
 					getCompanyList();
 					setCompany('');
 					setReason('');
-					if (props.searchParams) {
-						console.log('a');
+					if (searchParams.length > 0) {
 						axios.get('/api/blackList/process', {
 							params: {
 								id: props.searchParams.blIdx,

@@ -6,41 +6,41 @@ import axios from 'axios';
 
 function EnhancedTable() {
     const [page, setPage] = useState(0);
-    const [api_url, setApiUrl] = useState("/api/userlist?size=10");
+    const [api_url, setApiUrl] = useState("/api/admin/jobseekers?size=10");
     const [ar, setAr] = useState([]);
     const [totalPage, setTotalPage] = useState(0);
-    const [searchType, setSearchType] = useState('');
+    const [searchType, setSearchType] = useState('name');
     const [searchValue, setSearchValue] = useState('');
     useEffect(() => {
         getMemberList();
     }, [page]);
-    // 회원 리스트 불러오기
-    function getMemberList(){
-    axios.get(api_url).then((response) => {
+
+    function getMemberList() {
+        axios.get(api_url).then((response) => {
             setAr(response.data.content);
             setTotalPage(response.data.totalPages);
             setPage(response.data.pageable.pageNumber);
         });
     }
-    // 페이지 변경 핸들러 수정
+
     const changePage = (event, value) => {
         setPage(value - 1); // 페이지 번호는 0부터 시작하므로 1을 빼줍니다.
-        setApiUrl("/api/userlist?size=10&page="+(value-1));
+        setApiUrl("/api/admin/jobseekers?size=10&page=" + (value - 1));
         getMemberList();
     };
-    //엔터키 검색
+
     const handleKeyDown = (e) => {
-        if(e.key === 'Enter') {
+        if (e.key === 'Enter') {
             handleSearch();
         }
     }
-    // 검색
+
     const handleSearch = async (e) => {
         try {
             const response = await axios.get(api_url, {
                 params: {
                     type: searchType,
-                    value: searchValue, 
+                    value: searchValue,
                 }
             });
             if (response.status === 200) {
@@ -71,14 +71,13 @@ function EnhancedTable() {
                             label="카테고리"
                             onChange={(e) => setSearchType(e.target.value)}
                         >
-                            <MenuItem value="name">이름</MenuItem>
+                            <MenuItem value="name">회원명</MenuItem>
                             <MenuItem value="birth">생년월일</MenuItem>
                             <MenuItem value="tel">전화번호</MenuItem>
                             <MenuItem value="address">주소</MenuItem>
                             <MenuItem value="edu">학력</MenuItem>
                             <MenuItem value="sal">월급</MenuItem>
                             <MenuItem value="gender">성별</MenuItem>
-                            <MenuItem value="imgUrl">사진</MenuItem>
                             <MenuItem value="joinDate">가입일자</MenuItem>
                             <MenuItem value="leaveDate">탈퇴일자</MenuItem>
                         </Select>
@@ -116,7 +115,7 @@ function EnhancedTable() {
                     <TableBody>
                         {ar.map((user) => (
                             <TableRow
-                                key={user.id} // 키를 user.usIdx로 변경
+                                key={user.id}
                                 hover
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
@@ -136,9 +135,9 @@ function EnhancedTable() {
                 </Table>
             </TableContainer>
             <Pagination
-                onChange={changePage} // onClick 대신 onChange 사용
-                page={page + 1} // 현재 페이지 번호
-                count={totalPage} // 총 페이지 수
+                onChange={changePage}
+                page={page + 1}
+                count={totalPage}
                 color="primary"
                 style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}
                 className="pagination"
