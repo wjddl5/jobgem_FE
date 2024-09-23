@@ -151,7 +151,7 @@ export default function ApplicationForm(params) {
     const minuteOptions = ['00', '10', '20', '30', '40', '50'];
     /* 확인 팝업 */
     const [showConfirmPopup, setShowConfirmPopup] = useState(false);
-    const [image, setImage] = useState('');
+    const [image, setImage] = useState(null);
     const [contentImageList, setContentImageList] = useState([]);
 
     /* 랜더링시 초기화*/
@@ -495,8 +495,10 @@ export default function ApplicationForm(params) {
             subType: subType,
             workStartTime: workStartTime.hour+":"+workStartTime.minute,
             workEndTime: workEndTime.hour+":"+workEndTime.minute,
-            workDay: workDayData,
-            imgUrl: image.name
+            workDay: workDayData,  
+        }
+        if(image !== null) {
+            data.imgUrl = image.name;
         }
         if(endDate !== '') {
             data.poDeadline = endDate;

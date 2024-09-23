@@ -182,7 +182,7 @@ export default function ApplicationForm() {
     /* 확인 팝업 */
     const [showConfirmPopup, setShowConfirmPopup] = useState(false);
     /* 이미지 */
-    const [image, setImage] = useState();
+    const [image, setImage] = useState(null);
 
     /* 랜더링시 초기화*/
     useEffect(() => {
@@ -513,7 +513,7 @@ export default function ApplicationForm() {
             workEndTime: workEndTime.hour+":"+workEndTime.minute,
             workDay: workDayData,
         }
-        if (image && image.name) {
+        if (image !== null) {
             data.imgUrl = image.name;
         }
 
