@@ -74,7 +74,7 @@ export default function Home() {
         setPostData(Object.values(monthlyPostCount));
         setCountPost(response.data.content.filter(item => item.poState === 1));
 
-        setCountPostout(response.data.content.filter(item => item.poState === 2));
+        setCountPostout(response.data.content.filter(item => item.poState === 0));
       })
       .catch(error => console.error('Error fetching data:', error));
 
