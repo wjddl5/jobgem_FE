@@ -120,7 +120,7 @@ export default function page() {
 		if (confirm('체크한 항목을 삭제하시겠습니까?')) {
 			console.log(chkAraay);
 			axios
-				.get('/api/category/removeList', {
+				.delete('/api/category/edu', {
 					params: {
 						chkList: chkAraay,
 					},
@@ -156,7 +156,7 @@ export default function page() {
 			alert('최대 30글자까지 입력할 수 있습니다.');
 		} else {
 			axios
-				.get('/api/category/edit', {
+				.put(`/api/category/edu/${id}`, null, {
 					params: {
 						id: id,
 						editItemName: editItemName,
@@ -205,7 +205,7 @@ export default function page() {
 			alert('최대 30글자까지 입력할 수 있습니다.');
 		} else {
 			axios
-				.get('/api/category/addEdu', {
+				.post('/api/category/edu', null, {
 					params: {
 						itemName: itemName,
 					},

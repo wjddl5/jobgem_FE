@@ -15,7 +15,7 @@ export default function page(props) {
 	const [content, setContent] = useState('');
 	const [disabled, setDisabled] = useState(true);
 	const [vo, setVo] = useState({});
-	const API_URL = `/api/bbs/notice/view?id=${props.params.id}`;
+	const API_URL = `/api/bbs/${props.params.id}`;
 	const editorRef = useRef(null);
 
 	function changeContent(content) {
@@ -39,9 +39,8 @@ export default function page(props) {
 
 	function saveBbs(title, content) {
 		axios
-			.get('/api/bbs/notice/edit', {
+			.put(`/api/bbs/${props.params.id}`, null, {
 				params: {
-					boId: props.params.id,
 					title: title,
 					content: content,
 				},
@@ -98,10 +97,7 @@ export default function page(props) {
 				return response.text(); // 서버에서 반환된 텍스트(S3 URL)를 처리
 			})
 			.then((s3Url) => {
-				console.log('S3 URL:', s3Url); // S3 URL이 잘 출력되는지 확인
-
 				if (editorRef.current) {
-					console.log('에디터에 이미지 삽입');
 					// SunEditor 인스턴스에서 이미지 삽입
 					editorRef.current.insertHTML(`<img src="${s3Url}" alt="image">`);
 					uploadHandler(); // 업로드 완료 후 uploadHandler 호출

@@ -11,7 +11,7 @@ export default function page(props) {
 	// 초기화
 	const router = useRouter();
 	const [ar, setAr] = useState([]);
-	const API_URL = '/api/bbs/qna/myList';
+	const API_URL = '/api/bbs/qna/my';
 
 	// 페이징
 	const [cPage, setCPage] = useState(Number(props.searchParams.cPage));

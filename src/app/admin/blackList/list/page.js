@@ -9,9 +9,9 @@ import axios from 'axios';
 export default function page(props) {
 	// 초기화
 	const router = useRouter();
-	const [searchType, setSearchType] = useState(sessionStorage.getItem('searchType') ? sessionStorage.getItem('searchType') : 'title');
-	const [searchValue, setSearchValue] = useState(sessionStorage.getItem('searchValue') ? sessionStorage.getItem('searchValue') : '');
-	const [selectType, setselectType] = useState(sessionStorage.getItem('selectType') ? sessionStorage.getItem('selectType') : 'all');
+	const [searchType, setSearchType] = useState(props.searchParams.searchType ? props.searchParams.searchType : 'title');
+	const [searchValue, setSearchValue] = useState(props.searchParams.searchValue ? props.searchParams.searchValue : '');
+	const [selectType, setselectType] = useState(props.searchParams.selectType ? props.searchParams.selectType : 'all');
 	const [ar, setAr] = useState([]);
 	const [arLength, setArLength] = useState(0);
 	const API_URL = '/api/blackList/list';
@@ -24,7 +24,7 @@ export default function page(props) {
 
 	function changePage(event, value) {
 		setPage(value - 1);
-		router.replace(`/admin/blackList/list?cPage=${value - 1}`, { shallow: true }); // 뒤로가기에도 원래 페이지로 갈 수 있게 URL수정
+		router.replace(`/admin/blackList/list?cPage=${value - 1}&searchType=${searchType}&searchValue=${searchValue}&selectType=${selectType}`, { shallow: true }); // 뒤로가기에도 원래 페이지로 갈 수 있게 URL수정
 	}
 
 	useEffect(() => {
@@ -44,9 +44,6 @@ export default function page(props) {
 	function search() {
 		setPage(0);
 		getData();
-		sessionStorage.setItem('searchType', searchType);
-		sessionStorage.setItem('searchValue', searchValue);
-		sessionStorage.setItem('selectType', selectType);
 	}
 
 	function getData() {
@@ -87,7 +84,7 @@ export default function page(props) {
 		const chkAraay = Array.from(chkList);
 		if (confirm('체크한 게시글을 삭제하시겠습니까?')) {
 			axios
-				.get('/api/blackList/removeList', {
+				.delete('/api/blackList/removeList', {
 					params: {
 						chkList: chkAraay,
 					},
@@ -151,7 +148,7 @@ export default function page(props) {
 						<Button className='search_btn' variant='contained' onClick={search}>
 							검색
 						</Button>
-						<RadioGroup row defaultValue='all' name='blackListType' className='blackList_radio' onChange={() => selectChange2(event)}>
+						<RadioGroup row defaultValue={selectType} name='blackListType' className='blackList_radio' onChange={() => selectChange2(event)}>
 							<FormControlLabel value='all' control={<Radio size='small' />} label='전체' />
 							<FormControlLabel value='company' control={<Radio size='small' />} label='기업' />
 							<FormControlLabel value='jobseeker' control={<Radio size='small' />} label='회원' />
@@ -186,7 +183,12 @@ export default function page(props) {
 				</TableHead>
 				<TableBody>
 					{ar.map((row) => (
-						<TableRow key={row.id} className={styles.tableRow} onClick={() => router.push(`view/${row.id}`)} hover>
+						<TableRow
+							key={row.id}
+							className={styles.tableRow}
+							onClick={() => router.push(`view/${row.id}?cPage=${page}&searchType=${searchType}&searchValue=${searchValue}&selectType=${selectType}`)}
+							hover
+						>
 							<TableCell>
 								<Checkbox checked={chkSet.has(row.id)} onChange={(event) => checkChange(event, row.id)} onClick={(event) => event.stopPropagation()} />
 							</TableCell>

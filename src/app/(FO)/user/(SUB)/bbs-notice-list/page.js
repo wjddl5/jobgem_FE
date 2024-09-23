@@ -14,7 +14,7 @@ export default function page(props) {
 	const [searchValue, setSearchValue] = useState(props.searchParams.searchValue ? props.searchParams.searchValue : '');
 	const [ar, setAr] = useState([]);
 	const [arLength, setArLength] = useState(0);
-	const API_URL = '/api/bbs/notice/list';
+	const API_URL = '/api/bbs/notice';
 
 	// 페이징
 	const [cPage, setCPage] = useState(Number(props.searchParams.cPage));

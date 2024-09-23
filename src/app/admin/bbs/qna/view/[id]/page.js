@@ -14,7 +14,7 @@ export default function page(props) {
 	const [commentContent, setCommentContent] = useState('');
 	const [lastComment, setLastComment] = useState('');
 	const [disabled, setDisabled] = useState(true);
-	const API_URL = `/api/bbs/qna/view?id=${props.params.id}`;
+	const API_URL = `/api/bbs/${props.params.id}`;
 	const [answerStatus, setAnswerStatus] = useState();
 
 	useEffect(() => {
@@ -38,7 +38,7 @@ export default function page(props) {
 
 	function removeBbs(id) {
 		if (confirm('게시글을 삭제 하시겠습니까?')) {
-			axios.get(`/api/bbs/remove?id=${id}`).then((res) => {
+			axios.delete(`/api/bbs/${id}`).then((res) => {
 				if (res.data == true) {
 					alert('삭제 완료 되었습니다.');
 					router.push('/admin/bbs/qna/list');
@@ -50,7 +50,7 @@ export default function page(props) {
 	// 댓글
 	function removeComment(id) {
 		if (confirm('댓글을 삭제 하시겠습니까?')) {
-			axios.get(`/api/comment/remove?id=${id}`).then((res) => {
+			axios.delete(`/api/comment/${id}`).then((res) => {
 				if (res.data == true) {
 					alert('삭제 완료 되었습니다.');
 					updateAnswerStatus(false);
@@ -66,7 +66,7 @@ export default function page(props) {
 			alert('최대 100글자까지 입력할 수 있습니다.');
 		} else {
 			axios
-				.get('/api/comment/write', {
+				.post('/api/comment/write', null, {
 					params: {
 						content: commentContent,
 						usIdx: 1, //로그인한 유저 idx로 변경 (!)
@@ -105,9 +105,8 @@ export default function page(props) {
 
 	function updateComment(id, content) {
 		axios
-			.get('/api/comment/edit', {
+			.put(`/api/comment/${id}`, null, {
 				params: {
-					id: id,
 					content: content,
 				},
 			})
@@ -118,11 +117,11 @@ export default function page(props) {
 
 	function updateAnswerStatus(a) {
 		if (a == true) {
-			axios.get('/api/bbs/answerYes', { params: { id: props.params.id } }).then(() => {
+			axios.put(`/api/bbs/answer/${props.params.id}/yes`).then(() => {
 				getData();
 			});
 		} else {
-			axios.get('/api/bbs/answerNo', { params: { id: props.params.id } }).then(() => {
+			axios.put(`/api/bbs/answer/${props.params.id}/no`).then(() => {
 				getData();
 			});
 		}
@@ -195,7 +194,11 @@ export default function page(props) {
 				)}
 			</div>
 			<div className='btn_group'>
-				<Button variant='outlined' size='small' onClick={() => router.push('/admin/bbs/qna/list')}>
+				<Button
+					variant='outlined'
+					size='small'
+					onClick={() => router.push(`/admin/bbs/qna/list?cPage=${props.searchParams.cPage}&searchType=${props.searchParams.searchType}&searchValue=${props.searchParams.searchValue}`)}
+				>
 					목록
 				</Button>
 				<Button variant='outlined' size='small' color='error' onClick={() => removeBbs(vo.id)}>

@@ -15,7 +15,7 @@ export default function page(props) {
 	const [content, setContent] = useState('');
 	const [disabled, setDisabled] = useState(true);
 	const [vo, setVo] = useState({});
-	const API_URL = `/api/bbs/qna/view?id=${props.params.id}`;
+	const API_URL = `/api/bbs/${props.params.id}`;
 	const editorRef = useRef(null);
 
 	function changeContent(content) {
@@ -39,9 +39,8 @@ export default function page(props) {
 
 	function saveBbs(title, content) {
 		axios
-			.get('/api/bbs/notice/edit', {
+			.put(`/api/bbs/${props.params.id}`, null, {
 				params: {
-					boId: props.params.id,
 					title: title,
 					content: content,
 				},
