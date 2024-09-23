@@ -124,7 +124,7 @@ export default function ViewPage(props) {
                 </div>
                 <div className="ml-8 w-1/5">
                     <div className="bg-gray-100 p-4 rounded-lg h-full">
-                        <img src="/img/company-logo.png" alt="Company Logo" className="w-12 h-12 mb-2" />
+                        <img src={`/S3/${posting && posting.company.coImgUrl}`} alt="Company Logo" className="w-12 h-12 mb-2" />
                         <h3 className="text-lg font-semibold mb-2">{posting && posting.company.coName}</h3>
                         <p className="text-sm text-gray-600 mb-2">기업정보</p>
                         <hr className="my-2" />
@@ -229,7 +229,7 @@ export default function ViewPage(props) {
         <div className="mt-8 bg-white shadow-md rounded-lg p-6">
             <h3 className="text-2xl font-semibold mb-4">기업정보</h3>
             <div className="flex items-start">
-                <img src="/airfirst_logo.png" alt="에어퍼스트 로고" className="w-24 h-24 object-contain mr-6"/>
+                <img src={`/S3/${posting && posting.company.coImgUrl}`} alt="에어퍼스트 로고" className="w-24 h-24 object-contain mr-6"/>
                 <div>
                     <h4 className="text-xl font-semibold mb-2">{posting && posting.company.coName}</h4>
                     <p className="text-gray-600 mb-2">대표자명: {posting && posting.company.coManagerName}</p>

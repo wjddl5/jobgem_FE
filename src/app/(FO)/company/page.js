@@ -57,8 +57,7 @@ export default function Page() {
                 if (uploadRes.status === 200) {
                     const fileName = file.name;
 
-                    // 이미지 업로드가 완료된 후 회사 정보를 업데이트합니다.
-                    const updateRes = await axios.post('/api/company/update/logo', null, {
+                    const updateRes = await axios.put('/api/company/logo',null, {
                         params: {
                             id: coId,
                             coThumbimgUrl: fileName

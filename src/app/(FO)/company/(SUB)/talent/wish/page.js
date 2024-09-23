@@ -41,7 +41,7 @@ function Page() {
 	const removeWishHandler = (id) => {
 		if (confirm("해당 인재를 찜목록에서 삭제하시겠습니까?")) {
 			axios
-				.post("/api/company/wish/delete", null, {
+				.delete("/api/company/wish", {
 					params: { id },
 				})
 				.then((res) => {
@@ -66,7 +66,7 @@ function Page() {
 	// 폼 확인 시 제출
 	const handleSubmit = async (formData) => {
 		axios
-			.post("/api/company/offer/add", null, {
+			.post("/api/company/offer", null, {
 				params: {
 					coIdx: 1,
 					joIdx: jobseekerId,
