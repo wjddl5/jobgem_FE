@@ -47,7 +47,6 @@ export default function ApplicationForm() {
             let processedContent = content;
             const base64ImageRegex = /<img src="(data:image\/[^;]+;base64[^"]+)"/g;
             let match;
-            let img=''
             while ((match = base64ImageRegex.exec(content)) !== null) {
                 const base64Image = match[1];
                 const { file,fileName } = makeBase64ImageToFile(base64Image);
@@ -57,7 +56,6 @@ export default function ApplicationForm() {
                 axios.post('/api/files/upload', formData)
                 .then(response => {
                     console.log("이미지처리",response);
-                    img=response.data
                 })
                 .catch(error => {
                     console.error('Error submitting form:', error);
