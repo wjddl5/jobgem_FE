@@ -24,15 +24,13 @@ export default function Page() {
 			setJobseeker(res.data);
 			setUser(res.data.user);
 			setSelectedSkills(res.data.skills.map((skill) => skill.id));
-			console.log("jobseeker 데이터:", res.data);
 		});
 	}
 
 	// 스킬 목록 가져오는 함수
 	function getSkillList() {
-		axios.get("/api/skillList").then((res) => {
+		axios.get("/api/skills").then((res) => {
 			setSkillList(res.data);
-			console.log("skillList:", res.data);
 		});
 	}
 
@@ -89,8 +87,8 @@ export default function Page() {
 			console.log("선택된 스킬 목록:", selectedSkills);
 
 			const res = await axios({
-				url: "/api/updateMypage",
-				method: "get",
+				url: "/api/mypage",
+				method: "put",
 				params: {
 					id: login,
 					joName: jobseeker.joName,

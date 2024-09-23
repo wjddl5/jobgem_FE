@@ -15,7 +15,7 @@ export default function Page() {
 	const [selectedStars, setSelectedStars] = useState(0);
 
 	function getCompany() {
-		axios.get("/api/companyList").then((res) => {
+		axios.get("/api/companies").then((res) => {
 			setCompany(res.data);
 		});
 	}
@@ -30,14 +30,14 @@ export default function Page() {
 			return;
 		}
 		axios({
-			url: "/api/addReview",
-			method: "get",
+			url: "/api/review",
+			method: "post",
 			params: {
 				joIdx: login,
 				coIdx: coIdx,
 				reTitle: reTitle,
 				reContent: reContent,
-				reScore: selectedStars, // 선택된 별점 값을 보냄
+				reScore: selectedStars,
 			},
 		}).then((res) => {
 			console.log(res);

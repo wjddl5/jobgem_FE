@@ -63,8 +63,8 @@ export default function Page() {
 
 			// API_URL을 통한 정보 업데이트
 			const res = await axios({
-				url: "/api/addResume",
-				method: "get",
+				url: "/api/resume",
+				method: "post",
 				params: {
 					joIdx: login,
 					reTitle: reTitle,

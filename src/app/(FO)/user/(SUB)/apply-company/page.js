@@ -21,9 +21,9 @@ export default function page() {
 		미열람: 0,
 	});
 
-	const API_URL = `/api/applymentList?id=${login}&curPage=${curPage}`;
-	const APPLYMENT_COUNT_URL = `/api/applymentCount?id=${login}`;
-	const FILTER_API_URL = `/api/applymentSearch?joIdx=${login}`;
+	const API_URL = `/api/applyments?id=${login}&curPage=${curPage}`;
+	const APPLYMENT_COUNT_URL = `/api/applyment/count?id=${login}`;
+	const FILTER_API_URL = `/api/search/applyment?joIdx=${login}`;
 
 	// 데이터 가져오기
 	function getData() {

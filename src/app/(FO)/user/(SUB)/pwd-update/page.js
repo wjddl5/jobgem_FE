@@ -12,12 +12,12 @@ export default function page() {
 	const [errorMessage, setErrorMessage] = useState("");
 	const router = useRouter(); // router 사용
 
-	const API_URL = `/api/updatePwd/`;
+	const API_URL = `/api/password`;
 
 	function send() {
 		axios({
 			url: API_URL,
-			method: "get",
+			method: "put",
 			params: {
 				id: login,
 				newPwd: newPwd,
