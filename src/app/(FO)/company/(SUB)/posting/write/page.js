@@ -14,7 +14,6 @@ export default function ApplicationForm() {
     const kakaoJavascriptKey = process.env.NEXT_PUBLIC_KAKOMAP_API_JAVASCRIPT_KEY
     const [value, setValue] = useState('');
 	const editor = useRef();
-    const [imgUrl, setImgUrl] = useState('');
 	const getSunEditorInstance = (sunEditor) => {
         editor.current = sunEditor;
     };
@@ -48,6 +47,7 @@ export default function ApplicationForm() {
             let processedContent = content;
             const base64ImageRegex = /<img src="(data:image\/[^;]+;base64[^"]+)"/g;
             let match;
+            let img=''
             while ((match = base64ImageRegex.exec(content)) !== null) {
                 const base64Image = match[1];
                 const { file,fileName } = makeBase64ImageToFile(base64Image);
@@ -56,17 +56,15 @@ export default function ApplicationForm() {
                 
                 axios.post('/api/files/upload', formData)
                 .then(response => {
-                    console.log(response);
-                    setImgUrl(response.data);
+                    console.log("이미지처리",response);
+                    img=response.data
                 })
                 .catch(error => {
                     console.error('Error submitting form:', error);
-                    setShowConfirmPopup(false);
                 });
-    
-                processedContent = processedContent.replace(base64Image, imgUrl);
+                processedContent = processedContent.replace(base64Image, process.env.NEXT_PUBLIC_BACKEND_URL + fileName);
+                
             }
-    
             return processedContent;
         };
 
@@ -461,6 +459,7 @@ export default function ApplicationForm() {
         }
         // 유효성 검사가 모두 통과되면 확인 팝업을 표시
         setShowConfirmPopup(true);
+        processEditorContent();
     }
 
     function confirmSubmit() {
@@ -499,8 +498,7 @@ export default function ApplicationForm() {
                 location = location.concat(LocationSiList.filter(location => location.ldIdx === selectedLocation[i].ldIdx));
             }
         }
-
-        const processedContent = processEditorContent(); 
+        const processedContent = processEditorContent();
         let data = {
             coIdx: 1,
             poTitle: title,
@@ -517,7 +515,7 @@ export default function ApplicationForm() {
             workEndTime: workEndTime.hour+":"+workEndTime.minute,
             workDay: workDayData,
         }
-        if(image !== null&&image !== '') {
+        if (image && image.name) {
             data.imgUrl = image.name;
         }
 
@@ -538,6 +536,7 @@ export default function ApplicationForm() {
         }
         let formData = new FormData();
         formData.append('file', image);
+        
         axios.post('/api/files/upload', formData)
         .then(response => {
             console.log(response);
