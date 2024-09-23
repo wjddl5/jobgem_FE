@@ -8,8 +8,9 @@ import Image from "next/image";
 import Table from "@/components/table/Table";
 import Link from "next/link";
 import axios from "axios";
-
+import { useRouter } from "next/navigation";
 export default function Page() {
+    const router = useRouter();
     const coId = 1;
     const [companyData, setCompanyData] = useState();
     const [isChangeLogo, setIsChangeLogo] = useState(true);
@@ -106,7 +107,7 @@ export default function Page() {
                     <div className="bg-white p-6 rounded-md shadow">
                         <div className='mb-4 flex justify-between'>
                             <h2 className="text-lg font-bold mb-4">기업 정보</h2>
-                            <Button text={'수정'}/>
+                            <Button text={'수정'} onClick={()=>router.push('/company/mypage')}/>
                         </div>
                         <div className='flex justify-between'>
                             <div className="text-center p-4">
