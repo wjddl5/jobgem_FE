@@ -34,7 +34,6 @@ export default function ApplicationForm(params) {
         { id: 'email', name: 'e-메일' },
         { id: 'fax', name: 'Fax' },
     ];
-    const [imgUrl, setImgUrl] = useState('');
     const makeBase64ImageToFile = (base64Image) => {
         const mimeType = base64Image.split(";")[0].split(":")[1];
         const extension = mimeType.split("/")[1];
@@ -58,7 +57,6 @@ export default function ApplicationForm(params) {
             let processedContent = content;
             const base64ImageRegex = /<img src="(data:image\/[^;]+;base64[^"]+)"/g;
             let match;
-            let img=''
             while ((match = base64ImageRegex.exec(content)) !== null) {
                 const base64Image = match[1];
                 const { file,fileName } = makeBase64ImageToFile(base64Image);
@@ -68,7 +66,6 @@ export default function ApplicationForm(params) {
                 axios.post('/api/files/upload', formData)
                 .then(response => {
                     console.log("이미지처리",response);
-                    img=response.data
                 })
                 .catch(error => {
                     console.error('Error submitting form:', error);
