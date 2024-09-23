@@ -133,7 +133,7 @@ export default function DetialPage(props) {
 			/>
 			<div className='flex-1 ml-4 p-6 '>
 				<div className='flex justify-between max-w-7xl mx-auto mb-8'>
-					<Link href={`/company/posting/view/${props.params.poIdx}`}><h1 className='text-3xl font-bold text-gray-800 mb-4 flex items-center'>{title}</h1></Link>
+					<Link href={`/user/post/view/${props.params.poIdx}`}><h1 className='text-3xl font-bold text-gray-800 mb-4 flex items-center'>{title}</h1></Link>
 					<div className='flex gap-4'>
 						<button
 							className='h-10 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all'
