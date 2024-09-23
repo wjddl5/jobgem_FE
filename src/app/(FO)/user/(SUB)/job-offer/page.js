@@ -14,7 +14,7 @@ export default function () {
 	const [curPage, setCurPage] = useState(0);
 	const [offers, setOffers] = useState([]);
 	const router = useRouter();
-	const API_URL = `/api/offerList?id=${login}&curPage=${curPage}`;
+	const API_URL = `/api/offers?id=${login}&curPage=${curPage}`;
 
 	function getData() {
 		axios.get(API_URL).then((res) => {
@@ -56,7 +56,7 @@ export default function () {
 									</div>
 								</div>
 								<div className='flex space-x-2'>
-									<Button type='submit' text={"수락"} onClick={() => router.push('/user/chat')} className='bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md' />
+									<Button type='submit' text={"수락"} onClick={() => router.push("/user/chat")} className='bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md' />
 									<Button text={"거절"} onClick={() => clickNo(offer.id)} className='bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md' />
 								</div>
 							</div>

@@ -9,7 +9,7 @@ export default function Page() {
 	const [jobseeker, setJobseeker] = useState({});
 	const [myPageCnt, setMyPageCnt] = useState({});
 	const API_URL = `/api/jobseeker?id=${login}`;
-	const API_URL2 = `/api/getMypageCount?id=${login}`;
+	const API_URL2 = `/api/mypage/count?id=${login}`;
 
 	function getData() {
 		axios.get(API_URL).then((res) => {

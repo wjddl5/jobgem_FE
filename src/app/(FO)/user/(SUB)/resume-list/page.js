@@ -15,7 +15,7 @@ export default function Page() {
 	const router = useRouter();
 	const [page, setPage] = useState(0);
 	const [resume, setResume] = useState([]);
-	const API_URL = `/api/resumeList?id=${login}&curPage=${curPage}`;
+	const API_URL = `/api/resumes?id=${login}&curPage=${curPage}`;
 
 	// 데이터 가져오기
 	function getData() {
@@ -29,12 +29,12 @@ export default function Page() {
 	// 이력서 삭제하기deleteResume
 	function remove(resumeId) {
 		axios
-			.get(`/api/deleteResume?id=${resumeId}`)
+			.delete(`/api/resume?id=${resumeId}`)
 			.then((res) => {
-				console.log(res); // 서버에서 반환한 응답 확인
+				console.log(res);
 				if (res.data === 1) {
 					alert("삭제 완료");
-					getData(); // 데이터 다시 불러오기
+					getData();
 				} else {
 					alert("대표 이력서는 삭제할 수 없습니다.");
 				}
@@ -47,11 +47,11 @@ export default function Page() {
 
 	// 대표 이력서 설정하기
 	function setDefault(resumeId) {
-		axios.get(`/api/updateDefaultResume?id=${resumeId}&joIdx=${login}`).then((res) => {
+		axios.put(`/api/resume/default?id=${resumeId}&joIdx=${login}`).then((res) => {
 			console.log(res);
 			if (res.status === 200) {
 				alert("대표 이력서가 설정되었습니다.");
-				getData(); // 데이터를 다시 불러와 업데이트된 대표 이력서를 반영합니다.
+				getData();
 			}
 		});
 	}

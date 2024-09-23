@@ -23,7 +23,7 @@ export default function page() {
 
 	function send() {
 		axios({
-			url: "/api/checkPwd",
+			url: "/api/password/check",
 			method: "get",
 			params: {
 				id: login, // joIdx로 수정

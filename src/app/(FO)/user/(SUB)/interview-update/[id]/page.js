@@ -14,13 +14,15 @@ export default function Page(props) {
 	const [inLevel, setInLevel] = useState(0);
 
 	function getCompany() {
-		axios.get("/api/companyList").then((res) => {
+		axios.get("/api/companies").then((res) => {
 			setCompany(res.data); // 받아온 데이터를 상태에 저장
 		});
 	}
 
 	function getInterview() {
-		axios.get(`/api/getInterview?id=${props.params.id}`).then((res) => {
+		axios.get(`/api/interview?id=${props.params.id}`).then((res) => {
+			getCompany();
+
 			const data = res.data;
 			setCoIdx(data.coIdx); // 회사 ID 설정
 			setInContent(data.inContent); // 리뷰 내용 설정
@@ -30,7 +32,6 @@ export default function Page(props) {
 	}
 
 	useEffect(() => {
-		getCompany();
 		getInterview(); // 컴포넌트가 마운트될 때 한 번만 실행
 	}, []);
 
@@ -40,8 +41,8 @@ export default function Page(props) {
 			return;
 		}
 		axios({
-			url: "/api/updateInterview",
-			method: "get", // 업데이트를 위한 GET 요청
+			url: "/api/interview",
+			method: "put", // 업데이트를 위한 GET 요청
 			params: {
 				id: props.params.id,
 				joIdx: login,

@@ -10,7 +10,7 @@ export default function () {
 
 	const fetchData = async () => {
 		try {
-			const res = await axios(`/api/postList?loadPage=${loadPage}`);
+			const res = await axios(`/api/posts/main?loadPage=${loadPage}`);
 			setPost((prevPost) => [...prevPost, ...res.data.content]);
 			console.log(res);
 

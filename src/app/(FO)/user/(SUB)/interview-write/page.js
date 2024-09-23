@@ -16,25 +16,13 @@ export default function Page() {
 	const [inLevel, setInLevel] = useState(0);
 
 	function getCompany() {
-		axios.get("/api/companyList").then((res) => {
+		axios.get("/api/companies").then((res) => {
 			setCompany(res.data);
-		});
-	}
-
-	function getInterview() {
-		axios.get(`/api/getInterview?id=${login}`).then((res) => {
-			const data = res.data;
-			setCoIdx(data.coIdx); // 회사 ID 설정
-			setJoIdx(data.joIdx); // 유저 ID 설정
-			setInContent(data.inContent); // 리뷰 내용 설정
-			setInLevel(data.inLevel); // 난이도 설정
-			setCompany(res.data.companyList); // 회사 목록을 상태에 설정
 		});
 	}
 
 	useEffect(() => {
 		getCompany();
-		getInterview(); // 컴포넌트가 마운트될 때 한 번만 실행
 	}, []);
 
 	function send() {
@@ -43,19 +31,18 @@ export default function Page() {
 			return;
 		}
 		axios({
-			url: "/api/updateInterview",
-			method: "get", // 업데이트를 위한 GET 요청
+			url: "/api/interview",
+			method: "post",
 			params: {
-				id: interviewId,
 				joIdx: login,
 				coIdx: coIdx,
 				inContent: inContent,
-				inLevel: inLevel, // 난이도 추가
+				inLevel: inLevel,
 			},
 		}).then((res) => {
 			console.log(res);
-			if (res.status === 200) {
-				alert("수정 완료");
+			if (res.status == 200) {
+				alert("저장완료");
 				router.push(`/user/interview-list`);
 			}
 		});
@@ -69,7 +56,7 @@ export default function Page() {
 	return (
 		<div className='bg-gray-100 flex-1 ml-2 '>
 			<div className='bg-white p-8 rounded-lg '>
-				<h2 className='text-2xl font-bold text-center mb-6'>면접후기 수정하기</h2>
+				<h2 className='text-2xl font-bold text-center mb-6'>면접후기 작성하기</h2>
 
 				<div className='mb-4'>
 					<label htmlFor='coIdx' className='block text-sm font-medium text-gray-700'>

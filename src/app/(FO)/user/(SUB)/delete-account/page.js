@@ -6,15 +6,15 @@ import { useRouter } from "next/navigation";
 export default function Page() {
 	const login = 1;
 	const router = useRouter();
-	const API_URL = `/api/deleteUser`;
+	const API_URL = `/api/account`;
 
 	function send() {
 		if (window.confirm("정말 탈퇴하시겠습니까? 탈퇴 후에는 모든 정보가 삭제됩니다.")) {
 			axios({
 				url: API_URL,
-				method: "get",
+				method: "delete",
 				params: {
-					id: login, // 사용자 ID 전달
+					id: login,
 				},
 			})
 				.then((res) => {
