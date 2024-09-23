@@ -100,8 +100,7 @@ export default function Page(props) {
 					getMemberList();
 					setMember('');
 					setReason('');
-					if (props.searchParams) {
-						console.log('a');
+					if (props.searchParams == 'R') {
 						axios.put(`/api/blackList/process/${props.searchParams.blIdx}`, null, {
 							params: {
 								nowProcess: 0,
