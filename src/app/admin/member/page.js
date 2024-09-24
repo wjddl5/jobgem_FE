@@ -55,6 +55,7 @@ function EnhancedTable() {
             alert("검색 중 오류 발생");
         }
     };
+
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', mt: 3, boxShadow: 3, padding: 5 }}>
             <Toolbar sx={{ pl: { sm: 2 }, pr: { xs: 1, sm: 1 } }}>
@@ -109,7 +110,7 @@ function EnhancedTable() {
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>성별</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>사진</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>가입일자</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>탈퇴일자</TableCell>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>탈퇴여부</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
