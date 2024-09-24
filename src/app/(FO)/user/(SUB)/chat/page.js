@@ -33,7 +33,7 @@ function Page() {
 
     // 웹소켓 연결 설정
     const connect = (chatRoomId) => {
-        stompClient.current = Stomp.over(() => new WebSocket('ws://localhost:8080/ws'));
+        stompClient.current = Stomp.over(() => new WebSocket(process.env.NEXT_PUBLIC_WEBSOCKET));
         stompClient.current.connect({}, () => {
             stompClient.current.subscribe(`/sub/chatroom/${chatRoomId}`, (message) => {
                 const newMessage = JSON.parse(message.body);
