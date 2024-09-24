@@ -115,7 +115,7 @@ export default function SideMenuCom() {
 						<h3 className='font-semibold text-red-600 mb-2'>회원탈퇴</h3>
 						<ul className='space-y-3 text-gray-600'>
 							<li>
-								<span className='hover:text-red-600 cursor-pointer'>회원탈퇴하기</span>
+								<span onClick={() => router.push(`/company/leave`)} className='hover:text-red-600 cursor-pointer'>회원탈퇴하기</span>
 							</li>
 						</ul>
 					</div>
