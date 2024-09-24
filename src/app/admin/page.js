@@ -422,7 +422,7 @@ export default function Home() {
                       <div className="flex flex-col gap-2">
                         <div className="text-gray-500 text-xs">{item.boWritedate}</div>
                         <div className="text-black font-semibold text-xs text-right">
-                          {item.user?.usLeaveDate ? '탈퇴한 회원' : item.user?.usId || '탈퇴한 회원'}
+                          {item.usId}
                         </div>
                       </div>
                     </div>
@@ -442,7 +442,7 @@ export default function Home() {
                       <div className="flex flex-col gap-2">
                         <div className="text-gray-500 text-xs">{item.blDate}</div>
                         <div className="text-black font-semibold text-xs text-right">
-                          {item.user?.usLeaveDate ? '탈퇴한 회원' : item.user?.usId || '탈퇴한 회원'}
+                          {item.usId}
                         </div>
                       </div>
                     </div>
