@@ -44,7 +44,7 @@ jobs:
           
       - name: SSH into EC2 and run Docker Compose
         run: |
-          ssh -t -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST }}
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST }}
           
       - name: 폴더 이동
         run: |
