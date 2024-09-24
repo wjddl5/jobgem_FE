@@ -29,7 +29,7 @@ ChartJS.register(
 export default function Home() {
   const router = useRouter();
   const api_url = "/api/admin"
-  const [userData, setUserData] = useState();
+  const [userData, setUserData] = useState([]);
   const [postData, setPostData] = useState([]);
   const [countUser, setCountUser] = useState([]);
   const [countUserout, setCountUserout] = useState([]);
@@ -42,8 +42,8 @@ export default function Home() {
   const [noblackCompany, setNoblackCompany] = useState([]);
   const [countAnswer, setCountAnswer] = useState([]);
   const [noPro, setNoPro] = useState([]);
-  useEffect(() => {
 
+  useEffect(() => {
     axios.get(api_url + "/users")
       .then(response => {
         const monthlyUserCount = response.data.reduce((acc, user) => {
@@ -107,13 +107,23 @@ export default function Home() {
         setCountAnswer(response.data);
       })
       .catch(error => console.error('Error fetching data:', error));
-      
+
     axios.get(api_url + "/pending-blacklist")
       .then(response => {
         setNoPro(response.data);
       })
       .catch(error => console.error('Error fetching data:', error));
   }, []);
+
+  useEffect(() => {
+    setAreaChartData(prevData => ({
+        ...prevData,
+        datasets: [{
+            ...prevData.datasets[0],
+            data: userData // userData가 업데이트될 때마다 차트 데이터도 업데이트
+        }]
+    }));
+}, [userData]);
 
   const [areaChartData, setAreaChartData] = useState({
     labels: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
@@ -130,20 +140,20 @@ export default function Home() {
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
       pointHitRadius: 10,
       pointBorderWidth: 2,
-      data: [],
+      data: userData,
     }]
   });
 
-  function updateAreaData(data, label) {
-    setAreaChartData({
-      ...areaChartData,
-      datasets: [{
-        ...areaChartData.datasets[0],
-        label: label,
-        data: data
-      }]
-    })
-  }
+    function updateAreaData(data, label) {
+      setAreaChartData({
+        ...areaChartData,
+        datasets: [{
+          ...areaChartData.datasets[0],
+          label: label,
+          data: data
+        }]
+      })
+    }
 
   const areaChartOptions = {
     maintainAspectRatio: false,
@@ -203,6 +213,17 @@ export default function Home() {
       }
     }
   };
+
+  useEffect(() => {
+    setPieChartData(prevData => ({
+        ...prevData,
+        datasets: [{
+            ...prevData.datasets[0],
+            data: [noblackUser.length, blackUser.length] 
+        }],
+        labels: ["회원", "차단 회원"] 
+    }));
+}, [noblackUser.length, blackUser.length]); 
 
   const [pieChartData, setPieChartData] = useState({
     labels: [],
@@ -320,13 +341,7 @@ export default function Home() {
             </div>
             <div className="p-4">
               <div className="relative h-80">
-                {areaChartData.datasets[0].data.length > 0 ? (
-                  <Line data={areaChartData} options={areaChartOptions} />
-                ) : (
-                  <div className="flex items-center justify-center h-full">
-                    <div className="text-gray-500">조회할 버튼을 눌러주세요.</div>
-                  </div>
-                )}
+                <Line data={areaChartData} options={areaChartOptions} />
               </div>
             </div>
           </div>
@@ -344,13 +359,7 @@ export default function Home() {
             </div>
             <div className="p-4">
               <div className="relative h-64">
-                {pieChartData.datasets[0].data.length > 0 ? (
-                  <Pie data={pieChartData} options={pieChartOptions} />
-                ) : (
-                  <div className="flex items-center justify-center h-full">
-                    <div className="text-gray-500">조회할 버튼을 눌러주세요.</div>
-                  </div>
-                )}
+                <Pie data={pieChartData} options={pieChartOptions} />
               </div>
             </div>
           </div>
@@ -366,7 +375,6 @@ export default function Home() {
                   <span className="text-sm font-bold text-gray-800">회원</span>
                   <span className="text-sm font-bold text-gray-800">{countUser.length}%</span>
                 </div>
-
                 <div className="h-2 bg-gray-200 rounded-full">
                   <div className="h-2 bg-red-500 rounded-full" style={{ width: `${(countUser.length / 300) * 100}%` }}></div>
                 </div>
