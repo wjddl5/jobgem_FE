@@ -43,7 +43,7 @@ jobs:
           sudo chmod 666 /var/run/docker.sock
       - name: SSH into EC2 and run Docker Compose
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST }} << 'EOF'
+          ssh -t -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST }} << 'EOF'
             cd /home/ubuntu/JobGem_FE
             docker-compose down
             docker-compose up -d --build
