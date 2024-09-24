@@ -1,10 +1,14 @@
 "use client";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { Map, MapMarker, useKakaoLoader } from 'react-kakao-maps-sdk';
 
 export default function ViewPage(props) {
 	const login = 1;
+	const [location, setLocation] = useState({lat: 37.566826, lng: 126.9786567});
+	const [center, setCenter] = useState({lat: 37.566826, lng: 126.9786567});
+
 	useEffect(() => {
 		getPosting();
 	}, []);
@@ -12,6 +16,18 @@ export default function ViewPage(props) {
 	const [timeLeft, setTimeLeft] = useState("");
 
 	const router = useRouter();
+	
+
+	useKakaoLoader({
+		appkey: process.env.NEXT_PUBLIC_KAKOMAP_API_JAVASCRIPT_KEY,
+		libraries: ["services"]
+	});
+
+	useEffect(() => {
+		if (posting && posting.poAddr) {
+			addressApi();
+		}
+	}, [posting]);
 
 	function getPosting() {
 		axios
@@ -74,20 +90,6 @@ export default function ViewPage(props) {
 			const now = new Date();
 			const deadline = new Date(posting.poDeadline);
 			const difference = deadline - now;
-			if (difference > 0) {
-				const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-				const hours = String(Math.floor((difference / (1000 * 60 * 60)) % 24));
-				const minutes = String(Math.floor((difference / 1000 / 60) % 60)).padStart(2, "0");
-				const seconds = String(Math.floor((difference / 1000) % 60)).padStart(2, "0");
-				setTimeLeft(`${days}일 ${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}:${seconds.padStart(2, "0")}`);
-			}
-		}
-	}
-	function updateTimeLeft() {
-		if (posting && posting.poDeadline) {
-			const now = new Date();
-			const deadline = new Date(posting.poDeadline);
-			const difference = deadline - now;
 
 			if (difference > 0) {
 				const days = Math.floor(difference / (1000 * 60 * 60 * 24));
@@ -95,12 +97,52 @@ export default function ViewPage(props) {
 				const minutes = Math.floor((difference / 1000 / 60) % 60);
 				const seconds = Math.floor((difference / 1000) % 60);
 
-				setTimeLeft(`${days}일 ${hours}:${minutes}:${seconds}`);
+				setTimeLeft(`${days}일 ${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`);
 			} else {
 				setTimeLeft("마감됨");
 			}
 		}
 	}
+
+	/* 주소 변경 이벤트*/
+    const addressApi = () => {
+        axios.get('https://dapi.kakao.com/v2/local/search/keyword.json', {
+            params: {
+                query: `${posting.poAddr}`,
+                page: 1,
+                size: 1
+            },
+            headers: {
+                Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKOMAP_API_REST_KEY}`
+            }
+        })
+        .then(response => {
+            const data = response.data.documents[0];
+            setLocation({
+                lat: data.y,
+                lng: data.x
+            });
+            setCenter({
+                lat: data.y,
+                lng: data.x
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching address:', error);
+        });
+    };
+
+	// Add refs for each section
+	const detailsRef = useRef(null);
+	const applicationRef = useRef(null);
+	const companyInfoRef = useRef(null);
+	const recommendedRef = useRef(null);
+
+	// Function to scroll to a section
+	const scrollToSection = (ref) => {
+		ref.current.scrollIntoView({ behavior: 'smooth' });
+	};
+
 	return (
 		<div className='container mx-auto px-4 py-8'>
 			<div className='bg-white p-4 rounded-lg flex-1'>
@@ -154,7 +196,7 @@ export default function ViewPage(props) {
 					</div>
 					<div className='ml-8 w-1/5'>
 						<div className='bg-gray-100 p-4 rounded-lg h-full'>
-							<img src='/img/company-logo.png' alt='Company Logo' className='w-12 h-12 mb-2' />
+							<img src={`/s3/${posting && posting.company.coThumbimgUrl}`} alt='Company Logo' className='w-12 h-12 mb-2' />
 							<h3 className='text-lg font-semibold mb-2'>{posting && posting.company.coName}</h3>
 							<p className='text-sm text-gray-600 mb-2'>기업정보</p>
 							<hr className='my-2' />
@@ -189,7 +231,11 @@ export default function ViewPage(props) {
 				</div>
 				<ul className='flex border-t-2 border-black '>
 					<li className='flex-grow'>
-						<button type='button' className='w-full px-4 py-2 bg-white text-gray-700 hover:bg-gray-200 transition duration-300 border-r  border-gray-300'>
+						<button 
+							type='button' 
+							className='w-full px-4 py-2 bg-white text-gray-700 hover:bg-gray-200 transition duration-300 border-r border-gray-300'
+							onClick={() => scrollToSection(detailsRef)}
+						>
 							<span>상세요강</span>
 						</button>
 					</li>
@@ -197,6 +243,7 @@ export default function ViewPage(props) {
 						<button
 							type='button'
 							className='w-full px-4 py-2 bg-gray-150 text-gray-700 hover:bg-gray-50 transition duration-300 border-r border-b border-gray-300 active:bg-white border-b-0'
+							onClick={() => scrollToSection(applicationRef)}
 						>
 							<span>접수기간/방법</span>
 						</button>
@@ -205,6 +252,7 @@ export default function ViewPage(props) {
 						<button
 							type='button'
 							className='w-full px-4 py-2 bg-gray-150 text-gray-700 hover:bg-gray-50 transition duration-300 border-r border-b border-gray-300 active:bg-white border-b-0'
+							onClick={() => scrollToSection(companyInfoRef)}
 						>
 							<span>기업정보</span>
 						</button>
@@ -213,16 +261,17 @@ export default function ViewPage(props) {
 						<button
 							type='button'
 							className='w-full px-4 py-2 bg-gray-150 text-gray-700 hover:bg-gray-50 transition duration-300 border-r border-b border-gray-300 active:bg-white border-b-0'
+							onClick={() => scrollToSection(recommendedRef)}
 						>
 							<span>추천공고</span>
 							<span className='ml-1 bg-red-500 text-white text-xs px-1 py-0.5 rounded'>NEW</span>
 						</button>
 					</li>
 				</ul>
-				<div className='bg-white shadow-md  p-6 mb-8 '>
+				<div ref={detailsRef} className='bg-white shadow-md p-6 mb-8 '>
 					<div dangerouslySetInnerHTML={{ __html: posting && posting.poContent }} />
 				</div>
-				<h2 className='text-2xl font-bold mb-4'>접수기간/방법</h2>
+				<h2 ref={applicationRef} className='text-2xl font-bold mb-4'>접수기간/방법</h2>
 				<div className='bg-white shadow-md p-6 mb-8 flex '>
 					<div className='w-1/4 pr-4 border-r border-gray-200'>
 						<div className='flex flex-col items-center mb-4'>
@@ -248,32 +297,65 @@ export default function ViewPage(props) {
 						</div>
 					</div>
 					<div className='w-3/4 pl-4 border-l border-gray-200'>
-						<div className='flex justify-between pl-4 border-b-6  border-black'>
-							<div className=''>
+						<div className='flex justify-between pl-4 border-b-2 border-black pb-4 mb-4'>
+							<div>
 								<h3 className='text-xl font-semibold mb-2'>지원방법</h3>
-								<p className='text-gray-600'>지원방법: {posting && posting.poSubType}</p>
+								<p className='text-gray-600'>아래 지원 방법 중 하나를 선택하세요</p>
 							</div>
-							<button className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600' onClick={send}>
-								바로지원
-							</button>
 						</div>
 
-						{posting && posting.poSubType.includes("homepage") && (
-							<div className='flex justify-between'>
-								<hr className='my-4' />
-								<p className='text-gray-600'>홈페이지: {posting && posting.homepageUrl}</p>
-								<button className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'>바로지원</button>
-							</div>
-						)}
-						{posting && posting.poSubType.includes("email") && <p className='text-gray-600'>이메일: {posting && posting.email}</p>}
-						{posting && posting.poSubType.includes("fax") && <p className='text-gray-600'>팩스: {posting && posting.fax}</p>}
-						{posting && posting.poSubType.includes("post") && <p className='text-gray-600'>우편: {posting && posting.address}</p>}
+						<div className='space-y-4'>
+							{posting && posting.poSubType.includes("jobgem") && (
+								<div className='flex justify-between items-center p-3 bg-gray-100 rounded'>
+									<p className='text-gray-600'>잡잼지원</p>
+									<button className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600' onClick={send}>
+										바로지원
+									</button>
+								</div>
+							)}
+							{posting && posting.poSubType.includes("email") && (
+								<div className='flex justify-between items-center p-3 bg-gray-100 rounded'>
+									<p className='text-gray-600'>이메일: {posting.poEmail}</p>
+									<span>
+										<button className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600' onClick={() => window.location.href = `mailto:${posting.poEmail}`}>
+											이메일 지원
+										</button>
+									</span>
+								</div>
+							)}
+							{posting && posting.poSubType.includes("fax") && (
+								<div className='flex justify-between items-center p-3 bg-gray-100 rounded'>
+									<p className='text-gray-600'>팩스: {posting.poFax}</p>
+								</div>
+							)}
+							{posting && posting.poSubType.includes("post") && (
+								<div className='flex justify-between items-center p-3 bg-gray-100 rounded'>
+									<p className='text-gray-600'>우편: {posting.poAddr}</p>
+								</div>
+							)}
+							{posting && posting.poSubType.includes("visit") && (
+								<div className='flex flex-col items-start p-3 bg-gray-100 rounded'>
+									<p className='text-gray-600 mb-2'>방문: {posting.poAddr}</p>
+									<Map // 지도를 표시할 Container
+										id="map"
+										center={center}
+										style={{
+										width: "100%",
+										height: "350px",
+										}}
+										level={3} // 지도의 확대 레벨
+									>
+									<MapMarker position={location} />
+									</Map>
+								</div>
+							)}
+						</div>
 					</div>
 				</div>
-				<div className='mt-8 bg-white shadow-md rounded-lg p-6'>
+				<div ref={companyInfoRef} className='mt-8 bg-white shadow-md rounded-lg p-6'>
 					<h3 className='text-2xl font-semibold mb-4'>기업정보</h3>
 					<div className='flex items-start'>
-						<img src='/airfirst_logo.png' alt='에어퍼스트 로고' className='w-24 h-24 object-contain mr-6' />
+						<img src={`/s3/${posting && posting.company.coThumbimgUrl}`} alt='에어퍼스트 로고' className='w-24 h-24 object-contain mr-6' />
 						<div>
 							<h4 className='text-xl font-semibold mb-2'>{posting && posting.company.coName}</h4>
 							<p className='text-gray-600 mb-2'>대표자명: {posting && posting.company.coManagerName}</p>
@@ -282,6 +364,10 @@ export default function ViewPage(props) {
 							<p className='text-gray-600 mb-2'>매출액: {posting && posting.company.coSales}억원 (2023년 기준)</p>
 						</div>
 					</div>
+				</div>
+				<div ref={recommendedRef} className='mt-8 bg-white shadow-md rounded-lg p-6'>
+					<h3 className='text-2xl font-semibold mb-4'>추천공고</h3>
+					{/* Add recommended job postings content here */}
 				</div>
 			</div>
 		</div>
