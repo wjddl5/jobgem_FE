@@ -3,11 +3,11 @@ const nextConfig = {
 	async rewrites() {
 		return [
 			{
-				destination: "http://localhost:8080/api/:path*",
+				destination: `${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/api/:path*`,
 				source: "/api/:path*",
 			},
 			{
-				destination: "https://jobgem-bucket.s3.amazonaws.com/:path*",
+				destination: `${process.env.NEXT_PUBLIC_BACKEND_URL}/:path*`,
 				source: "/s3/:path*",
 			},
 		];
