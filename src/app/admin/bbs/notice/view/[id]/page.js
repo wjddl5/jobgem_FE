@@ -159,7 +159,7 @@ export default function page(props) {
 						</li>
 					))}
 				</ul>
-				<TextField id='commentWrite' label='댓글작성' variant='outlined' style={{ width: '870px' }} onChange={changeComment} />
+				<TextField id='commentWrite' label='댓글작성' variant='outlined' style={{ width: '1270px' }} onChange={changeComment} />
 
 				<Button
 					className='commentSaveBtn'
