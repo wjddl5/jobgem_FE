@@ -84,7 +84,6 @@ export default function ApplicationForm() {
     /*버튼관리*/
     const [selectedPeriod, setSelectedPeriod] = useState(1);
     const [jobgem, setjobgem] = useState(false);
-    const [homepage, setHomepage] = useState(false);
     const [post, setPost] = useState(false);
     const [visit, setVisit] = useState(false);
     const [mail, setMail] = useState(false);
@@ -96,7 +95,6 @@ export default function ApplicationForm() {
 
     const applicationMethods = [
         { id: 'jobgem', name: '잡잼지원' },
-        { id: 'homepage', name: '홈페이지' },
         { id: 'post', name: '우편' },
         { id: 'visit', name: '방문' },
         { id: 'email', name: 'e-메일' },
@@ -111,9 +109,6 @@ export default function ApplicationForm() {
         );
     };
     
-
-    /* 홈페이지 */
-    const [homepageUrl, setHomepageUrl] = useState('');
 
     /* 근무요일 */
     const [selectedWorkDay, setSelectedWorkDay] = useState([]);
@@ -192,7 +187,6 @@ export default function ApplicationForm() {
     // Update the corresponding state variables when methods change
     useEffect(() => {
         setjobgem(selectedMethods.includes('jobgem'));
-        setHomepage(selectedMethods.includes('homepage'));
         setPost(selectedMethods.includes('post'));
         setVisit(selectedMethods.includes('visit'));
         setMail(selectedMethods.includes('email'));
@@ -379,7 +373,6 @@ export default function ApplicationForm() {
     function handleSubmit() {
         /* 유효성 검사 */
         const blankPattern = /^\s+|\s+$/g;
-        const urlRegex = /^(https?|ftp):\/\/(-\.)?([^\s\/?\.#-]+\.?)+(\/[^\s]*)?$/i;
 
         if(title.replace(blankPattern, '').length === 0) {
             alert('제목을 입력해주세요');
@@ -431,12 +424,6 @@ export default function ApplicationForm() {
                 return;
             }
         }
-        if(selectedMethods.includes('homepage')) {
-            if(homepageUrl.replace(blankPattern, '').length === 0 || !urlRegex.test(homepageUrl)) {
-                alert('유효한 홈페이지 URL을 입력해주세요');
-                return;
-            }
-        }
         if(selectedMethods.includes('email')) {
             if(email.replace(blankPattern, '').length === 0||emailDomain.replace(blankPattern, '').length === 0||email.search("/\W|\s/g") !== -1||emailDomain.search("/\W|\s/g") !== -1) {
                 alert('유효한 이메일을 입력해주세요');
@@ -461,8 +448,7 @@ export default function ApplicationForm() {
     }
 
     function confirmSubmit() {
-        let subType = '';
-        subType =selectedMethods.map(method => method.name).join(',');
+        let subType;
         let location = [];
         const eduData = EduList.filter(edu => selectedEdu.includes(edu.id)).map(edu => ({
             id: edu.id,
@@ -484,7 +470,7 @@ export default function ApplicationForm() {
             id: workDay.id,
             dayName: workDay.name
         }));
-        subType =  selectedMethods.map(method => method.name).join(', ');
+        subType =  selectedMethods.map(method => method).join(',');
         for(let i = 0; i < selectedLocation.length; i++) {
             if(selectedLocation[i].lgIdx !== 0) {
                 location.push({
@@ -520,9 +506,6 @@ export default function ApplicationForm() {
         if(endDate !== '') {
             data.poDeadline = endDate;
         }
-        if(selectedMethods.includes('homepage')) {
-            data.homepageUrl = homepageUrl;
-        }
         if(selectedMethods.includes('email')) {
             data.email = email+'@'+emailDomain;
         }
@@ -532,6 +515,7 @@ export default function ApplicationForm() {
         if(selectedMethods.includes('post') || selectedMethods.includes('visit')) {
             data.address = address+"-"+detailAddress;
         }
+        console.log(data);
         let formData = new FormData();
         formData.append('file', image);
         
@@ -746,16 +730,21 @@ export default function ApplicationForm() {
                     selected={selectedMethods}
                     onToggle={handleMethodToggle}
                 />
-                {selectedMethods.includes('homepage') && (
-                    <div className="mt-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">홈페이지 URL</label>
-                        <input type="text" value={homepageUrl} onChange={(e) => setHomepageUrl(e.target.value)} className="w-[500px] border rounded px-3 py-2" />
-                    </div>
-                )}
                 {(selectedMethods.includes('post') || selectedMethods.includes('visit')) && (
                     <div className="mt-6">
                         <label className="block text-sm font-medium text-gray-700 mb-1">주소</label>
-                        <input type="text" value={address} onChange={(e)=>setAddress(e.target.value)} className="w-[500px] border rounded px-3 py-2 mr-2" />
+                        <input 
+                            type="text" 
+                            value={address} 
+                            onChange={(e) => setAddress(e.target.value)}  
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    addressApi();
+                                }
+                            }}
+                            className="w-[500px] border rounded px-3 py-2 mr-2" 
+                        />
                         <button onClick={addressApi} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">주소검색</button>
                         <label className="block text-sm font-medium text-gray-700 mb-1 mt-2">상세주소</label>
                         <input type="text" value={detailAddress} onChange={(e)=>setDetailAddress(e.target.value)} className="w-[500px] border rounded px-3 py-2" />
