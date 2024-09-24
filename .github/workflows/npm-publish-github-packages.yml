@@ -10,14 +10,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
-    env:
-        NEXT_PUBLIC_WEBSOCKET: ${{secrets.NEXT_PUBLIC_WEBSOCKET}}
-        NEXT_PUBLIC_KAKOMAP_API_REST_KEY: ${{secrets.NEXT_PUBLIC_KAKOMAP_API_REST_KEY}}
-        NEXT_PUBLIC_KAKOMAP_API_JAVASCRIPT_KEY: ${{secrets.NEXT_PUBLIC_KAKOMAP_API_JAVASCRIPT_KEY}}
-        NEXT_PUBLIC_BACKEND_URL: ${{secrets.NEXT_PUBLIC_BACKEND_URL}}
-        NEXT_PUBLIC_SPRINGBOOT_URL: ${{secrets.NEXT_PUBLIC_SPRINGBOOT_URL}}
-        
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
