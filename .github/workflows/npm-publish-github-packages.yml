@@ -41,10 +41,18 @@ jobs:
       - name: reload docker session
         run: |
           sudo chmod 666 /var/run/docker.sock
+          
       - name: SSH into EC2 and run Docker Compose
         run: |
-          ssh -t -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST }} << 'EOF'
-            cd /home/ubuntu/JobGem_FE
+          ssh -t -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST }}
+          
+      - name: 폴더 이동
+        run: |
+          cd /home/ubuntu/JobGem_FE
+          
+      - name: Docker 다운로드
+        run: |
             docker-compose down
             docker-compose up -d --build
-          EOF
+          
+          
