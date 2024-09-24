@@ -9,11 +9,11 @@ import axios from 'axios';
 export default function page(props) {
 	// 초기화
 	const router = useRouter();
-	const [searchType, setSearchType] = useState('title');
-	const [searchValue, setSearchValue] = useState('');
+	const [searchType, setSearchType] = useState(props.searchParams.searchType ? props.searchParams.searchType : 'title');
+	const [searchValue, setSearchValue] = useState(props.searchParams.searchValue ? props.searchParams.searchValue : '');
 	const [ar, setAr] = useState([]);
 	const [arLength, setArLength] = useState(0);
-	const API_URL = '/api/bbs/notice/list';
+	const API_URL = '/api/bbs/notice';
 
 	// 페이징
 	const [cPage, setCPage] = useState(Number(props.searchParams.cPage));
@@ -23,7 +23,7 @@ export default function page(props) {
 
 	function changePage(event, value) {
 		setPage(value - 1);
-		router.replace(`/admin/bbs/notice/list?cPage=${value - 1}`, { shallow: true }); // 뒤로가기에도 원래 페이지로 갈 수 있게 URL수정
+		router.replace(`/admin/bbs/notice/list?cPage=${value - 1}&searchType=${searchType}&searchValue=${searchValue}`, { shallow: true }); // 뒤로가기에도 원래 페이지로 갈 수 있게 URL수정
 	}
 
 	useEffect(() => {
@@ -73,7 +73,7 @@ export default function page(props) {
 		const chkAraay = Array.from(chkList);
 		if (confirm('체크한 게시글을 삭제하시겠습니까?')) {
 			axios
-				.get('/api/bbs/notice/removeList', {
+				.delete('/api/bbs/removeList', {
 					params: {
 						chkList: chkAraay,
 					},
@@ -132,7 +132,7 @@ export default function page(props) {
 							<MenuItem value={'writer'}>작성자</MenuItem>
 							<MenuItem value={'content'}>내용</MenuItem>
 						</Select>
-						<TextField className='textfield' variant='outlined' onChange={(event) => setSearchValue(event.target.value)} />
+						<TextField className='textfield' variant='outlined' onChange={(event) => setSearchValue(event.target.value)} defaultValue={searchValue} />
 						<Button className='search_btn' variant='contained' onClick={search}>
 							검색
 						</Button>
@@ -185,7 +185,7 @@ export default function page(props) {
 				</TableHead>
 				<TableBody>
 					{ar.map((row) => (
-						<TableRow key={row.id} className={styles.tableRow} onClick={() => router.push(`view/${row.id}?cPage=${page}`)} hover>
+						<TableRow key={row.id} className={styles.tableRow} onClick={() => router.push(`view/${row.id}?cPage=${page}&searchType=${searchType}&searchValue=${searchValue}`)} hover>
 							<TableCell align='center'>
 								<Checkbox checked={chkSet.has(row.id)} onChange={(event) => checkChange(event, row.id)} onClick={(event) => event.stopPropagation()} />
 							</TableCell>

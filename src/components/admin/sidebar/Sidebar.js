@@ -20,7 +20,7 @@ export default function Sidebar() {
 	// 클릭 이벤트 핸들러를 수정하여 상태를 토글할 수 있도록 함
 	const handleLinkClick = (linkName) => {
 		setActiveLink((prev) => ({
-			...prev,
+			//...prev,
 			[linkName]: !prev[linkName],
 		}));
 	};
@@ -160,137 +160,23 @@ export default function Sidebar() {
 				</div>
 			</li>
 
-			{/* 고객지원 */}
-			<li className='nav-item'>
-				<a
-					className='nav-link collapsed'
-					href='#'
-					onClick={() => handleLinkClick('collapseFive')}
-					data-toggle='collapse'
-					data-target='#collapseFive'
-					aria-expanded={activeLink['collapseFive']}
-					aria-controls='collapseFive'
-				>
-					<HeadsetMicIcon />
-					<span style={{ marginLeft: '10px' }}>고객지원</span>
-					<ExpandMoreIcon style={{ transform: activeLink['collapseFive'] ? 'rotate(180deg)' : 'rotate(0deg)' }} className='ml-auto' />
-				</a>
-				<div id='collapseFive' className={`collapse ${activeLink['collapseFive'] ? 'show' : ''}`} style={{ visibility: 'visible' }} aria-labelledby='headingFive' data-parent='#accordionSidebar'>
-					<div className='bg-white py-2 collapse-inner rounded'>
-						<h6 className='collapse-header'>고객지원:</h6>
-						<a className='collapse-item' href='/question'>
-							질문 관리
-						</a>
-						<a className='collapse-item' href='/answer'>
-							답변 관리
-						</a>
-					</div>
-				</div>
-			</li>
-
-			{/* 컨텐츠 관리 */}
-			<li className='nav-item'>
-				<a
-					className='nav-link collapsed'
-					href='#'
-					onClick={() => handleLinkClick('collapseSix')}
-					data-toggle='collapse'
-					data-target='#collapseSix'
-					aria-expanded={activeLink['collapseSix']}
-					aria-controls='collapseSix'
-				>
-					<NewspaperIcon />
-					<span style={{ marginLeft: '10px' }}>컨텐츠 관리</span>
-					<ExpandMoreIcon style={{ transform: activeLink['collapseSix'] ? 'rotate(180deg)' : 'rotate(0deg)' }} className='ml-auto' />
-				</a>
-				<div id='collapseSix' className={`collapse ${activeLink['collapseSix'] ? 'show' : ''}`} style={{ visibility: 'visible' }} aria-labelledby='headingSix' data-parent='#accordionSidebar'>
-					<div className='bg-white py-2 collapse-inner rounded'>
-						<h6 className='collapse-header'>컨텐츠 관리:</h6>
-						<a className='collapse-item' href='/content/job'>
-							취업 정보 관리
-						</a>
-						<a className='collapse-item' href='/content/news'>
-							뉴스 업데이트
-						</a>
-					</div>
-				</div>
-			</li>
-
 			{/* 카테고리 관리 */}
 			<li className='nav-item'>
 				<a
 					className='nav-link collapsed'
-					href='#'
-					onClick={() => handleLinkClick('collapseEight')}
+					href='/admin/category'
+					onClick={() => {
+						handleLinkClick('collapseSeven');
+						removeSession();
+					}}
 					data-toggle='collapse'
-					data-target='#collapseEight'
-					aria-expanded={activeLink['collapseEight'] || activeLink['collapseNine'] || activeLink['collapseTen']}
-					aria-controls='collapseEight'
+					data-target='#collapseSeven'
+					aria-expanded={activeLink['collapseSeven']}
+					aria-controls='collapseSeven'
 				>
 					<ListIcon />
 					<span style={{ marginLeft: '10px' }}>카테고리 관리</span>
-					<ExpandMoreIcon style={{ transform: activeLink['collapseEight'] || activeLink['collapseNine'] || activeLink['collapseTen'] ? 'rotate(180deg)' : 'rotate(0deg)' }} className='ml-auto' />
 				</a>
-				<div id='collapseEight' className={`collapse ${activeLink['collapseEight'] ? 'show' : ''}`} style={{ visibility: 'visible' }} aria-labelledby='headingEight' data-parent='#accordionSidebar'>
-					<a
-						className='nav-link collapsed'
-						href='#'
-						onClick={() => handleLinkClick('collapseNine')}
-						data-toggle='collapse'
-						data-target='#categoryOne'
-						aria-expanded={activeLink['collapseNine']}
-						aria-controls='categoryOne'
-					>
-						<SearchIcon />
-						<span>검색 카테고리 관리</span>
-					</a>
-					<div
-						id='categoryOne'
-						className={`collapse ${activeLink['collapseNine'] ? 'show' : ''}`}
-						style={{ visibility: 'visible' }}
-						aria-labelledby='headingcategoryOne'
-						data-parent='#accordionSidebar'
-					>
-						<div className='bg-white py-2 collapse-inner rounded'>
-							<h6 className='collapse-header'>검색 카테고리 관리:</h6>
-							<a className='collapse-item' href='/category'>
-								구직자
-							</a>
-							<a className='collapse-item' href='/category'>
-								기업
-							</a>
-						</div>
-					</div>
-					<a
-						className='nav-link collapsed'
-						href='#'
-						onClick={() => handleLinkClick('collapseTen')}
-						data-toggle='collapse'
-						data-target='#categoryTwo'
-						aria-expanded={activeLink['collapseTen']}
-						aria-controls='categoryTwo'
-					>
-						<SettingsIcon />
-						<span>핵심역량 카테고리 관리</span>
-					</a>
-					<div
-						id='categoryTwo'
-						className={`collapse ${activeLink['collapseTen'] ? 'show' : ''}`}
-						style={{ visibility: 'visible' }}
-						aria-labelledby='headingcategoryTwo'
-						data-parent='#accordionSidebar'
-					>
-						<div className='bg-white py-2 collapse-inner rounded'>
-							<h6 className='collapse-header'>핵심역량 카테고리 관리:</h6>
-							<a className='collapse-item' href='/skill/job'>
-								구직자
-							</a>
-							<a className='collapse-item' href='/skill/company'>
-								기업
-							</a>
-						</div>
-					</div>
-				</div>
 			</li>
 
 			{/* 신고 관리 */}
@@ -306,18 +192,7 @@ export default function Sidebar() {
 				>
 					<ReportProblemIcon />
 					<span style={{ marginLeft: '10px' }}>신고 관리</span>
-					{/* <ExpandMoreIcon className='ml-auto' /> */}
-					{/*style={{ transform: activeLink['collapseSeven'] ? 'rotate(180deg)' : 'rotate(0deg)' }} */}
 				</a>
-				{/* <div id='collapseSeven' className={`collapse ${activeLink['collapseSeven'] ? 'show' : ''}`} style={{ visibility: 'visible' }} aria-labelledby='headingSeven' data-parent='#accordionSidebar'> */}
-				{/* <div className='bg-white py-2 collapse-inner rounded'>
-						<h6 className='collapse-header' href='/report/member'>
-							신고 관리
-						</h6>
-						<a className="collapse-item" href="/report/member">회원 신고</a>
-                        <a className="collapse-item" href="/report/company">기업 신고</a>
-					</div> */}
-				{/* </div> */}
 			</li>
 
 			<hr className='sidebar-divider d-none d-md-block' />

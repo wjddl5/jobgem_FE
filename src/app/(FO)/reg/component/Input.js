@@ -1,8 +1,7 @@
-import { useContext } from "react";
-import { useFormContext } from "../page";
+import { useFormContext } from "react-hook-form";
 
 export default function Input({ label, name, validation, type = "text" }) {
-  const { register, formState: { errors } } = useContext(useFormContext);
+  const { register, formState: { errors } } = useFormContext();
   return (
     <div className="mb-4">
         <input

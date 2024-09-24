@@ -26,11 +26,12 @@ import {
 } from '@mui/material';
 import { Delete as DeleteIcon, AddRounded as AddRoundedIcon, Add as AddIcon } from '@mui/icons-material';
 
+// 학력 카테고리 관리 컴포넌트
 export default function page() {
 	//초기화
 	const [selected, setSelected] = useState([]);
 	const [page, setPage] = useState(0);
-	const [rowsPerPage, setRowsPerPage] = useState(5);
+	const [rowsPerPage, setRowsPerPage] = useState(10);
 	const [rows, setRows] = useState([]);
 	const [visibleRows, setVisibleRows] = useState([]);
 	const [addClick, setAddClick] = useState(false);
@@ -119,7 +120,7 @@ export default function page() {
 		if (confirm('체크한 항목을 삭제하시겠습니까?')) {
 			console.log(chkAraay);
 			axios
-				.get('/api/category/removeList', {
+				.delete('/api/category/edu', {
 					params: {
 						chkList: chkAraay,
 					},
@@ -151,11 +152,11 @@ export default function page() {
 	function editItem(id) {
 		if (editItemName.trim().length < 1) {
 			alert('카테고리명을 입력하세요.');
-		} else if (editItemName.length > 100) {
+		} else if (editItemName.length > 30) {
 			alert('최대 30글자까지 입력할 수 있습니다.');
 		} else {
 			axios
-				.get('/api/category/edit', {
+				.put(`/api/category/edu/${id}`, null, {
 					params: {
 						id: id,
 						editItemName: editItemName,
@@ -166,6 +167,7 @@ export default function page() {
 						alert('수정완료');
 						setSelected([]);
 						setEditItemName('');
+						setEditRow('');
 						getData();
 					} else {
 						alert('오류가 발생했습니다.\n 다시 시도해주세요.');
@@ -203,7 +205,7 @@ export default function page() {
 			alert('최대 30글자까지 입력할 수 있습니다.');
 		} else {
 			axios
-				.get('/api/category/addEdu', {
+				.post('/api/category/edu', null, {
 					params: {
 						itemName: itemName,
 					},
@@ -213,7 +215,13 @@ export default function page() {
 						alert('저장성공');
 						setItemName('');
 						document.getElementById('itemNameField').value = '';
-						getData();
+						setEditRow('');
+						axios.get('/api/category/edu').then((res) => {
+							setRows(res.data);
+							const totalItems = res.data.length;
+							const lastPage = Math.ceil(totalItems / rowsPerPage) - 1;
+							setPage(lastPage);
+						});
 					} else {
 						alert('오류가 발생했습니다.\n 다시 시도해주세요.');
 					}
@@ -330,6 +338,7 @@ export default function page() {
 										sx={{ cursor: 'pointer' }}
 										onClick={() => {
 											editClick(row.id);
+											addItem(true);
 										}}
 									>
 										<TableCell padding='checkbox'>
@@ -369,7 +378,15 @@ export default function page() {
 							})}
 							<TableRow style={{ height: '90px' }}>
 								<TableCell colSpan={2} style={{ padding: '12px' }}>
-									<Fab color='primary' size='small' aria-label='add' onClick={() => addItem(addClick)}>
+									<Fab
+										color='primary'
+										size='small'
+										aria-label='add'
+										onClick={() => {
+											addItem(addClick);
+											setEditRow('');
+										}}
+									>
 										{addClick ? <RemoveOutlinedIcon /> : <AddIcon />}
 									</Fab>
 								</TableCell>
@@ -395,7 +412,7 @@ export default function page() {
 					</Table>
 				</TableContainer>
 				<TablePagination
-					rowsPerPageOptions={[5, 10, 25]}
+					rowsPerPageOptions={[10, 25, 50]}
 					component='div'
 					count={rows.length}
 					rowsPerPage={rowsPerPage}

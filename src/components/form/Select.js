@@ -1,8 +1,9 @@
 import React from "react";
 
-export default function ({ ar }) {
+export default function (props) {
 	return (
 		<select
+			{...props}
 			className='w-full
                         rounded
                         py-3
@@ -13,7 +14,7 @@ export default function ({ ar }) {
                         focus-visible:shadow-none
                         focus:border-primary'
 		>
-			{ar.map((value, idx) => (
+			{props.ar.map((value, idx) => (
 				<option key={idx}>{value}</option>
 			))}
 		</select>

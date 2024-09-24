@@ -13,7 +13,7 @@ export default function page(props) {
 	const [commentList, setCommentList] = useState([]);
 	const [commentContent, setCommentContent] = useState('');
 	const [disabled, setDisabled] = useState(true);
-	const API_URL = `/api/bbs/notice/view?id=${props.params.id}`;
+	const API_URL = `/api/bbs/${props.params.id}`;
 
 	useEffect(() => {
 		getData();
@@ -36,7 +36,7 @@ export default function page(props) {
 
 	function removeBbs(id) {
 		if (confirm('게시글을 삭제 하시겠습니까?')) {
-			axios.get(`/api/bbs/notice/remove?id=${id}`).then((res) => {
+			axios.delete(`/api/bbs/${id}`).then((res) => {
 				if (res.data == true) {
 					alert('삭제 완료 되었습니다.');
 					router.push('/admin/bbs/notice/list');
@@ -48,7 +48,7 @@ export default function page(props) {
 	// 댓글
 	function removeComment(id) {
 		if (confirm('댓글을 삭제 하시겠습니까?')) {
-			axios.get(`/api/comment/remove?id=${id}`).then((res) => {
+			axios.delete(`/api/comment/${id}`).then((res) => {
 				if (res.data == true) alert('삭제 완료 되었습니다.');
 				else alert('삭제 실패 !');
 				getData();
@@ -63,7 +63,7 @@ export default function page(props) {
 			alert('최대 100글자까지 입력할 수 있습니다.');
 		} else {
 			axios
-				.get('/api/comment/write', {
+				.post('/api/comment/write', null, {
 					params: {
 						content: commentContent,
 						usIdx: 1, //로그인한 유저 idx로 변경 (!)
@@ -102,9 +102,8 @@ export default function page(props) {
 
 	function updateComment(id, content) {
 		axios
-			.get('/api/comment/edit', {
+			.put(`/api/comment/${id}`, null, {
 				params: {
-					id: id,
 					content: content,
 				},
 			})
@@ -121,11 +120,10 @@ export default function page(props) {
 					<span>By {vo.usId}</span>
 					<span>{vo.boWritedate}</span>
 					<span>조회: {vo.boHit}</span>
-					<span>추천: {vo.boLike ? vo.boLike : 0}</span>
 				</div>
 			</div>
 			<div className='post_content'>
-				<p>{vo.boContent}</p>
+				<p dangerouslySetInnerHTML={{ __html: vo.boContent }}></p>
 			</div>
 			<div className='post_comments'>
 				<h2>댓글</h2>
@@ -175,7 +173,11 @@ export default function page(props) {
 				</Button>
 			</div>
 			<div className='btn_group'>
-				<Button variant='outlined' size='small' onClick={() => router.push(`/admin/bbs/notice/list?cPage=${props.searchParams.cPage}`)}>
+				<Button
+					variant='outlined'
+					size='small'
+					onClick={() => router.push(`/admin/bbs/notice/list?cPage=${props.searchParams.cPage}&searchType=${props.searchParams.searchType}&searchValue=${props.searchParams.searchValue}`)}
+				>
 					목록
 				</Button>
 				<Button variant='outlined' disabled={disabled} size='small' onClick={() => router.push(`/admin/bbs/notice/edit/${vo.id}`)}>

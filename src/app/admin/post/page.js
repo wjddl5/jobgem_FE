@@ -1,156 +1,129 @@
-'use client'
-import React, { useState } from 'react'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEllipsisV, faComments } from '@fortawesome/free-solid-svg-icons'
-import { IconButton, Badge, TextField } from '@mui/material';
-import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+"use client"
+import React from 'react'
+import { Paper, Box, Typography, Button, Card, CardContent, CardActions, Grid, Pagination, FormControl, InputLabel, Select, MenuItem, TextField, IconButton } from '@mui/material';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EditIcon from '@mui/icons-material/Edit';
-export default function Page() {
-    const projects = [
-        {
-            id: 1,
-            title: "소프트웨어 개발",
-            client: "Goodness Restaurant",
-            budget: "$1,000",
-            status: "진행 중",
-            statusColor: "success",
-            dueDate: "2023년 12월 31일",
-            description: "새로운 제품 라인을 위한 마케팅 전략 개발",
-            members: ["user1.jpg", "user2.jpg", "user3.jpg"],
-            comments: 5,
-            progress: 67
-        },
-        {
-            id: 2,
-            title: "소프트웨어 개발",
-            client: "Goodness Restaurant",
-            budget: "$1,000",
-            status: "진행 중",
-            statusColor: "success",
-            dueDate: "2023년 12월 31일",
-            description: "새로운 제품 라인을 위한 마케팅 전략 개발",
-            members: ["user1.jpg", "user2.jpg", "user3.jpg"],
-            comments: 5,
-            progress: 67
-        },
-        {
-            id: 3,
-            title: "웹 디자인",
-            client: "Goodness Restaurant",
-            budget: "$1,000",
-            status: "진행 중",
-            statusColor: "success",
-            dueDate: "2023년 12월 31일",
-            description: "새로운 제품 라인을 위한 마케팅 전략 개발",
-            members: ["user1.jpg", "user2.jpg", "user3.jpg"],
-            comments: 5,
-            progress: 67
-        },
-        {
-            id: 4,
-            title: "모바일 앱 개발",
-            client: "Goodness Restaurant",
-            budget: "$1,000",
-            status: "진행 중",
-            statusColor: "success",
-            dueDate: "2023년 12월 31일",
-            description: "새로운 제품 라인을 위한 마케팅 전략 개발",
-            members: ["user1.jpg", "user2.jpg", "user3.jpg"],
-            comments: 5,
-            progress: 67
-        },
-        {
-            id: 5,
-            title: "데이터 분석",
-            client: "Goodness Restaurant",
-            budget: "$1,000",
-            status: "진행 중",
-            statusColor: "success",
-            dueDate: "2023년 12월 31일",
-            description: "새로운 제품 라인을 위한 마케팅 전략 개발",
-            members: ["user1.jpg", "user2.jpg", "user3.jpg"],
-            comments: 5,
-            progress: 67
-        },
-        {
-            id: 6,
-            title: "데이터 분석",
-            client: "Goodness Restaurant",
-            budget: "$1,000",
-            status: "진행 중",
-            statusColor: "success",
-            dueDate: "2023년 12월 31일",
-            description: "새로운 제품 라인을 위한 마케팅 전략 개발",
-            members: ["user1.jpg", "user2.jpg", "user3.jpg"],
-            comments: 5,
-            progress: 67
-        },
-        // 더 많은 프로젝트 데이터를 추가할 수 있습니다.
-    ]
-    const [search, setSearch] = useState('');
+import DeleteIcon from '@mui/icons-material/Delete';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import CardLayout from '@/components/admin/card/CardLayout';
+import SearchIcon from '@mui/icons-material/Search';
 
-    const handleSearchChange = (event) => {
-        setSearch(event.target.value);
+export default function page() {
+    const [ar, setAr] = useState([]);
+    const [apiUrl, setApiUrl] = useState("/api/admin/posts?size=6");
+    const [page, setPage] = useState(0);
+    const [totalPage, setTotalPage] = useState(0);
+    const [searchType, setSearchType] = useState('title'); // 기본 선택으로 설정
+    const [searchValue, setSearchValue] = useState('');
+    useEffect(() => {
+        getPosts();
+    }, [page]);
+
+    function getPosts() {
+        axios.get(apiUrl)
+            .then(response => {
+                setAr(response.data.content);
+                setTotalPage(response.data.totalPages);
+                setPage(response.data.pageable.pageNumber);
+            })
+            .catch(error => {
+                console.error('Error fetching posts:', error);
+            });
+    }
+
+    const changePage = (event, value) => {
+        setPage(value - 1); // 페이지 번호는 0부터 시작하므로 1을 빼줍니다.
+        setApiUrl("/api/admin/posts?size=6&page=" + (value - 1));
+        getPosts();
     };
 
-    return (
-        <div className="container mt-5">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h2 className="mb-4">공고 관리</h2>
-                <TextField
-                    label="검색"
-                    variant="outlined"
-                    size="small"
-                    value={search}
-                    onChange={handleSearchChange}
-                    sx={{ width: '25ch', mb: 3 }}
-                />
-            </div>
-            <div className="row">
-                {projects.map(project => (
-                    <div key={project.id} className="col-md-6 col-lg-4 mb-4">
-                        <div className="card shadow h-100">
-                            <div className="card-body">
-                                <div className="d-flex justify-content-between align-items-center mb-3">
-                                    <h5 className="card-title">{project.title}</h5>
-                                    <div style={{ display: "flex", flexDirection: "column" }}>
-                                        <Badge badgeContent={0} color="error">
-                                            <IconButton color="error">
-                                                <RemoveCircleIcon />
-                                            </IconButton>
-                                        </Badge>
-                                        <IconButton color="primary">
-                                            <EditIcon />
-                                        </IconButton>
-                                    </div>
-                                </div>
-                                <p className="card-text"><strong>Client:</strong> {project.client}</p>
-                                <p className="card-text"><strong>Budget:</strong> {project.budget}</p>
-                                <p className="card-text">{project.description}</p>
-                                <p className="text-muted">마감일: {project.dueDate}</p>
-                                <div className="d-flex justify-content-between align-items-center mb-3">
-                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                        {project.members.map((member, index) => (
-                                            <img key={index} src={member} alt="Member" className="rounded-circle me-1" style={{ width: "30px", height: "30px" }} />
-                                        ))}
-                                    </div>
-                                    <div>
-                                        <FontAwesomeIcon icon={faComments} className="me-1" />
-                                        <span>{project.comments}</span>
-                                    </div>
-                                </div>
-                                <div className="progress">
-                                    <div className="progress-bar bg-info" role="progressbar" style={{ width: `${project.progress}%` }} aria-valuenow={project.progress} aria-valuemin="0" aria-valuemax="100">{project.progress}%</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-            <div className="d-flex justify-content-between align-items-center mt-4">
+    // 검색
+    const handleSearch = async (e) => {
+        console.log(searchType, searchValue);
+        try {
+            const response = await axios.get(apiUrl, {
+                params: {
+                    type: searchType,
+                    value: searchValue,
+                }
+            });
+            if (response.status === 200) {
+                setAr(response.data.content);
+                setTotalPage(response.data.totalPages);
+                setPage(response.data.pageable.pageNumber);
+            } else {
+                alert("검색 실패");
+            }
+        } catch (error) {
+            console.error('검색 중 오류 발생:', error);
+            alert("검색 중 오류 발생");
+        }
+    };
 
-            </div>
-        </div >
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            handleSearch();
+        }
+    }
+
+    return (
+        <Paper sx={{ width: '100%', overflow: 'hidden', mt: 0, boxShadow: 3, padding: 5, bgcolor: 'background.paper' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 ,mt: 4 }}>
+                <Typography variant="h4" component="div" sx={{ fontWeight: 'bold', color: 'black' }}>
+                    공고 관리
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 1, bgcolor: 'common.white', p: 0.5, borderRadius: 1 }}>
+                    <FormControl size="small" sx={{ width: '15ch' }}>
+                        <InputLabel id="title">카테고리</InputLabel>
+                        <Select
+                            labelId="category-select-label"
+                            id="category-select"
+                            value={searchType}
+                            label="카테고리"
+                            onChange={(e) => setSearchType(e.target.value)}
+                        >
+                            <MenuItem value="" disabled>
+                                <em>카테고리 선택</em>
+                            </MenuItem>
+                            <MenuItem value="title">제목</MenuItem> 
+                            <MenuItem value="company">기업명</MenuItem> 
+                            <MenuItem value="content">내용</MenuItem>
+                            <MenuItem value="date">등록일</MenuItem>
+                            <MenuItem value="deadline">마감일</MenuItem>
+                            <MenuItem value="sal">월급</MenuItem>
+                            <MenuItem value="starttime">근무시작시간</MenuItem>
+                            <MenuItem value="endtime">근무종료시간</MenuItem>
+                            <MenuItem value="type">공고유형</MenuItem>
+                            <MenuItem value="addr">주소</MenuItem>
+                            <MenuItem value="email">이메일</MenuItem>
+                            <MenuItem value="fax">팩스</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <TextField
+                        label="검색"
+                        variant="outlined"
+                        size="small"
+                        value={searchValue}
+                        sx={{ width: '25ch' }}
+                        onKeyDown={handleKeyDown}
+                        onChange={(e) => setSearchValue(e.target.value)}
+                    />
+                    <IconButton sx={{ p: '10px' }} aria-label="search" onClick={handleSearch} >
+                        <SearchIcon />
+                    </IconButton>
+                </Box>
+            </Box>
+            <CardLayout list={ar} />
+            <Pagination
+                onChange={changePage}
+                page={page + 1} 
+                count={totalPage} 
+                color="primary"
+                style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}
+                className="pagination"
+            />
+        </Paper>
     )
 }
+
