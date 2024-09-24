@@ -22,6 +22,14 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.PRIVATE_KEY }}
           
+      - name: Add user in the Docker group
+        run: | 
+          sudo usermod -aG docker $USER
+        
+      - name: reload docker session
+        run: |
+          sudo chmod 666 /var/run/docker.sock
+          
       - name: SSH into EC2 and run Docker Compose
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST }}
