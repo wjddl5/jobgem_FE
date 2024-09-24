@@ -94,6 +94,7 @@ export default function page(props) {
 	//체크박스
 	const [chkSet, setChkSet] = useState(new Set());
 	const [chkAll, setChkAll] = useState(false); //false=전체선택해제
+	const [deleteBtn, setdeleteBtn] = useState(true);
 
 	function allCheckChange(event) {
 		if (event.target.checked) {
@@ -117,6 +118,11 @@ export default function page(props) {
 		}
 		setChkSet(chk); // 상태 업데이트
 	}
+
+	useEffect(() => {
+		if (chkSet.size > 0) setdeleteBtn(false);
+		else setdeleteBtn(true);
+	}, [chkSet]);
 
 	//========================
 
@@ -148,6 +154,7 @@ export default function page(props) {
 							onClick={() => {
 								removeBbsList(chkSet);
 							}}
+							disabled={deleteBtn}
 						>
 							삭제
 						</Button>
