@@ -31,8 +31,10 @@ jobs:
       - name: Copy files to EC2
         run: |
           scp -r -o StrictHostKeyChecking=no ./* ubuntu@${{ secrets.HOST }}:/home/ubuntu/JobGem_FE
-      - name: npm 패키지 설치
+          
+      - name: Install npm
         run: npm install
+        
       - name: Add user in the Docker group
         run: | 
           sudo usermod -aG docker $USER
@@ -40,10 +42,17 @@ jobs:
       - name: reload docker session
         run: |
           sudo chmod 666 /var/run/docker.sock
-      - name: SSH into EC2 and run Docker Compose
+          
+      - name: SSH into EC2
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST }} << 'EOF'
-            cd /home/ubuntu/JobGem_FE
-            docker-compose down
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST }}
+          
+      - name: Into Project folder
+        run: |
+          cd /home/ubuntu/JobGem_FE
+            
+      - name: Doker Compose
+        run: |
+            docker-compose down << 'EOF'
             docker-compose up -d --build
-          EOF
+            EOF
