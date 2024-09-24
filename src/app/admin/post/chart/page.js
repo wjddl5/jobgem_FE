@@ -17,7 +17,7 @@ export default function AdminDashboard() {
         Legend,
         ArcElement
     );
-    const api_url = "/api/post/all";
+    const api_url = "/api/admin/posts";
     const [post, setPost] = useState([]);
     const [date, setDate] = useState([]);
     const [type, setType] = useState([]);
@@ -151,6 +151,11 @@ export default function AdminDashboard() {
             tooltip: {
                 enabled: true,
             },
+            datalabels: {
+                color: '#ffffff', // 라벨 색상
+                anchor: 'end', // 라벨 위치
+                align: 'top', // 라벨 정렬
+            }
         }
     };
 

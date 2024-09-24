@@ -31,8 +31,9 @@ export default function Page(props) {
 	const [reason, setReason] = useState('');
 	const [ar, setAr] = useState([]);
 	const [searchValue, setSearchValue] = useState('');
-	const [searchType, setSearchType] = useState('');
-	const api_url = '/api/notBlack';
+	const [searchType, setSearchType] = useState('name');
+	const api_url = '/api/admin/unblocked-jobseekers';
+	const searchParams = props.searchParams;
 
 	useEffect(() => {
 		getMemberList();
@@ -88,19 +89,18 @@ export default function Page(props) {
 			return;
 		} else {
 			try {
-				const response = await axios.get('/api/addjobseekerBlock', {
+				const response = await axios.post('/api/admin/jobseeker-blocks', {}, {
 					params: {
-						joIdx: member.id,
-						blContent: reason,
-					},
+						id: member.id,
+						value: reason,
+					}
 				});
 				if (response.status === 200) {
 					alert('블랙리스트 추가 성공');
 					getMemberList();
 					setMember('');
 					setReason('');
-					if (props.searchParams) {
-						console.log('a');
+					if (props.searchParams == 'R') {
 						axios.put(`/api/blackList/process/${props.searchParams.blIdx}`, null, {
 							params: {
 								nowProcess: 0,

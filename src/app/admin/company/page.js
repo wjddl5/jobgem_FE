@@ -6,10 +6,10 @@ import axios from 'axios';
 
 function EnhancedTable() {
     const [page, setPage] = useState(0);
-    const [api_url, setApiUrl] = useState("/api/company/list?size=10");
+    const [api_url, setApiUrl] = useState("/api/admin/companies?size=10");
     const [ar, setAr] = useState([]);
     const [totalPage, setTotalPage] = useState(0);
-    const [searchType, setSearchType] = useState('');
+    const [searchType, setSearchType] = useState('name');
     const [searchValue, setSearchValue] = useState('');
     useEffect(() => {
         getMemberList();

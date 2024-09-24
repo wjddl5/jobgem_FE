@@ -7,11 +7,11 @@ import { useRouter } from 'next/navigation';
 
 function EnhancedTable() {
     const router = useRouter();
-    const [api_url, setApiUrl] = useState("/api/company/blackList?size=10");
+    const [api_url, setApiUrl] = useState("/api/admin/blocked-companies?size=10");
     const [ar, setAr] = useState([]);
     const [page, setPage] = useState(0);
     const [totalPage, setTotalPage] = useState(0);
-    const [searchType, setSearchType] = useState('');
+    const [searchType, setSearchType] = useState('name');
     const [searchValue, setSearchValue] = useState('');
     const [chkSet, setChkSet] = useState(new Set());
     const [chkAll, setChkAll] = useState(false); //false=전체선택해제
@@ -85,7 +85,7 @@ function EnhancedTable() {
             return;
         }
         try {
-            const response = await axios.get("/api/company/deletecompanyBlock", {
+            const response = await axios.delete("/api/admin/company-blocks", {
                 params: {
                     chkList: Array.from(chkSet).join(',')
                 }

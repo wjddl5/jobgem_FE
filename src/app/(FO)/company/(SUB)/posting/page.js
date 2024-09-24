@@ -264,7 +264,7 @@ export default function Posting() {
             <Pagination
                 totalPages={totalPages}
                 currentPage={loadPage}
-                setCurrentPage={setLoadPage}
+                setLoadPage={setLoadPage}
             />
             
             <div className="text-center mt-4">
