@@ -28,7 +28,6 @@ export default function ApplicationForm(params) {
 
     const applicationMethods = [
         { id: 'jobgem', name: '잡잼지원' },
-        { id: 'homepage', name: '홈페이지' },
         { id: 'post', name: '우편' },
         { id: 'visit', name: '방문' },
         { id: 'email', name: 'e-메일' },
@@ -76,6 +75,8 @@ export default function ApplicationForm(params) {
             return processedContent;
         };
     const handleMethodToggle = (methodId) => {
+
+        console.log(methodId);
         setSelectedMethods(prevMethods =>
             prevMethods.includes(methodId)
                 ? prevMethods.filter(id => id !== methodId)
@@ -153,6 +154,7 @@ export default function ApplicationForm(params) {
     const [showConfirmPopup, setShowConfirmPopup] = useState(false);
     const [image, setImage] = useState(null);
     const [contentImageList, setContentImageList] = useState([]);
+    const [initialDataLoaded, setInitialDataLoaded] = useState(true);
 
     /* 랜더링시 초기화*/
     useEffect(() => {
@@ -162,14 +164,22 @@ export default function ApplicationForm(params) {
 
     /* 주소 초기화*/
     useEffect(() => {
-        mapApi();
+        if(location.lat !== 33.450701 && location.lng !== 126.570667) {
+            mapApi();
+        }
     }, [location]);
+
+    useEffect(() => {
+        if(address !== ''&&initialDataLoaded) {
+            setInitialDataLoaded(false);
+            addressApi();
+        }
+    }, [address,initialDataLoaded]);
 
     /* 초기화*/
     function init() {
         axios.get('/api/posts/set')
         .then(response => {
-            console.log(response.data);
             setEduList(response.data.education);
             setCareerList(response.data.career);
             setLocationDoList(response.data.locationDo);
@@ -184,7 +194,7 @@ export default function ApplicationForm(params) {
     function initData() {
         axios.get(`/api/posts/${params.params.poIdx}`)
         .then(response => {
-            console.log("edit",response.data);
+            console.log(response.data);
             setTitle(response.data.poTitle || '');
             setContent(response.data.poContent || '');
             setSelectedEdu(response.data.education?.map(edu => edu.id) || []);
@@ -204,6 +214,13 @@ export default function ApplicationForm(params) {
             setSelectedWorkDay(response.data.workDays.map(workDay => workDay.id));
             setWorkStartTime({hour:parseInt(response.data.wsStartTime.split(':')[0]),minute:response.data.wsStartTime.split(':')[1]});
             setWorkEndTime({hour:parseInt(response.data.wsEndTime.split(':')[0]),minute:response.data.wsEndTime.split(':')[1]});
+            setHomepageUrl(response.data.homepageUrl);
+            setEmail(response.data.poEmail.split('@')[0]);
+            setEmailDomain(response.data.poEmail.split('@')[1]);
+            setFax1(response.data.poFax.split('-')[0]);
+            setFax2(response.data.poFax.split('-')[1]);
+            setFax3(response.data.poFax.split('-')[2]);
+            setAddress(response.data.poAddr);
         })
         .catch(error => {
             console.error('Error fetching post:', error);
@@ -300,7 +317,6 @@ export default function ApplicationForm(params) {
             setSelectedLocation([...selectedLocation.filter(selected => selected.lgIdx !== 0||selected.ldIdx !==location.ldIdx), newLocation]);
         }   
 
-        console.log(selectedLocation);
     };
     /* 채용공고 내용 변경 이벤트*/
     const handleContentChange = (content) => {
@@ -343,7 +359,6 @@ export default function ApplicationForm(params) {
                 }
             });
             setAddress(response.data.documents[0].address.address_name);
-            console.log(address);
         } catch (error) {
             console.error('Error fetching address:', error);
         }
@@ -368,7 +383,6 @@ export default function ApplicationForm(params) {
     function handleSubmit() {
         /* 유효성 검사 */
         const blankPattern = /^\s+|\s+$/g;
-        const urlRegex = /^(https?|ftp):\/\/(-\.)?([^\s\/?\.#-]+\.?)+(\/[^\s]*)?$/i;
 
         if(title.replace(blankPattern, '').length === 0) {
             alert('제목을 입력해주세요');
@@ -413,12 +427,6 @@ export default function ApplicationForm(params) {
         if(endDate !== '') {
             if(endDate < startDate) {
                 alert('접수기간이 채용기간보다 길어야 합니다.');
-                return;
-            }
-        }
-        if(selectedMethods.includes('homepage')) {
-            if(homepageUrl.replace(blankPattern, '').length === 0 || !urlRegex.test(homepageUrl)) {
-                alert('유효한 홈페이지 URL을 입력해주세요');
                 return;
             }
         }
@@ -467,7 +475,7 @@ export default function ApplicationForm(params) {
             id: workDay.id,
             dayName: workDay.name
         }));
-        subType =  selectedMethods.map(method => method.name).join(', ');
+        subType =  selectedMethods.map(method => method).join(',');
         for(let i = 0; i < selectedLocation.length; i++) {
             if(selectedLocation[i].lgIdx !== 0) {
                 location.push({
@@ -503,9 +511,6 @@ export default function ApplicationForm(params) {
         if(endDate !== '') {
             data.poDeadline = endDate;
         }
-        if(selectedMethods.includes('homepage')) {
-            data.homepageUrl = homepageUrl;
-        }
         if(selectedMethods.includes('email')) {
             data.email = email+'@'+emailDomain;
         }
@@ -513,8 +518,9 @@ export default function ApplicationForm(params) {
             data.fax=fax1+"-"+fax2+"-"+fax3;
         }
         if(selectedMethods.includes('post') || selectedMethods.includes('visit')) {
-            data.address = address+"-"+detailAddress;
+            data.addr = address
         }
+        console.log(data);
         let formData = new FormData();
         formData.append('file', image);
         let filename='';
@@ -715,16 +721,21 @@ export default function ApplicationForm(params) {
                     selected={selectedMethods}
                     onToggle={handleMethodToggle}
                 />
-                {selectedMethods.includes('homepage') && (
-                    <div className="mt-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">홈페이지 URL</label>
-                        <input type="text" value={homepageUrl} onChange={(e) => setHomepageUrl(e.target.value)} className="w-[500px] border rounded px-3 py-2" />
-                    </div>
-                )}
                 {(selectedMethods.includes('post') || selectedMethods.includes('visit')) && (
                     <div className="mt-6">
                         <label className="block text-sm font-medium text-gray-700 mb-1">주소</label>
-                        <input type="text" value={address} onChange={(e)=>setAddress(e.target.value)} className="w-[500px] border rounded px-3 py-2 mr-2" />
+                        <input 
+                            type="text" 
+                            value={address} 
+                            onChange={(e) => setAddress(e.target.value)}  
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    addressApi();
+                                }
+                            }}
+                            className="w-[500px] border rounded px-3 py-2 mr-2" 
+                        />
                         <button onClick={addressApi} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">주소검색</button>
                         <label className="block text-sm font-medium text-gray-700 mb-1 mt-2">상세주소</label>
                         <input type="text" value={detailAddress} onChange={(e)=>setDetailAddress(e.target.value)} className="w-[500px] border rounded px-3 py-2" />
@@ -793,7 +804,7 @@ export default function ApplicationForm(params) {
 
             {/* 확인 팝업 */}
             {showConfirmPopup && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white p-6 rounded-lg">
                         <h2 className="text-xl font-bold mb-4">작성 완료</h2>
                         <p className="mb-4">정말로 채용공고를 수정하시겠습니까?</p>
