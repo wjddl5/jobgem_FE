@@ -7,11 +7,11 @@ import { useRouter } from 'next/navigation';
 
 function EnhancedTable() {
     const router = useRouter();
-    const [api_url, setApiUrl] = useState("/api/blackList?size=10");
+    const [api_url, setApiUrl] = useState("/api/admin/blocked-jobseekers?size=10");
     const [ar, setAr] = useState([]);
     const [page, setPage] = useState(0);
     const [totalPage, setTotalPage] = useState(0);
-    const [searchType, setSearchType] = useState('');
+    const [searchType, setSearchType] = useState('name');
     const [searchValue, setSearchValue] = useState('');
     const [chkSet, setChkSet] = useState(new Set());
     const [chkAll, setChkAll] = useState(false);
@@ -51,7 +51,7 @@ function EnhancedTable() {
     //페이지 번호 변경
     const changePage = (event, value) => {
         setPage(value - 1); // 페이지 번호는 0부터 시작하므로 1을 빼줍니다.
-        setApiUrl("/api/blackList?size=10&page=" + (value - 1));
+        setApiUrl("/api/admin/blocked-jobseekers?size=10&page=" + (value - 1));
         getBlockList();
         setChkSet(new Set());
         setChkAll(false);
@@ -87,7 +87,7 @@ function EnhancedTable() {
             return;
         }
         try {
-            const response = await axios.get("/api/deletejobseekerBlock", {
+            const response = await axios.delete("/api/admin/jobseeker-blocks", {
                 params: {
                     chkList: Array.from(chkSet).join(',')
                 }

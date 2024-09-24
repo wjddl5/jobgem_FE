@@ -1,5 +1,6 @@
 'use client'
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 import { Line, Pie } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -12,6 +13,7 @@ import {
   Legend,
   ArcElement,
 } from 'chart.js';
+import axios from 'axios';
 
 ChartJS.register(
   CategoryScale,
@@ -25,11 +27,98 @@ ChartJS.register(
 );
 
 export default function Home() {
-  // Area Chart Data
-  const areaChartData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+  const router = useRouter();
+  const api_url = "/api/admin"
+  const [userData, setUserData] = useState();
+  const [postData, setPostData] = useState([]);
+  const [countUser, setCountUser] = useState([]);
+  const [countUserout, setCountUserout] = useState([]);
+  const [countCompany, setCountCompany] = useState([]);
+  const [countPost, setCountPost] = useState([]);
+  const [countPostout, setCountPostout] = useState([]);
+  const [blackUser, setBlackUser] = useState([]);
+  const [blackCompany, setBlackCompany] = useState([]);
+  const [noblackUser, setNoblackUser] = useState([]);
+  const [noblackCompany, setNoblackCompany] = useState([]);
+  const [countAnswer, setCountAnswer] = useState([]);
+  const [noPro, setNoPro] = useState([]);
+  useEffect(() => {
+
+    axios.get(api_url + "/users")
+      .then(response => {
+        const monthlyUserCount = response.data.reduce((acc, user) => {
+          const month = user.usJoinDate.split('-')[1];
+          acc[month] = (acc[month] || 0) + 1;
+          return acc;
+        }, {});
+        setUserData(Object.values(monthlyUserCount));
+        setCountUser(response.data.filter(item => item.usState === 1));
+        setCountUserout(response.data.filter(item => item.usState === 0));
+      })
+      .catch(error => console.error('Error fetching data:', error));
+
+    axios.get(api_url + "/companies")
+
+      .then(response => {
+        setCountCompany(response.data.content);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+
+    axios.get(api_url + "/posts")
+      .then(response => {
+        const monthlyPostCount = response.data.content.reduce((acc, post) => {
+          const month = post.poDate.split('-')[1];
+          acc[month] = (acc[month] || 0) + 1;
+          return acc;
+        }, {});
+        setPostData(Object.values(monthlyPostCount));
+        setCountPost(response.data.content.filter(item => item.poState === 1));
+
+        setCountPostout(response.data.content.filter(item => item.poState === 0));
+      })
+      .catch(error => console.error('Error fetching data:', error));
+
+    axios.get(api_url + "/blocked-jobseekers")
+      .then(response => {
+        setBlackUser(response.data.content);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+
+    axios.get(api_url + "/blocked-companies")
+      .then(response => {
+        setBlackCompany(response.data.content);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+
+    axios.get(api_url + "/unblocked-jobseekers")
+      .then(response => {
+        setNoblackUser(response.data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+
+    axios.get(api_url + "/unblocked-companies")
+      .then(response => {
+        setNoblackCompany(response.data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+
+    axios.get(api_url + "/unanswered-questions")
+      .then(response => {
+        setCountAnswer(response.data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+      
+    axios.get(api_url + "/pending-blacklist")
+      .then(response => {
+        setNoPro(response.data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }, []);
+
+  const [areaChartData, setAreaChartData] = useState({
+    labels: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
     datasets: [{
-      label: "Earnings",
+      label: "회원 수",
       lineTension: 0.3,
       backgroundColor: "rgba(78, 115, 223, 0.05)",
       borderColor: "rgba(78, 115, 223, 1)",
@@ -41,9 +130,20 @@ export default function Home() {
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
       pointHitRadius: 10,
       pointBorderWidth: 2,
-      data: [0, 10000, 5000, 15000, 10000, 20000, 15000, 25000, 20000, 30000, 25000, 40000],
-    }],
-  };
+      data: [],
+    }]
+  });
+
+  function updateAreaData(data, label) {
+    setAreaChartData({
+      ...areaChartData,
+      datasets: [{
+        ...areaChartData.datasets[0],
+        label: label,
+        data: data
+      }]
+    })
+  }
 
   const areaChartOptions = {
     maintainAspectRatio: false,
@@ -65,17 +165,13 @@ export default function Home() {
           drawBorder: false
         },
         ticks: {
-          maxTicksLimit: 7
+          maxTicksLimit: 12
         }
       },
       y: {
         ticks: {
           maxTicksLimit: 5,
           padding: 10,
-          // Include a dollar sign in the ticks
-          callback: function(value, index, values) {
-            return '$' + value;
-          }
         },
         grid: {
           color: "rgb(234, 236, 244)",
@@ -104,32 +200,31 @@ export default function Home() {
         intersect: false,
         mode: 'index',
         caretPadding: 10,
-        callbacks: {
-          label: function(context) {
-            var label = context.dataset.label || '';
-            if (label) {
-              label += ': ';
-            }
-            if (context.parsed.y !== null) {
-              label += '$' + context.parsed.y;
-            }
-            return label;
-          }
-        }
       }
     }
   };
 
-  // Pie Chart Data
-  const pieChartData = {
-    labels: ["Direct", "Referral", "Social"],
+  const [pieChartData, setPieChartData] = useState({
+    labels: [],
     datasets: [{
-      data: [55, 30, 15],
-      backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
-      hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+      data: [],
+      backgroundColor: ['#4e73df', '#ff0000'],
+
+      hoverBackgroundColor: ['#2e59d9', '#cc0000'],
       hoverBorderColor: "rgba(234, 236, 244, 1)",
     }],
-  };
+  });
+
+  function updatePieData(data, label) {
+    setPieChartData({
+      ...pieChartData,
+      labels: label,
+      datasets: [{
+        ...pieChartData.datasets[0],
+        data: data
+      }]
+    })
+  }
 
   const pieChartOptions = {
     maintainAspectRatio: false,
@@ -152,54 +247,56 @@ export default function Home() {
   return (
     <div className="w-full bg-gray-100 min-h-screen">
       <div className="container mx-auto px-4 py-8">
-
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-gray-800">대시보드</h1>
-          <a href="#" className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded shadow">
-            <i className="fas fa-download fa-sm mr-2"></i> Generate Report
-          </a>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
-            <div className="flex items-center">
+            <div className="flex items-center ">
               <div className="flex-grow">
                 <div className="text-sm font-bold text-blue-500 uppercase mb-1">
-                  Earnings (Monthly)
+                  현재 회원 수
                 </div>
-                <div className="text-2xl font-bold text-gray-800">$40,000</div>
+                <div className="text-2xl font-bold text-gray-800">{countUser.length}</div>
+              </div>
+              <div className="border-r border-gray-300 h-12 mx-4"></div>
+              <div className="flex-grow">
+                <div className="text-sm font-bold text-blue-500 uppercase mb-1">
+                  탈퇴한 회원 수
+                </div>
+                <div className="text-2xl font-bold text-gray-800">{countUserout.length}</div>
               </div>
               <div className="flex-shrink-0">
                 <i className="fas fa-calendar fa-2x text-gray-300"></i>
               </div>
             </div>
           </div>
-
           <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500">
             <div className="flex items-center">
-              <div className="flex-grow">
+              <div className="flex-grow text-center">
                 <div className="text-sm font-bold text-green-500 uppercase mb-1">
-                  Earnings (Annual)
+                  현재 기업 수
                 </div>
-                <div className="text-2xl font-bold text-gray-800">$215,000</div>
+                <div className="text-2xl font-bold text-gray-800">{countCompany.length}</div>
               </div>
               <div className="flex-shrink-0">
                 <i className="fas fa-dollar-sign fa-2x text-gray-300"></i>
               </div>
             </div>
           </div>
-
           <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-cyan-500">
             <div className="flex items-center">
               <div className="flex-grow">
-                <div className="text-sm font-bold text-cyan-500 uppercase mb-1">Tasks</div>
+                <div className="text-sm font-bold text-cyan-500 uppercase mb-1">현재 공고 수</div>
                 <div className="flex items-center">
-                  <div className="text-2xl font-bold text-gray-800 mr-3">50%</div>
-                  <div className="w-full">
-                    <div className="h-2 bg-cyan-500 rounded-full">
-                      <div className="h-2 bg-cyan-200 rounded-full" style={{ width: "50%" }}></div>
-                    </div>
-                  </div>
+                  <div className="text-2xl font-bold text-gray-800 mr-3">{countPost.length}</div>
+                </div>
+              </div>
+              <div className="border-r border-gray-300 h-12 mx-4"></div>
+              <div className="flex-grow">
+                <div className="text-sm font-bold text-cyan-500 uppercase mb-1">마감 공고 수</div>
+                <div className="flex items-center">
+                  <div className="text-2xl font-bold text-gray-800 mr-3">{countPostout.length}</div>
                 </div>
               </div>
               <div className="flex-shrink-0">
@@ -207,255 +304,154 @@ export default function Home() {
               </div>
             </div>
           </div>
-
-          <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-500">
-            <div className="flex items-center">
-              <div className="flex-grow">
-                <div className="text-sm font-bold text-yellow-500 uppercase mb-1">
-                  Pending Requests
-                </div>
-                <div className="text-2xl font-bold text-gray-800">18</div>
-              </div>
-              <div className="flex-shrink-0">
-                <i className="fas fa-comments fa-2x text-gray-300"></i>
-              </div>
-            </div>
-          </div>
         </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="bg-white rounded-lg shadow-md">
             <div className="p-4 border-b flex items-center justify-between">
-              <h6 className="text-lg font-bold text-blue-500">Earnings Overview</h6>
-              <div className="relative">
-                <button
-                  id="dropdownMenuLink"
-                  className="text-gray-400 hover:text-gray-600 focus:outline-none"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  <i className="fas fa-ellipsis-v fa-sm"></i>
+              <h6 className="text-lg font-bold text-blue-500">월별 추이</h6>
+              <div className="flex items-center gap-2">
+                <button className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 focus:outline-none" onClick={() => updateAreaData(userData, '회원 가입 수')}>
+                  회원
                 </button>
-                <div
-                  className="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10"
-                  aria-labelledby="dropdownMenuLink"
-                >
-                  <div className="py-1">
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      Action
-                    </a>
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      Another action
-                    </a>
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      Something else here
-                    </a>
-                  </div>
-                </div>
+                <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none" onClick={() => updateAreaData(postData, '공고 모집 수')}>
+                  공고
+                </button>
               </div>
             </div>
             <div className="p-4">
               <div className="relative h-80">
-                <Line data={areaChartData} options={areaChartOptions} />
+                {areaChartData.datasets[0].data.length > 0 ? (
+                  <Line data={areaChartData} options={areaChartOptions} />
+                ) : (
+                  <div className="flex items-center justify-center h-full">
+                    <div className="text-gray-500">조회할 버튼을 눌러주세요.</div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
-
           <div className="bg-white rounded-lg shadow-md">
             <div className="p-4 border-b flex items-center justify-between">
-              <h6 className="text-lg font-bold text-blue-500">Revenue Sources</h6>
-              <div className="relative">
-                <button
-                  id="dropdownMenuLink"
-                  className="text-gray-400 hover:text-gray-600 focus:outline-none"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  <i className="fas fa-ellipsis-v fa-sm"></i>
+              <h6 className="text-lg font-bold text-blue-500">차단 비율</h6>
+              <div className="flex items-center gap-2">
+                <button className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 focus:outline-none" onClick={() => updatePieData([noblackUser.length, blackUser.length], ["회원", "차단 회원"])}>
+                  회원
                 </button>
-                <div
-                  className="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10"
-                  aria-labelledby="dropdownMenuLink"
-                >
-                  <div className="py-1">
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      Action
-                    </a>
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      Another action
-                    </a>
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      Something else here
-                    </a>
-                  </div>
-                </div>
+                <button className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none" onClick={() => updatePieData([noblackCompany.length, blackCompany.length], ["기업", "차단 기업"])}>
+                  기업
+                </button>
               </div>
             </div>
             <div className="p-4">
               <div className="relative h-64">
-                <Pie data={pieChartData} options={pieChartOptions} />
-              </div>
-              <div className="mt-4 text-center text-sm">
-                <span className="mr-2">
-                  <i className="fas fa-circle text-blue-500"></i> Direct
-                </span>
-                <span className="mr-2">
-                  <i className="fas fa-circle text-green-500"></i> Social
-                </span>
-                <span className="mr-2">
-                  <i className="fas fa-circle text-cyan-500"></i> Referral
-                </span>
+                {pieChartData.datasets[0].data.length > 0 ? (
+                  <Pie data={pieChartData} options={pieChartOptions} />
+                ) : (
+                  <div className="flex items-center justify-center h-full">
+                    <div className="text-gray-500">조회할 버튼을 눌러주세요.</div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
           <div className="bg-white rounded-lg shadow-md">
             <div className="p-4 border-b">
-              <h6 className="text-lg font-bold text-blue-500">Projects</h6>
+              <h6 className="text-lg font-bold text-blue-500 text-center">달성 현황</h6>
             </div>
-            <div className="p-4">
+            <div className="p-4 flex flex-col gap-4">
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm font-bold text-gray-800">Server Migration</span>
-                  <span className="text-sm font-bold text-gray-800">20%</span>
+                  <span className="text-sm font-bold text-gray-800">회원</span>
+                  <span className="text-sm font-bold text-gray-800">{countUser.length}%</span>
                 </div>
+
                 <div className="h-2 bg-gray-200 rounded-full">
-                  <div className="h-2 bg-red-500 rounded-full" style={{ width: "20%" }}></div>
+                  <div className="h-2 bg-red-500 rounded-full" style={{ width: `${(countUser.length / 300) * 100}%` }}></div>
                 </div>
               </div>
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm font-bold text-gray-800">Sales Tracking</span>
-                  <span className="text-sm font-bold text-gray-800">40%</span>
+                  <span className="text-sm font-bold text-gray-800">기업</span>
+                  <span className="text-sm font-bold text-gray-800">{countCompany.length}%</span>
                 </div>
                 <div className="h-2 bg-gray-200 rounded-full">
-                  <div className="h-2 bg-yellow-500 rounded-full" style={{ width: "40%" }}></div>
+                  <div className="h-2 bg-yellow-500 rounded-full" style={{ width: `${(countCompany.length / 50) * 100}%` }}></div>
                 </div>
               </div>
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm font-bold text-gray-800">Customer Database</span>
-                  <span className="text-sm font-bold text-gray-800">60%</span>
+                  <span className="text-sm font-bold text-gray-800">공고</span>
+                  <span className="text-sm font-bold text-gray-800">{countPost.length}%</span>
                 </div>
                 <div className="h-2 bg-gray-200 rounded-full">
-                  <div className="h-2 bg-blue-500 rounded-full" style={{ width: "60%" }}></div>
+                  <div className="h-2 bg-blue-500 rounded-full" style={{ width: `${(countPost.length / 100) * 100}%` }}></div>
                 </div>
               </div>
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm font-bold text-gray-800">Payout Details</span>
-                  <span className="text-sm font-bold text-gray-800">80%</span>
+                  <span className="text-sm font-bold text-gray-800">답변</span>
+                  <span className="text-sm font-bold text-gray-800">{100 - countAnswer.length}%</span>
                 </div>
                 <div className="h-2 bg-gray-200 rounded-full">
-                  <div className="h-2 bg-cyan-500 rounded-full" style={{ width: "80%" }}></div>
+                  <div className="h-2 bg-blue-500 rounded-full" style={{ width: `${100 - countAnswer.length}%` }}></div>
                 </div>
               </div>
-              <div>
+              <div className="mb-4">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm font-bold text-gray-800">Account Setup</span>
-                  <span className="text-sm font-bold text-gray-800">Complete!</span>
+                  <span className="text-sm font-bold text-gray-800">신고 처리</span>
+                  <span className="text-sm font-bold text-gray-800">{100 - noPro.length}%</span>
                 </div>
                 <div className="h-2 bg-gray-200 rounded-full">
-                  <div className="h-2 bg-green-500 rounded-full" style={{ width: "100%" }}></div>
+                  <div className="h-2 bg-blue-500 rounded-full" style={{ width: `${100 - noPro.length}%` }}></div>
                 </div>
               </div>
             </div>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-blue-500 text-white rounded-lg shadow-md p-4">
-              Primary
-              <div className="text-white-50 text-sm">#4e73df</div>
-            </div>
-            <div className="bg-green-500 text-white rounded-lg shadow-md p-4">
-              Success
-              <div className="text-white-50 text-sm">#1cc88a</div>
-            </div>
-            <div className="bg-cyan-500 text-white rounded-lg shadow-md p-4">
-              Info
-              <div className="text-white-50 text-sm">#36b9cc</div>
+            <div className="bg-red-500 text-white rounded-lg shadow-md p-4">
+              답변 {countAnswer.length > 0 ? `대기 ${countAnswer.length}개` : "대기 없음"}
+              <div className="text-white-50 text-sm mt-10">
+                {countAnswer.length > 0 && countAnswer.slice(0, 5).map((item, index) => (
+                  <div key={index} className="mb-2 ">
+                    <div className="bg-white rounded-lg p-2 cursor-pointer flex justify-between" onClick={() => router.push(`admin/bbs/qna/view/${item.id}`)}>
+                      <div className="text-black text-sm font-semibold truncate">
+                        {item.boTitle.length > 9 ? `${item.boTitle.slice(0, 9)}...` : item.boTitle}
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <div className="text-gray-500 text-xs">{item.boWritedate}</div>
+                        <div className="text-black font-semibold text-xs text-right">
+                          {item.user?.usLeaveDate ? '탈퇴한 회원' : item.user?.usId || '탈퇴한 회원'}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
             <div className="bg-yellow-500 text-white rounded-lg shadow-md p-4">
-              Warning
-              <div className="text-white-50 text-sm">#f6c23e</div>
-            </div>
-            <div className="bg-red-500 text-white rounded-lg shadow-md p-4">
-              Danger
-              <div className="text-white-50 text-sm">#e74a3b</div>
-            </div>
-            <div className="bg-gray-500 text-white rounded-lg shadow-md p-4">
-              Secondary
-              <div className="text-white-50 text-sm">#858796</div>
-            </div>
-            <div className="bg-white text-black rounded-lg shadow-md p-4">
-              Light
-              <div className="text-black-50 text-sm">#f8f9fc</div>
-            </div>
-            <div className="bg-gray-800 text-white rounded-lg shadow-md p-4">
-              Dark
-              <div className="text-white-50 text-sm">#5a5c69</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-          <div className="bg-white rounded-lg shadow-md">
-            <div className="p-4 border-b">
-              <h6 className="text-lg font-bold text-blue-500">Illustrations</h6>
-            </div>
-            <div className="p-4">
-              <div className="text-center">
-                <img
-                  className="mx-auto px-3 px-sm-4 mt-3 mb-4"
-                  style={{ width: "25rem" }}
-                  src="img/undraw_posting_photo.svg"
-                  alt="..."
-                />
+              신고 {noPro.length > 0 ? `대기 ${noPro.length}개` : "대기 없음"}
+              <div className="text-white-50 text-sm mt-10">
+                {noPro.length > 0 && noPro.slice(0, 5).map((item, index) => (
+                  <div key={index} className="mb-2 ">
+                    <div className="bg-white rounded-lg p-2 cursor-pointer flex justify-between" onClick={() => router.push(`admin/blackList/view/${item.id}`)}>
+                      <div className="text-black text-sm font-semibold truncate">
+                        {item.blTitle.length > 9 ? `${item.blTitle.slice(0, 9)}...` : item.blTitle}
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <div className="text-gray-500 text-xs">{item.blDate}</div>
+                        <div className="text-black font-semibold text-xs text-right">
+                          {item.user?.usLeaveDate ? '탈퇴한 회원' : item.user?.usId || '탈퇴한 회원'}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <p>
-                Add some quality, svg illustrations to your project courtesy of{" "}
-                <a
-                  target="_blank"
-                  rel="nofollow"
-                  href="https://undraw.co/"
-                  className="text-blue-500 hover:underline"
-                >
-                  unDraw
-                </a>
-                , a constantly updated collection of beautiful svg images that you can use
-                completely free and without attribution!
-              </p>
-              <a
-                target="_blank"
-                rel="nofollow"
-                href="https://undraw.co/"
-                className="text-blue-500 hover:underline"
-              >
-                Browse Illustrations on unDraw &rarr;
-              </a>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-md">
-            <div className="p-4 border-b">
-              <h6 className="text-lg font-bold text-blue-500">Development Approach</h6>
-            </div>
-            <div className="p-4">
-              <p>
-                SB Admin 2 makes extensive use of Bootstrap 4 utility classes in order to reduce
-                CSS bloat and poor page performance. Custom CSS classes are used to create
-                custom components and custom utility classes.
-              </p>
-              <p className="mb-0">
-                Before working with this theme, you should become familiar with the
-                Bootstrap framework, especially the utility classes.
-              </p>
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );
