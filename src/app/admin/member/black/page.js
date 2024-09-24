@@ -183,16 +183,16 @@ function EnhancedTable() {
                                 <TableCell align="center"><Checkbox checked={chkSet.has(user.id)} onChange={(e) => checkChange(e, user.id)} /></TableCell>
                                 <TableCell align="center">{user.blDate}</TableCell>
                                 <TableCell align="center">{user.blContent}</TableCell>
-                                <TableCell align="center">{user.jobseeker.joName}</TableCell>
-                                <TableCell align="center">{user.jobseeker.joBirth}</TableCell>
-                                <TableCell align="center">{user.jobseeker.joTel}</TableCell>
-                                <TableCell align="center">{user.jobseeker.joAddress}</TableCell>
-                                <TableCell align="center">{user.jobseeker.joEdu}</TableCell>
-                                <TableCell align="center">{user.jobseeker.joSal}</TableCell>
-                                <TableCell align="center">{user.jobseeker.joGender}</TableCell>
-                                <TableCell align="center">{user.jobseeker.joImgUrl == null ? '없음' : <TableCell align="center"><img src={user.joImgUrl} alt="회원사진" style={{ width: '50px', height: '50px' }} /></TableCell>}</TableCell>
-                                <TableCell align="center">{user.jobseeker.user.usJoinDate}</TableCell>
-                                <TableCell align="center">{user.jobseeker.user.usLeaveDate == null ? '활동중' : user.jobseeker.user.usLeaveDate}</TableCell>
+                                <TableCell align="center">{user.joName}</TableCell>
+                                <TableCell align="center">{user.joBirth}</TableCell>
+                                <TableCell align="center">{user.joTel}</TableCell>
+                                <TableCell align="center">{user.joAddress}</TableCell>
+                                <TableCell align="center">{user.joEdu}</TableCell>
+                                <TableCell align="center">{user.joSal}</TableCell>
+                                <TableCell align="center">{user.joGender}</TableCell>
+                                <TableCell align="center">{user.joImgUrl == null ? '없음' : <TableCell align="center"><img src={user.joImgUrl} alt="회원사진" style={{ width: '50px', height: '50px' }} /></TableCell>}</TableCell>
+                                <TableCell align="center">{user.usJoinDate}</TableCell>
+                                <TableCell align="center">{user.usLeaveDate == null ? '활동중' : user.usLeaveDate}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

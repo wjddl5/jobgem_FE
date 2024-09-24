@@ -87,6 +87,7 @@ export default function page() {
                                 <em>카테고리 선택</em>
                             </MenuItem>
                             <MenuItem value="title">제목</MenuItem> 
+                            <MenuItem value="company">기업명</MenuItem> 
                             <MenuItem value="content">내용</MenuItem>
                             <MenuItem value="date">등록일</MenuItem>
                             <MenuItem value="deadline">마감일</MenuItem>
