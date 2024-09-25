@@ -5,7 +5,7 @@ RUN npm install
 COPY ./ ./
 
 #nodemon 사용 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "build"]
 
 #FROM nginx
 #EXPOSE 3000
