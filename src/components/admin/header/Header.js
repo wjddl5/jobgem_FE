@@ -46,13 +46,15 @@ export default function Header() {
                     <a className="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" onClick={handleToggleDropdown} aria-haspopup="true" aria-expanded={dropdownOpen}>
                         <NotificationsIcon />
                         <div className='flex justify-center items-center'>
-                        <span className="badge badge-danger badge-counter">{qna.length + blacklist.length}</span>
+                        {qna.length + blacklist.length > 0 ? <span className="badge badge-danger badge-counter">{qna.length + blacklist.length}</span> : null}
                         </div>
                     </a>
+                    {qna.length + blacklist.length > 0 ? (
                     <div className="dropdown-menu dropdown-menu-right" aria-labelledby="alertsDropdown" style={{ display: dropdownOpen ? 'block' : 'none' }}>
-                        <a className="dropdown-item" onClick={() => router.push(`/admin/bbs/qna/view/${randomQnaNumber}`)}>미답변 {qna.length}개 있습니다</a>
-                        <a className="dropdown-item" onClick={() => router.push(`/admin/blackList/view/${randomBlacklistNumber}`)}>신고대기 {blacklist.length}개 있습니다</a>
-                    </div>
+                        {qna.length > 0 ? <a className="dropdown-item" onClick={() => router.push(`/admin/bbs/qna/view/${randomQnaNumber}`)}>미답변 {qna.length}개 있습니다</a> : null}
+                            {blacklist.length > 0 ? <a className="dropdown-item" onClick={() => router.push(`/admin/blackList/view/${randomBlacklistNumber}`)}>신고대기 {blacklist.length}개 있습니다</a> : null}
+                        </div>
+                    ) : null}
                 </div>
                 <div className="dropdown no-arrow">
                     <a className="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" onClick={handleToggleDropdown2} aria-haspopup="true" aria-expanded={dropdownOpen2}>

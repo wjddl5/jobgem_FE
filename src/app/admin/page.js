@@ -1,13 +1,14 @@
 'use client'
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { Line, Pie } from 'react-chartjs-2';
+import { Bar, Line, Pie } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
@@ -20,6 +21,7 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
@@ -130,7 +132,7 @@ export default function Home() {
     datasets: [{
       label: "회원 수",
       lineTension: 0.3,
-      backgroundColor: "rgba(78, 115, 223, 0.05)",
+      backgroundColor: "rgba(78, 115, 223, 1)", // 배경 투명도 증가
       borderColor: "rgba(78, 115, 223, 1)",
       pointRadius: 3,
       pointBackgroundColor: "rgba(78, 115, 223, 1)",
@@ -341,7 +343,7 @@ export default function Home() {
             </div>
             <div className="p-4">
               <div className="relative h-80">
-                <Line data={areaChartData} options={areaChartOptions} />
+                <Bar data={areaChartData} options={areaChartOptions} />
               </div>
             </div>
           </div>
