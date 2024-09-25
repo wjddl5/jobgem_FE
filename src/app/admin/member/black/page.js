@@ -16,18 +16,20 @@ function EnhancedTable() {
     const [chkSet, setChkSet] = useState(new Set());
     const [chkAll, setChkAll] = useState(false);
     const [loading, setLoading] = useState(false);
+
     useEffect(() => {
         getBlockList();
     }, [page]);
-    //블랙리스트 가져오기
+
     function getBlockList() {
         axios.get(api_url).then((response) => {
+            console.log(response.data)
             setAr(response.data.content);
             setTotalPage(response.data.totalPages);
             setPage(response.data.pageable.pageNumber);
         });
     }
-    // 검색
+
     const handleSearch = async (e) => {
         try {
             const response = await axios.get(api_url, {
@@ -48,24 +50,25 @@ function EnhancedTable() {
             alert("검색 중 오류 발생");
         }
     };
-    //페이지 번호 변경
+
     const changePage = (event, value) => {
-        setPage(value - 1); // 페이지 번호는 0부터 시작하므로 1을 빼줍니다.
+        setPage(value - 1);
         setApiUrl("/api/admin/blocked-jobseekers?size=10&page=" + (value - 1));
         getBlockList();
         setChkSet(new Set());
         setChkAll(false);
     };
-    //엔터키 검색
+
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
             handleSearch();
         }
     }
+
     useEffect(() => {
         setChkAll(chkSet.size === ar.length && ar.length > 0);
     }, [chkSet, ar]);
-    // 체크박스 상태 변경 함수 수정
+
     function checkChange(event, idx) {
         const newChkSet = new Set(chkSet);
         if (event.target.checked) {
@@ -75,14 +78,14 @@ function EnhancedTable() {
         }
         setChkSet(newChkSet);
     }
-    // 전체 선택 체크박스 상태 변경 함수 수정
+
     function allCheckChange(event) {
         const isChecked = event.target.checked;
         setChkSet(isChecked ? new Set(ar.map((user) => user.id)) : new Set());
     }
-    // 체크박스 삭제
+
     const handleDelete = async () => {
-        if(chkSet.size === 0){
+        if (chkSet.size === 0) {
             alert("삭제할 항목을 선택해주세요");
             return;
         }
@@ -104,10 +107,12 @@ function EnhancedTable() {
             alert("삭제 중 오류 발생");
         }
     }
+
     const handleAdd = () => {
         setLoading(true);
         router.push('/admin/member/black/add');
     }
+
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', mt: 3, boxShadow: 3, padding: 5 }}>
             <Toolbar sx={{ pl: { sm: 2 }, pr: { xs: 1, sm: 1 } }}>
@@ -151,7 +156,6 @@ function EnhancedTable() {
                     </IconButton>
                     <Button variant="contained" color="info" onClick={handleAdd}>추가</Button>
                     <Button variant="contained" color="warning" onClick={() => handleDelete()}>삭제</Button>
-                    {/* <Button variant="contained" color="error">차단</Button> */}
                 </Box>
             </Toolbar>
             <TableContainer>
@@ -170,38 +174,38 @@ function EnhancedTable() {
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>성별</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>사진</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>가입일자</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>탈퇴일자</TableCell>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>탈퇴여부</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {ar.map((user, idx) => (
                             <TableRow
-                                key={idx} // 키를 user.id로 설정
+                                key={idx}
                                 hover
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                                 <TableCell align="center"><Checkbox checked={chkSet.has(user.id)} onChange={(e) => checkChange(e, user.id)} /></TableCell>
                                 <TableCell align="center">{user.blDate}</TableCell>
                                 <TableCell align="center">{user.blContent}</TableCell>
-                                <TableCell align="center">{user.joName}</TableCell>
-                                <TableCell align="center">{user.joBirth}</TableCell>
-                                <TableCell align="center">{user.joTel}</TableCell>
-                                <TableCell align="center">{user.joAddress}</TableCell>
-                                <TableCell align="center">{user.joEdu}</TableCell>
-                                <TableCell align="center">{user.joSal}</TableCell>
-                                <TableCell align="center">{user.joGender}</TableCell>
-                                <TableCell align="center">{user.joImgUrl == null ? '없음' : <TableCell align="center"><img src={user.joImgUrl} alt="회원사진" style={{ width: '50px', height: '50px' }} /></TableCell>}</TableCell>
-                                <TableCell align="center">{user.usJoinDate}</TableCell>
-                                <TableCell align="center">{user.usLeaveDate == null ? '활동중' : user.usLeaveDate}</TableCell>
+                                <TableCell align="center">{user.jobseeker.joName}</TableCell>
+                                <TableCell align="center">{user.jobseeker.joBirth}</TableCell>
+                                <TableCell align="center">{user.jobseeker.joTel}</TableCell>
+                                <TableCell align="center">{user.jobseeker.joAddress}</TableCell>
+                                <TableCell align="center">{user.jobseeker.joEdu}</TableCell>
+                                <TableCell align="center">{user.jobseeker.joSal}</TableCell>
+                                <TableCell align="center">{user.jobseeker.joGender}</TableCell>
+                                <TableCell align="center">{user.jobseeker.joImgUrl == null ? '없음' : <TableCell align="center"><img src={user.jobseeker.joImgUrl} alt="회원사진" style={{ width: '50px', height: '50px' }} /></TableCell>}</TableCell>
+                                <TableCell align="center">{user.jobseeker.user.usJoinDate}</TableCell>
+                                <TableCell align="center">{user.jobseeker.user.usLeaveDate == null ? '활동중' : user.jobseeker.user.usLeaveDate}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
             <Pagination
-                onChange={changePage} // onClick 대신 onChange 사용
-                page={page + 1} // 현재 페이지 번호
-                count={totalPage} // 총 페이지 수
+                onChange={changePage}
+                page={page + 1}
+                count={totalPage}
                 color="primary"
                 style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}
                 className="pagination"
@@ -210,8 +214,6 @@ function EnhancedTable() {
                 <CircularProgress />
             </Dialog>
         </Paper>
-
-
     );
 }
 
