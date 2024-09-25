@@ -167,7 +167,6 @@ export default function Sidebar() {
 					href='/admin/category'
 					onClick={() => {
 						handleLinkClick('collapseSeven');
-						removeSession();
 					}}
 					data-toggle='collapse'
 					data-target='#collapseSeven'
