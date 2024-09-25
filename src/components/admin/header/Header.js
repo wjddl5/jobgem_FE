@@ -54,12 +54,12 @@ export default function Header() {
 					{qna.length + blacklist.length > 0 ? (
 						<div className='dropdown-menu dropdown-menu-right' aria-labelledby='alertsDropdown' style={{ display: dropdownOpen ? 'block' : 'none' }}>
 							{qna.length > 0 ? (
-								<a className='dropdown-item' onClick={() => router.push(`/admin/bbs/qna/view/${randomQnaNumber}`)}>
+								<a className='dropdown-item' onClick={() => router.push(`/admin/bbs/qna/view/${randomQnaNumber}?cPage=0&searchType=title&searchValue=`)}>
 									미답변 {qna.length}개 있습니다
 								</a>
 							) : null}
 							{blacklist.length > 0 ? (
-								<a className='dropdown-item' onClick={() => router.push(`/admin/blackList/view/${randomBlacklistNumber}`)}>
+								<a className='dropdown-item' onClick={() => router.push(`/admin/blackList/view/${randomBlacklistNumber}?cPage=0&searchType=title&searchValue=&selectType=all`)}>
 									신고대기 {blacklist.length}개 있습니다
 								</a>
 							) : null}
