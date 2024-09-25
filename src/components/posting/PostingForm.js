@@ -129,7 +129,6 @@ export default function PostingForm({ params }) {
     const timeOptions = Array.from({length: 24}, (_, i) => i + 1);
     const minuteOptions = ['00', '10', '20', '30', '40', '50'];
     const [showConfirmPopup, setShowConfirmPopup] = useState(false);
-    const [image, setImage] = useState(null);
     const [initialDataLoaded, setInitialDataLoaded] = useState(true);
 
     useEffect(() => {
@@ -474,9 +473,6 @@ export default function PostingForm({ params }) {
             workEndTime: workEndTime.hour+":"+workEndTime.minute,
             workDay: workDayData,  
         }
-        if(image !== null) {
-            data.imgUrl = image.name;
-        }
         if(endDate !== '') {
             data.poDeadline = endDate;
         }
@@ -489,22 +485,6 @@ export default function PostingForm({ params }) {
         if(selectedMethods.includes('post') || selectedMethods.includes('visit')) {
             data.addr = address
         }
-        console.log(data);
-        let formData = new FormData();
-        formData.append('file', image);
-        let filename='';
-        if(image) { 
-            axios.post('/api/files/upload', formData)
-            .then(response => {
-                console.log("response",response.data);
-                data.imgUrl = response.data;
-            })
-            .catch(error => {
-                console.error('Error submitting form:', error);
-                setShowConfirmPopup(false);
-            });
-        }
-        console.log("data",data);
         axios.post(`/api/posts`, data)
         .then(response => {
             console.log(response);
@@ -744,24 +724,6 @@ export default function PostingForm({ params }) {
                         <input type="text" className="border rounded px-3 py-2" value={fax3} onChange={(e)=>setFax3(e.target.value)}/>
                     </div>
                 )}
-            </div>
-            <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">공고 이미지</label>
-                <div className="items-center">
-                    <input
-                        type="file"
-                        className="border rounded px-3 py-2 mr-4"
-                        onChange={(e) => setImage(e.target.files[0])}
-                        accept="image/*"
-                    />
-                    {image && (
-                        <img
-                            src={URL.createObjectURL(image)}
-                            alt="Preview"
-                            className="w-32 h-32 object-cover rounded"
-                        />
-                    )}
-                </div>
             </div>
             <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onClick={handleSubmit}>
                 {isEditMode ? '수정완료' : '작성완료'}
