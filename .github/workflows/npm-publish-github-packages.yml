@@ -45,14 +45,8 @@ jobs:
           
       - name: SSH into EC2
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST }}
-          
-      - name: Into Project folder
-        run: |
-          cd /home/ubuntu/JobGem_FE
-            
-      - name: Doker Compose
-        run: |
-            docker-compose down << 'EOF'
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST }} << 'EOF'
+            cd /home/ubuntu/JobGem_FE
+            docker-compose down
             docker-compose up -d --build
-            EOF
+          EOF
