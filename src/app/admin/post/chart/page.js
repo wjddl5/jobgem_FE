@@ -24,10 +24,6 @@ export default function AdminDashboard() {
     const [location, setLocation] = useState([]);
     const [filteredPosts, setFilteredPosts] = useState([]);
 
-    window.addEventListener('load', () => {
-        getFilteredPosts("week");
-    });
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -41,6 +37,7 @@ export default function AdminDashboard() {
             }
         };
         fetchData();
+        getFilteredPosts("week");
     }, []);
 
     const getWeeklyData = () => {
