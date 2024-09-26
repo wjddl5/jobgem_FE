@@ -35,10 +35,12 @@ export default function page(props) {
 	}
 
 	useEffect(() => {
-		if (vo.usIdx == 1 /*(!) 로그인한 유저idx로 변경*/) {
-			setDisabled(false);
-		} else {
-			setDisabled(true);
+		if (vo != null) {
+			if (vo.usIdx == 1 /*(!) 로그인한 유저idx로 변경*/) {
+				setDisabled(false);
+			} else {
+				setDisabled(true);
+			}
 		}
 	}, [vo]);
 
@@ -120,7 +122,7 @@ export default function page(props) {
 			});
 	}
 
-	return (
+	return vo != null ? (
 		<div className='post_detail-container'>
 			<div className='post_header'>
 				<h1 className='post_title'>{vo.boTitle}</h1>
@@ -193,5 +195,7 @@ export default function page(props) {
 				</Button>
 			</div>
 		</div>
+	) : (
+		<></>
 	);
 }
