@@ -48,17 +48,17 @@ export default function Home() {
 			.catch((error) => console.error('Error fetching data:', error));
 
 		axios
-			.get(api_url + '/posts')
+			.get('/api/admin/posts')
 			.then((response) => {
-				const monthlyPostCount = response.data.content.reduce((acc, post) => {
+				const monthlyPostCount = response.data.reduce((acc, post) => {
 					const month = post.poDate.split('-')[1];
 					acc[month] = (acc[month] || 0) + 1;
 					return acc;
 				}, {});
 				setPostData(Object.values(monthlyPostCount));
-				setCountPost(response.data.content.filter((item) => item.poState === 1));
+				setCountPost(response.data.filter((item) => item.poState === 1));
 
-				setCountPostout(response.data.content.filter((item) => item.poState === 0));
+				setCountPostout(response.data.filter((item) => item.poState === 0));
 			})
 			.catch((error) => console.error('Error fetching data:', error));
 
