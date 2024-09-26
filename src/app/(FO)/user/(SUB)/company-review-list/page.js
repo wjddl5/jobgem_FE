@@ -14,7 +14,7 @@ export default function Page() {
 	const [curPage, setCurPage] = useState(0);
 	const router = useRouter();
 	const [review, setReview] = useState([]);
-	const API_URL = `/api/reviews?id=${login}&curPage=${curPage}`;
+	const API_URL = `/api/jobseeker/reviews/${login}?curPage=${curPage}`;
 
 	function getData() {
 		axios.get(API_URL).then((res) => {
@@ -25,7 +25,7 @@ export default function Page() {
 	}
 
 	function remove(reviewId) {
-		axios.delete(`/api/review?id=${reviewId}`).then((res) => {
+		axios.delete(`/api/jobseeker/review/${reviewId}`).then((res) => {
 			console.log(res);
 			if (res.status === 200) {
 				alert("삭제 완료");

@@ -16,7 +16,8 @@ export default function ViewPage(props) {
 	const [center, setCenter] = useState({lat: 37.566826, lng: 126.9786567});
 	const [posting, setPosting] = useState(null);
 	const [timeLeft, setTimeLeft] = useState("");
-
+	const [isInterested, setIsInterested] = useState(false);
+	const [isScrap, setIsScrap] = useState(false);
 	const router = useRouter();
 
 	useKakaoLoader({
@@ -31,6 +32,8 @@ export default function ViewPage(props) {
 	useEffect(() => {
 		if (posting && posting.poAddr) {
 			addressApi();
+			checkInterested();
+			checkScrap();
 		}
 	}, [posting]);
 
@@ -47,6 +50,38 @@ export default function ViewPage(props) {
 			});
 	}
 
+	function checkInterested() {
+		axios({
+			url: `/api/interest/${posting.coIdx}`,
+			method: "get",
+			params: {
+				joIdx: login,
+			}
+		})
+		.then((response) => {
+			console.log(response);
+			setIsInterested(response.data);
+		})
+		.catch((error) => {
+			console.error("Error checking interested:", error);
+		});
+	}
+	function checkScrap() {
+		axios({
+			url: `/api/scrap/${posting.id}`,
+			method: "get",
+			params: {
+				joIdx: login,
+			}
+		})
+		.then((response) => {
+			console.log(response);
+			setIsScrap(response.data);
+		})
+		.catch((error) => {
+			console.error("Error checking scrap:", error);
+		});
+	}
 	function send() {
 		axios({
 			url: "/api/applyment",
@@ -144,11 +179,47 @@ export default function ViewPage(props) {
 		ref.current.scrollIntoView({ behavior: 'smooth' });
 	};
 
+	const handleInterested = () => {
+		if (isInterested) {
+			setIsInterested(false);
+		} else {
+			setIsInterested(true);
+		}
+		axios({
+			url: `/api/interest/${posting.coIdx}`,
+			method: "post",
+			params: {
+				joIdx: login,
+			}
+		})
+		.then((response) => {
+			console.log(response);
+		})
+		.catch((error) => {
+			console.error("Error interested:", error);
+		});
+	};
+
+	const handleScrap = () => {
+		if (isScrap) {
+			setIsScrap(false);
+		} else {
+			setIsScrap(true);
+		}   
+		axios({
+			url: `/api/scrap/${posting.id}`,
+			method: "post",
+			params: {
+				joIdx: login,
+			}
+		})
+	};
+
 	return (
 		<div className='container mx-auto px-4 py-8'>
 			<div className='bg-white p-4 rounded-lg flex-1'>
 				<h1 className='text-3xl font-bold mb-6'>채용공고 상세보기</h1>
-					<PostingHeader posting={posting} send={send} />
+					<PostingHeader posting={posting} send={send} isInterested={isInterested} handleInterested={handleInterested} />
 				<div className='w-1/2 flex mb-4 mx-auto space-x-1 mb-5'>
 					<button
 						className='flex-1 py-3 px-4 bg-orange-500 text-white font-semibold rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50'
@@ -156,8 +227,12 @@ export default function ViewPage(props) {
 					>
 						<span className='mr-2'>✓</span>즉시지원
 					</button>
-					<button className='flex-1 py-3 px-4 bg-white text-gray-700 font-semibold rounded-md border border-gray-300 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50'>
-						<span className='mr-2'>☆</span>스크랩
+					<button 
+						className='flex-1 py-3 px-4 bg-white text-gray-700 font-semibold rounded-md border border-gray-300 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50'
+						onClick={handleScrap}
+					>
+						<span className='mr-2'>{isScrap ? <span className="text-yellow-400">★</span> : <span className="text-gray-400">☆</span>}</span>
+						<span className={isScrap ? "text-black" : "text-gray-400"}>스크랩</span>
 					</button>
 				</div>
 				<NavigationTabs

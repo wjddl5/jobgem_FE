@@ -14,7 +14,7 @@ export default function () {
 	const [curPage, setCurPage] = useState(0);
 	const [offers, setOffers] = useState([]);
 	const router = useRouter();
-	const API_URL = `/api/offers?id=${login}&curPage=${curPage}`;
+	const API_URL = `/api/jobseeker/offers/${login}?curPage=${curPage}`;
 
 	function getData() {
 		axios.get(API_URL).then((res) => {

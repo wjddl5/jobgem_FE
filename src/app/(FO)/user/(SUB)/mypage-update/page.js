@@ -15,7 +15,7 @@ export default function Page() {
 	const [selectedFile, setSelectedFile] = useState(null); // 파일이 선택되었는지 추적
 	const [previewUrl, setPreviewUrl] = useState(""); // 이미지 미리보기 URL 저장
 	const router = useRouter();
-	const API_URL = `/api/jobseeker?id=${login}`;
+	const API_URL = `/api/jobseeker/${login}`;
 	const API_FILE_UPLOAD = "/api/files/upload";
 
 	// 데이터 가져오는 함수
@@ -29,7 +29,7 @@ export default function Page() {
 
 	// 스킬 목록 가져오는 함수
 	function getSkillList() {
-		axios.get("/api/skills").then((res) => {
+		axios.get("/api/jobseeker/skills").then((res) => {
 			setSkillList(res.data);
 		});
 	}
@@ -87,10 +87,9 @@ export default function Page() {
 			console.log("선택된 스킬 목록:", selectedSkills);
 
 			const res = await axios({
-				url: "/api/mypage",
+				url: `/api/jobseeker/mypage/${login}`,
 				method: "put",
 				params: {
-					id: login,
 					joName: jobseeker.joName,
 					joGender: jobseeker.joGender,
 					joBirth: jobseeker.joBirth,
@@ -249,7 +248,7 @@ export default function Page() {
 
 				<div className='text-center'>
 					<Button type='submit' text='수정' onClick={send} />
-					<Button text='취소' onClick={() => router.push(`/user/mypage`)} />
+					<Button text='취소' onClick={() => router.push(`/user/`)} />
 				</div>
 			</div>
 		</div>
