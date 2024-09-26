@@ -9,8 +9,8 @@ import axios from 'axios';
 export default function page(props) {
 	// 초기화
 	const router = useRouter();
-	const [searchType, setSearchType] = useState(props.searchParams.searchType ? props.searchParams.searchType : 'title');
-	const [searchValue, setSearchValue] = useState(props.searchParams.searchValue ? props.searchParams.searchValue : '');
+	const [searchType, setSearchType] = useState(props.searchParams.searchType || 'title');
+	const [searchValue, setSearchValue] = useState(props.searchParams.searchValue || '');
 	const [ar, setAr] = useState([]);
 	const [arLength, setArLength] = useState(0);
 	const API_URL = '/api/bbs/qna';
@@ -50,6 +50,9 @@ export default function page(props) {
 					setAr(res.data.content);
 					setArLength(res.data.content.length);
 					setTotalPage(res.data.totalPages);
+				})
+				.catch((e) => {
+					console.error('error:', e);
 				});
 		} else {
 			axios
@@ -65,6 +68,9 @@ export default function page(props) {
 					setAr(res.data.content);
 					setArLength(res.data.content.length);
 					setTotalPage(res.data.totalPages);
+				})
+				.catch((e) => {
+					console.error('error:', e);
 				});
 		}
 	}
@@ -178,25 +184,33 @@ export default function page(props) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{ar.map((row) => (
-							<TableRow
-								key={row.id}
-								className={styles.tableRow}
-								onClick={() => router.push(`view/${row.id}?cPage=${page}&searchType=${searchType}&searchValue=${searchValue}`)}
-								hover
-								style={{ borderLeft: '1px solid #cccccc', borderRight: '1px solid #cccccc' }}
-							>
-								<TableCell>
-									<Checkbox checked={chkSet.has(row.id)} onChange={(event) => checkChange(event, row.id)} onClick={(event) => event.stopPropagation()} />
+						{ar.length < 1 ? (
+							<TableRow style={{ borderLeft: '1px solid #cccccc', borderRight: '1px solid #cccccc' }}>
+								<TableCell align='center' colSpan={5}>
+									게시글이 없습니다.
 								</TableCell>
-								<TableCell align='center'>{row.id}</TableCell>
-								<TableCell>
-									{row.boTitle} &nbsp;&nbsp;| <strong> {row.boAnswer != 1 ? '답변대기' : '답변완료'}</strong>
-								</TableCell>
-								<TableCell align='left'>{row.usId}</TableCell>
-								<TableCell align='center'>{row.boWritedate}</TableCell>
 							</TableRow>
-						))}
+						) : (
+							ar.map((row) => (
+								<TableRow
+									key={row.id}
+									className={styles.tableRow}
+									onClick={() => router.push(`view/${row.id}?cPage=${page}&searchType=${searchType}&searchValue=${searchValue}`)}
+									hover
+									style={{ borderLeft: '1px solid #cccccc', borderRight: '1px solid #cccccc' }}
+								>
+									<TableCell>
+										<Checkbox checked={chkSet.has(row.id)} onChange={(event) => checkChange(event, row.id)} onClick={(event) => event.stopPropagation()} />
+									</TableCell>
+									<TableCell align='center'>{row.id}</TableCell>
+									<TableCell>
+										{row.boTitle} &nbsp;&nbsp;| <strong> {row.boAnswer != 1 ? '답변대기' : '답변완료'}</strong>
+									</TableCell>
+									<TableCell align='left'>{row.usId}</TableCell>
+									<TableCell align='center'>{row.boWritedate}</TableCell>
+								</TableRow>
+							))
+						)}
 					</TableBody>
 				</Table>
 			</div>
