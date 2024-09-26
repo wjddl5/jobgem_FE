@@ -80,6 +80,11 @@ export default function Page(props) {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		if (reason.length > 255) {
+			alert('255자 이내로 입력해주세요.');
+			setReason('');
+			return;
+		}
 		// 블랙리스트 추가 로직
 		if (!member) {
 			alert('회원을 선택해주세요.');
