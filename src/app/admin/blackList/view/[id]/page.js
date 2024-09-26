@@ -10,6 +10,10 @@ export default function page(props) {
 	// 초기화
 	const router = useRouter();
 	const API_URL = `/api/blackList/${props.params.id}`;
+	const [cPage, setCPage] = useState(props.searchParams.cPage || 0);
+	const [searchType, setSearchType] = useState(props.searchParams.searchType || 'title');
+	const [searchValue, setSearchValue] = useState(props.searchParams.searchValue || '');
+	const [selectType, setselectType] = useState(props.searchParams.selectType || 'all');
 	const [vo, setVo] = useState({});
 
 	useEffect(() => {
@@ -17,9 +21,14 @@ export default function page(props) {
 	}, []);
 
 	function getData() {
-		axios.get(API_URL).then((res) => {
-			setVo(res.data);
-		});
+		axios
+			.get(API_URL)
+			.then((res) => {
+				setVo(res.data);
+			})
+			.catch((e) => {
+				console.error('error:', e);
+			});
 	}
 
 	function removeList() {
@@ -56,7 +65,7 @@ export default function page(props) {
 					<span>By {vo.usId}</span>
 					<span>To {vo.coName ? vo.coName : vo.joName}</span>
 					<span>{vo.blDate}</span>
-					{vo.blProcess == 0 ? <span style={{ color: 'orangered' }}>처리대기</span> : <span style={{ color: 'blue' }}>처리완료</span>}
+					{vo.blProcess == 1 ? <span style={{ color: 'blue' }}>처리완료</span> : <span style={{ color: 'orangered' }}>처리대기</span>}
 				</div>
 			</div>
 			<div className='post_content'>
@@ -75,15 +84,7 @@ export default function page(props) {
 				<Button variant='outlined' size='small' onClick={() => changeProcess(vo.blProcess)}>
 					상태변경
 				</Button>
-				<Button
-					variant='outlined'
-					size='small'
-					onClick={() =>
-						router.push(
-							`/admin/blackList/list?cPage=${props.searchParams.cPage}&searchType=${props.searchParams.searchType}&searchValue=${props.searchParams.searchValue}&selectType=${props.searchParams.selectType}`
-						)
-					}
-				>
+				<Button variant='outlined' size='small' onClick={() => router.push(`/admin/blackList/list?cPage=${cPage}&searchType=${searchType}&searchValue=${searchValue}&selectType=${selectType}`)}>
 					목록
 				</Button>
 				<Button variant='outlined' size='small' color='error' onClick={removeList}>

@@ -9,6 +9,9 @@ import { Button, TextField } from '@mui/material';
 export default function page(props) {
 	// 초기화
 	const router = useRouter();
+	const [cPage, setCPage] = useState(props.searchParams.cPage || 0);
+	const [searchType, setSearchType] = useState(props.searchParams.searchType || 'title');
+	const [searchValue, setSearchValue] = useState(props.searchParams.searchValue || '');
 	const [vo, setVo] = useState({});
 	const [commentList, setCommentList] = useState([]);
 	const [commentContent, setCommentContent] = useState('');
@@ -22,17 +25,24 @@ export default function page(props) {
 	}, []);
 
 	function getData() {
-		axios.get(API_URL).then((res) => {
-			setVo(res.data.vo);
-			setCommentList(res.data.commentList);
-		});
+		axios
+			.get(API_URL)
+			.then((res) => {
+				setVo(res.data.vo);
+				setCommentList(res.data.commentList);
+			})
+			.catch((e) => {
+				console.error('error:', e);
+			});
 	}
 
 	useEffect(() => {
-		if (vo.usIdx == 1 /*(!) 로그인한 유저idx로 변경*/) {
-			setDisabled(false);
-		} else {
-			setDisabled(true);
+		if (vo != null) {
+			if (vo.usIdx == 1 /*(!) 로그인한 유저idx로 변경*/) {
+				setDisabled(false);
+			} else {
+				setDisabled(true);
+			}
 		}
 	}, [vo]);
 
@@ -127,7 +137,7 @@ export default function page(props) {
 		}
 	}
 
-	return (
+	return vo != null ? (
 		<div className='post_detail-container'>
 			<div className='post_header'>
 				<h1 className='post_title'>{vo.boTitle}</h1>
@@ -194,11 +204,7 @@ export default function page(props) {
 				)}
 			</div>
 			<div className='btn_group'>
-				<Button
-					variant='outlined'
-					size='small'
-					onClick={() => router.push(`/admin/bbs/qna/list?cPage=${props.searchParams.cPage}&searchType=${props.searchParams.searchType}&searchValue=${props.searchParams.searchValue}`)}
-				>
+				<Button variant='outlined' size='small' onClick={() => router.push(`/admin/bbs/qna/list?cPage=${cPage}&searchType=${searchType}&searchValue=${searchValue}`)}>
 					목록
 				</Button>
 				<Button variant='outlined' size='small' color='error' onClick={() => removeBbs(vo.id)}>
@@ -206,5 +212,7 @@ export default function page(props) {
 				</Button>
 			</div>
 		</div>
+	) : (
+		<></>
 	);
 }

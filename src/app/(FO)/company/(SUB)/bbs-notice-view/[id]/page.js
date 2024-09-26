@@ -9,6 +9,9 @@ import { Button, TextField } from '@mui/material';
 export default function page(props) {
 	// 초기화
 	const router = useRouter();
+	const [cPage, setCPage] = useState(props.searchParams.cPage || 0);
+	const [searchType, setSearchType] = useState(props.searchParams.searchType || 'title');
+	const [searchValue, setSearchValue] = useState(props.searchParams.searchValue || '');
 	const [vo, setVo] = useState({});
 	const [commentList, setCommentList] = useState([]);
 	const [commentContent, setCommentContent] = useState('');
@@ -16,10 +19,15 @@ export default function page(props) {
 	const API_URL = `/api/bbs/${props.params.id}`;
 
 	function getData() {
-		axios.get(API_URL).then((res) => {
-			setVo(res.data.vo);
-			setCommentList(res.data.commentList);
-		});
+		axios
+			.get(API_URL)
+			.then((res) => {
+				setVo(res.data.vo);
+				setCommentList(res.data.commentList);
+			})
+			.catch((e) => {
+				console.error('eroor:', e);
+			});
 	}
 
 	// 조회수
@@ -182,11 +190,7 @@ export default function page(props) {
 				</Button>
 			</div>
 			<div className='btn_group'>
-				<Button
-					variant='outlined'
-					size='small'
-					onClick={() => router.push(`/user/bbs-notice-list?cPage=${props.searchParams.cPage}&searchType=${props.searchParams.searchType}&searchValue=${props.searchParams.searchValue}`)}
-				>
+				<Button variant='outlined' size='small' onClick={() => router.push(`/user/bbs-notice-list?cPage=${cPage}&searchType=${searchType}&searchValue=${searchValue}`)}>
 					목록
 				</Button>
 			</div>

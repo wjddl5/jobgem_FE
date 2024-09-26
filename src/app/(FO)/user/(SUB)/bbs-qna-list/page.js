@@ -42,6 +42,9 @@ export default function page(props) {
 			.then((res) => {
 				setAr(res.data.content);
 				setTotalPage(res.data.totalPages);
+			})
+			.catch((e) => {
+				console.error('error:', e);
 			});
 	}
 
@@ -92,15 +95,23 @@ export default function page(props) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{ar.map((row) => (
-							<TableRow key={row.id} className={styles.tableRow} onClick={() => router.push(`bbs-qna-view/${row.id}?cPage=${page}`)} hover>
-								<TableCell align='center'>{row.id}</TableCell>
-								<TableCell>
-									{row.boTitle} &nbsp;&nbsp;| <strong> {row.boAnswer != 1 ? '답변대기' : '답변완료'}</strong>
+						{ar.length < 1 ? (
+							<TableRow style={{ borderLeft: '1px solid #cccccc', borderRight: '1px solid #cccccc' }}>
+								<TableCell align='center' colSpan={3}>
+									게시글이 없습니다.
 								</TableCell>
-								<TableCell align='center'>{row.boWritedate}</TableCell>
 							</TableRow>
-						))}
+						) : (
+							ar.map((row) => (
+								<TableRow key={row.id} className={styles.tableRow} onClick={() => router.push(`bbs-qna-view/${row.id}?cPage=${page}`)} hover>
+									<TableCell align='center'>{row.id}</TableCell>
+									<TableCell>
+										{row.boTitle} &nbsp;&nbsp;| <strong> {row.boAnswer != 1 ? '답변대기' : '답변완료'}</strong>
+									</TableCell>
+									<TableCell align='center'>{row.boWritedate}</TableCell>
+								</TableRow>
+							))
+						)}
 					</TableBody>
 				</Table>
 				<Pagination className='pagination' count={totalPage} page={page + 1} color='primary' onChange={changePage} />
