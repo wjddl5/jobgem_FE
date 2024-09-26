@@ -12,27 +12,21 @@ export default function page() {
 	const [errorMessage, setErrorMessage] = useState("");
 	const router = useRouter(); // router 사용
 
-	const API_URL = `/api/password`;
+	const API_URL = `/api/jobseeker/password/${login}`;
 
 	function send() {
 		axios({
 			url: API_URL,
 			method: "put",
 			params: {
-				id: login,
 				newPwd: newPwd,
 			},
 		})
 			.then((res) => {
-				if (res.data == "1") {
-					alert("비밀번호가 변경되었습니다");
-					router.push(`/user/mypage`); // 비밀번호 변경 후 페이지 이동
-				} else if (res.data == "0") {
-					alert("비밀번호 변경에 실패했습니다");
-				}
+				alert("비밀번호가 변경되었습니다");
+				router.push(`/user/mypage`); // 비밀번호 변경 후 페이지 이동
 			})
 			.catch((error) => {
-				console.error("에러 발생:", error);
 				alert("에러가 발생했습니다.");
 			});
 	}
@@ -42,7 +36,7 @@ export default function page() {
 			setErrorMessage("새 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
 		} else {
 			setErrorMessage("");
-			send(); // 비밀번호 확인이 성공하면 send 함수 호출
+			send();
 		}
 	};
 

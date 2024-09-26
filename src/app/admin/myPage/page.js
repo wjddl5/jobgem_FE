@@ -1,17 +1,17 @@
-'use client';
-import { Button, TextField } from '@mui/material';
-import SideMenu from '@/components/sidemenu/SideMenu';
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+"use client";
+import { Button, TextField } from "@mui/material";
+import SideMenu from "@/components/sidemenu/SideMenu";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 export default function page() {
 	const login = 1;
 	const [user, setUser] = useState({});
-	const [chkPwd, setChkPwd] = useState(''); // 비밀번호 상태 추가
+	const [chkPwd, setChkPwd] = useState(""); // 비밀번호 상태 추가
 	const router = useRouter();
 
-	const API_URL = `/api/jobseeker?id=${login}`;
+	const API_URL = `/api/${login}`;
 
 	function getData() {
 		axios.get(API_URL).then((res) => {
@@ -21,23 +21,23 @@ export default function page() {
 
 	function send() {
 		axios({
-			url: '/api/password/check',
-			method: 'get',
+			url: "/api/password/check",
+			method: "get",
 			params: {
 				id: 1, // admin idx
 				usPw: chkPwd, // 입력된 비밀번호를 전송
 			},
 		})
 			.then((res) => {
-				if (res.data == '1') {
+				if (res.data == "1") {
 					router.push(`/admin/myPage/pwd-update`);
-				} else if (res.data == '0') {
-					alert('비밀번호가 일치하지 않습니다.');
+				} else if (res.data == "0") {
+					alert("비밀번호가 일치하지 않습니다.");
 				}
 			})
 			.catch((error) => {
-				console.error('에러 발생:', error);
-				alert('에러가 발생했습니다.');
+				console.error("에러 발생:", error);
+				alert("에러가 발생했습니다.");
 			});
 	}
 
@@ -47,8 +47,8 @@ export default function page() {
 	}
 
 	const handleCancel = () => {
-		if (confirm('비밀번호 변경을 취소하시겠습니까?')) {
-			router.push('/admin');
+		if (confirm("비밀번호 변경을 취소하시겠습니까?")) {
+			router.push("/admin");
 		}
 	};
 
@@ -68,7 +68,7 @@ export default function page() {
 					type='password'
 					id='confirmPwd'
 					name='confirmPwd'
-					style={{ width: '400px' }}
+					style={{ width: "400px" }}
 					value={chkPwd}
 					onChange={(e) => handlePwdChange(e)} // 비밀번호 확인 입력 핸들러
 				/>

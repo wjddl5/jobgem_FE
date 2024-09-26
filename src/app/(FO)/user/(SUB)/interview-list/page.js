@@ -14,7 +14,7 @@ export default function Page() {
 	const [curPage, setCurPage] = useState(0);
 	const router = useRouter();
 	const [interview, setInterview] = useState([]);
-	const API_URL = `/api/interviews?id=${login}&curPage=${curPage}`;
+	const API_URL = `/api/jobseeker/interviews/${login}?curPage=${curPage}`;
 
 	function getData() {
 		axios.get(API_URL).then((res) => {
@@ -25,7 +25,7 @@ export default function Page() {
 	}
 
 	function remove(interviewId) {
-		axios.delete(`/api/interview?id=${interviewId}`).then((res) => {
+		axios.delete(`/api/jobseeker/interview/${interviewId}`).then((res) => {
 			console.log(res);
 			if (res.status === 200) {
 				alert("삭제 완료");

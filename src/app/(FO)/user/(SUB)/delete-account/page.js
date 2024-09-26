@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 export default function Page() {
 	const login = 1;
 	const router = useRouter();
-	const API_URL = `/api/account`;
+	const API_URL = `/api/jobseeker/account`;
 
 	function send() {
 		if (window.confirm("정말 탈퇴하시겠습니까? 탈퇴 후에는 모든 정보가 삭제됩니다.")) {
@@ -18,15 +18,10 @@ export default function Page() {
 				},
 			})
 				.then((res) => {
-					if (res.data == "1") {
-						alert("회원 탈퇴가 완료되었습니다.");
-						router.push(`/`);
-					} else {
-						alert("회원 탈퇴에 실패했습니다.");
-					}
+					alert("회원 탈퇴가 완료되었습니다.");
+					router.push(`/`);
 				})
 				.catch((error) => {
-					console.error("에러 발생:", error);
 					alert("탈퇴 처리 중 에러가 발생했습니다.");
 				});
 		} else {
