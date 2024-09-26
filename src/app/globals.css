@@ -20,7 +20,7 @@ body {
 }
 main {
 	max-width: 1200px;
-	min-height: calc(100vh - 153px);
+	min-height: calc(100vh - 218px);
 	padding: 1rem;
 	margin: auto;
 	box-sizing: border-box;
