@@ -1,8 +1,7 @@
 'use client';
 import { Button, Card, CardContent, CardHeader, FormControl, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
-import SelectInput from '@mui/material/Select/SelectInput';
-import { useEffect, useState } from 'react'; // useEffect 추가
-import axios from 'axios'; // axios import 추가
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, Legend, ArcElement, PointElement, LineElement } from 'chart.js';
 
@@ -15,18 +14,14 @@ export default function AdminDashboard() {
 	const [location, setLocation] = useState([]);
 	const [filteredPosts, setFilteredPosts] = useState([]);
 
-	window.addEventListener('load', () => {
-		getFilteredPosts('week');
-	});
-
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
 				const response = await axios.get(api_url);
-				setPost(response.data.content);
-				setDate(response.data.content.map((item) => ({ poDate: item.poDate })));
-				setType(response.data.content.map((item) => ({ type: item.poSubType })));
-				setLocation(response.data.content.map((item) => ({ location: item.poAddr })));
+				setPost(response.data);
+				setDate(response.data.map((item) => ({ poDate: item.poDate })));
+				setType(response.data.map((item) => ({ type: item.poSubType })));
+				setLocation(response.data.map((item) => ({ location: item.poAddr })));
 			} catch (error) {
 				console.error('데이터 가져오기 오류:', error);
 			}
@@ -85,6 +80,7 @@ export default function AdminDashboard() {
 		labels: ['일', '월', '화', '수', '목', '금', '토'],
 		datasets: [
 			{
+				label: '주간 공고 수',
 				data: getWeeklyData(),
 				backgroundColor: '#8884d8',
 			},
@@ -95,6 +91,7 @@ export default function AdminDashboard() {
 		labels: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
 		datasets: [
 			{
+				label: '월간 공고 수',	
 				data: getMonthlyData(),
 				backgroundColor: '#8884d8',
 			},
@@ -111,6 +108,7 @@ export default function AdminDashboard() {
 		),
 		datasets: [
 			{
+				label: '연간 공고 수', // 추가된 label 속성
 				data: getYearlyData(),
 				backgroundColor: '#8884d8',
 			},
@@ -127,6 +125,7 @@ export default function AdminDashboard() {
 		),
 		datasets: [
 			{
+				label: '업종별 공고 수', // 추가된 label 속성
 				data: getIndustryData(),
 				backgroundColor: ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'],
 			},
@@ -143,6 +142,7 @@ export default function AdminDashboard() {
 		),
 		datasets: [
 			{
+				label: '지역별 공고 수', 
 				data: getLocationData(),
 				backgroundColor: ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'],
 			},
@@ -183,23 +183,20 @@ export default function AdminDashboard() {
 	}
 
 	return (
-		<Paper className='max-w-screen-2xl mx-auto p-4 space-y-6'>
-			<h1 className='text-3xl font-bold mb-6'>공고통계 </h1>
+		<Paper className='max-w-screen-2xl mx-auto p-4 space-y-6 '>
+			<h1 className='text-3xl font-bold mb-6 '>공고통계 </h1>
 
 			<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
 				<Card className='flex flex-col justify-between p-2'>
 					<Typography variant='h5'>주간 공고 수</Typography>
-					<Typography variant='body2'>일별 등록된 공고 수</Typography>
 					<CardContent>
 						<Bar data={weeklyData} options={options} />
 					</CardContent>
 					<Typography variant='h5'>월간 공고 수</Typography>
-					<Typography variant='body2'>월별 등록된 공고 수</Typography>
 					<CardContent>
 						<Bar data={monthlyData} options={options} />
 					</CardContent>
 					<Typography variant='h5'>연간 공고 수</Typography>
-					<Typography variant='body2'>연별 등록된 공고 수</Typography>
 					<CardContent>
 						<Line data={yearlyData} options={options} />
 					</CardContent>
@@ -207,12 +204,16 @@ export default function AdminDashboard() {
 
 				<Card className='p-2'>
 					<Typography variant='h5'>업종별 분류</Typography>
-					<Typography variant='body2'>업종별 공고 분포</Typography>
+					<div className='flex justify-center items-center mt-5'>
+						<Typography variant='body2'>업종별 공고 분포</Typography>
+					</div>
 					<CardContent>
 						<Pie data={industryData} options={options} />
 					</CardContent>
 					<Typography variant='h5'>지역별 분류</Typography>
-					<Typography variant='body2'>지역별 공고 분포</Typography>
+					<div className='flex justify-center items-center mt-5'>
+						<Typography variant='body2'>지역별 공고 분포</Typography>
+					</div>
 					<CardContent>
 						<Pie data={locationData} options={options} />
 					</CardContent>
