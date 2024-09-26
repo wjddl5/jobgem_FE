@@ -16,7 +16,7 @@ const ResumePreview = ({params}) => {
 	
 
 	function getResume() {
-		axios.get(`/api/posts/${params.params.reIdx}/resume`).then((res) => {
+		axios.get(`/api/posts/${params.reIdx}/resume`).then((res) => {
 			console.log(res.data);
 			setResume(res.data.resume);
 			setJobSeeker(res.data.jobseeker);
