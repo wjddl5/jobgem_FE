@@ -13,7 +13,7 @@
 
 html,
 body {
-	font-family: 'pl', sans-serif;
+	font-family: 'pl', sans-serif !important;
 }
 body {
 	background-color: #f2f4f7;
