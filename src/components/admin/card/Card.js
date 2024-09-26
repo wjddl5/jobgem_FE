@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import CampaignIcon from '@mui/icons-material/Campaign'; // 확성기 아이콘을 대표할 수 있는 MUI 아이콘
 import axios from "axios";
 
-function Card({ item }) {
+function Card({ item}) {
 	const date = new Date();
 	const nowDate = new Date(date.getFullYear(), date.getMonth(), date.getDate()); // Get the current date without time
 	const deadlineDate = new Date(item.poDeadline);
@@ -38,7 +38,7 @@ function Card({ item }) {
 	}
 
 	return (
-		<article className='bg-white p-6 mb-6 shadow transition duration-300 group transform hover:-translate-y-2 hover:shadow-2xl rounded-2xl cursor-pointer border'>
+		<article className={`bg-white p-6 mb-6 shadow transition duration-300 group transform hover:-translate-y-2 hover:shadow-2xl rounded-2xl cursor-pointer border`}>
 			<a target='_self' href={`/admin/post/${item.id}`} className='absolute opacity-0 top-0 right-0 left-0 bottom-0'></a>
 			<div className='relative mb-4 rounded-2xl'>
 				<Image

@@ -11,7 +11,7 @@ import dayjs from 'dayjs'; // dayjs import 추가
 
 export default function page() {
     const [ar, setAr] = useState([]);
-    const [apiUrl, setApiUrl] = useState("/api/posts?curPage=0&size=6");
+    const [apiUrl, setApiUrl] = useState("/api/posts?curPage=0&size=8");
     const [page, setPage] = useState(0);
     const [totalPage, setTotalPage] = useState(0);
     const [searchType, setSearchType] = useState('title');
@@ -41,7 +41,7 @@ export default function page() {
 
     const changePage = (event, value) => {
         setPage(value - 1);
-        setApiUrl("/api/posts?curPage=" + (value - 1) + "&size=6");
+        setApiUrl("/api/posts?curPage=" + (value - 1) + "&size=8");
         getPosts();
     };
 
@@ -123,7 +123,7 @@ export default function page() {
     };
 
     return (
-        <Paper sx={{ width: '100%', overflow: 'hidden', mt: 0, boxShadow: 3, padding: 5, bgcolor: 'background.paper' }}>
+        <Paper sx={{ width: '90%', overflow: 'hidden', mt: 0, boxShadow: 3, padding: 10, bgcolor: 'background.paper', margin: 'auto' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, mt: 4 }}>
                 <Typography variant="h4" component="div" sx={{ fontWeight: 'bold', color: 'black' }}>
                     공고 관리
@@ -212,7 +212,7 @@ export default function page() {
                 page={page + 1}
                 count={totalPage}
                 color="primary"
-                style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}
+                style={{ display: 'flex', justifyContent: 'center', marginTop: '0px' }}
                 className="pagination"
             />
         </Paper>
