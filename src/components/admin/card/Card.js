@@ -9,12 +9,10 @@ import axios from "axios";
 function Card({ item }) {
 	const date = new Date();
 	const nowDate = new Date(date.getFullYear(), date.getMonth(), date.getDate()); // Get the current date without time
-
 	const deadlineDate = new Date(item.poDeadline);
-
 	const timeDiff = deadlineDate - nowDate;
 	const dayDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
-
+	const imgUrl = item.poImg ? item.poImg : "1.jpg";
 	const deadlineDisplay = dayDiff > 0 ? `D-${dayDiff}` : dayDiff === 0 ? "D-Day" : `D+${Math.abs(dayDiff)}`;
 
 	const handleDelete = async () => {
@@ -45,7 +43,7 @@ function Card({ item }) {
 			<div className='relative mb-4 rounded-2xl'>
 				<Image
 					className='max-h-80 rounded-2xl w-full object-cover transition-transform duration-300 transform group-hover:scale-105'
-					src={`/img/1.jpg`}
+					src={`/img/${imgUrl}`}
 					width={"100"}
 					height={"100"}
 					alt='썸네일이미지'
@@ -54,7 +52,7 @@ function Card({ item }) {
 					<svg xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 24 24' stroke='currentColor' className='h-5 w-5 text-red-700'>
 						<path d='M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z' />
 					</svg>
-					<span className='ml-1 text-sm text-slate-400'>2</span>
+					<span className='ml-1 text-sm text-slate-400'>{item.applyCount}</span>
 				</button>
 
 				<a
@@ -73,7 +71,6 @@ function Card({ item }) {
 				<div className='flex items-center'>
 					<div className='flex flex-1'>
 						<div className=''>
-							<p className='text-l font-bold text-left'>{item.company.coName}</p>
 							<p className='text-m text-left'>{item.poTitle}</p>
 							<p className='text-sm text-gray-500 text-left'>{item.poDate}</p>
 						</div>
@@ -90,9 +87,6 @@ function Card({ item }) {
 			</div>
 			<IconButton aria-label="delete" className='absolute bottom-0 right-0 m-2'>
 				<DeleteIcon onClick={handleDelete}/>
-			</IconButton>
-			<IconButton aria-label="edit" className='absolute bottom-0 right-12 m-2' > {/* right 값을 조정하여 위치 조절 */}
-				<CampaignIcon onClick={handleRequest}/>
 			</IconButton>
 		</article>
 	);
