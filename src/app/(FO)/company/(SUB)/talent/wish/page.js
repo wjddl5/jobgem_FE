@@ -1,11 +1,13 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import Button from "@/components/button/Button";
-import InputPopup from "@/components/popup/InputPopup";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import Button from '@/components/button/Button';
+import InputPopup from '@/components/popup/InputPopup';
+import { useRouter } from 'next/navigation';
 
 function Page() {
+	const router = useRouter();
 	const [jobseekers, setJobseekers] = useState([]);
 	const [loadPage, setLoadPage] = useState(0);
 	const [isLoading, setIsLoading] = useState(false);
@@ -13,7 +15,7 @@ function Page() {
 	const [isPopupOpen, setPopupOpen] = useState(false);
 	const [jobseekerId, setJobseekerId] = useState(null);
 
-	const inputs = [{ label: "메시지", name: "ofContent", placeholder: "메시지를 입력하세요", type: "textarea" }];
+	const inputs = [{ label: '메시지', name: 'ofContent', placeholder: '메시지를 입력하세요', type: 'textarea' }];
 
 	const getData = async () => {
 		setIsLoading(true);
@@ -33,19 +35,19 @@ function Page() {
 			setLoadPage((prevLoadPage) => prevLoadPage + 1);
 		};
 
-		window.addEventListener("scroll", handleScroll);
+		window.addEventListener('scroll', handleScroll);
 
-		return () => window.removeEventListener("scroll", handleScroll);
+		return () => window.removeEventListener('scroll', handleScroll);
 	}, [isLoading, hasMore]);
 
 	const removeWishHandler = (id) => {
-		if (confirm("해당 인재를 찜목록에서 삭제하시겠습니까?")) {
+		if (confirm('해당 인재를 찜목록에서 삭제하시겠습니까?')) {
 			axios
-				.delete("/api/company/wish", {
+				.delete('/api/company/wish', {
 					params: { id },
 				})
 				.then((res) => {
-					alert("삭제 완료했습니다.");
+					alert('삭제 완료했습니다.');
 					setJobseekers((prevJobseekers) => prevJobseekers.filter((jobseeker) => jobseeker.id !== id));
 				});
 		}
@@ -66,7 +68,7 @@ function Page() {
 	// 폼 확인 시 제출
 	const handleSubmit = async (formData) => {
 		axios
-			.post("/api/company/offer", null, {
+			.post('/api/company/offer', null, {
 				params: {
 					coIdx: 1,
 					joIdx: jobseekerId,
@@ -74,7 +76,7 @@ function Page() {
 				},
 			})
 			.then((res) => {
-				alert("채팅방이 개설되었습니다.");
+				alert('채팅방이 개설되었습니다.');
 				setPopupOpen(false);
 			});
 	};
@@ -103,29 +105,36 @@ function Page() {
 				<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
 					{jobseekers.map((item, idx) => (
 						<div key={idx} className='p-6 bg-white border border-gray-300 rounded-lg shadow-xl transition-shadow duration-300 hover:shadow-2xl hover:border-cyan-300'>
-							<div className='flex items-center mb-4'>
-								<div className='w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center'>
-									<span className='text-gray-400 text-2xl'>👤</span>
+							<div
+								style={{ cursor: 'pointer' }}
+								onClick={() => {
+									router.push(`/company/jobseeker-view/${item.jobseeker.id}`);
+								}}
+							>
+								<div className='flex items-center mb-4'>
+									<div className='w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center'>
+										<span className='text-gray-400 text-2xl'>👤</span>
+									</div>
+									<div className='ml-4'>
+										<h3 className='text-lg font-semibold'>
+											{item.jobseeker.joName} (만 {calculateAge(item.jobseeker.joBirth)}세)
+										</h3>
+										<p className='text-blue-500'>{item.jobseeker.joTel}</p>
+									</div>
 								</div>
-								<div className='ml-4'>
-									<h3 className='text-lg font-semibold'>
-										{item.jobseeker.joName} (만 {calculateAge(item.jobseeker.joBirth)}세)
-									</h3>
-									<p className='text-blue-500'>{item.jobseeker.joTel}</p>
+								<p className='text-gray-700 mb-2'>{item.jobseeker.joAddress}</p>
+								<p className='text-gray-500 text-sm mb-2'>{item.jobseeker.joEdu}</p>
+								<div className='flex flex-wrap gap-2 mb-2'>
+									{item.jobseeker.skills.length > 0 ? (
+										item.jobseeker.skills.map((skill, i) => (
+											<span key={i} className='px-2 py-1 bg-gray-100 text-sm rounded-md'>
+												{skill.skName}
+											</span>
+										))
+									) : (
+										<span className='text-gray-500 text-sm'>No skills listed</span>
+									)}
 								</div>
-							</div>
-							<p className='text-gray-700 mb-2'>{item.jobseeker.joAddress}</p>
-							<p className='text-gray-500 text-sm mb-2'>{item.jobseeker.joEdu}</p>
-							<div className='flex flex-wrap gap-2 mb-2'>
-								{item.jobseeker.skills.length > 0 ? (
-									item.jobseeker.skills.map((skill, i) => (
-										<span key={i} className='px-2 py-1 bg-gray-100 text-sm rounded-md'>
-											{skill.skName}
-										</span>
-									))
-								) : (
-									<span className='text-gray-500 text-sm'>No skills listed</span>
-								)}
 							</div>
 							<div className='flex gap-2 justify-center mt-4'>
 								<Button text='입사 제안' type='submit' onClick={() => offerHandler(item.id)} />
