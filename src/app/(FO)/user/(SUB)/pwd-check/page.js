@@ -12,7 +12,7 @@ export default function page() {
 	const [chkPwd, setChkPwd] = useState(""); // 비밀번호 상태 추가
 	const router = useRouter();
 
-	const API_URL = `/api/jobseeker?id=${login}`;
+	const API_URL = `/api/jobseeker/${login}`;
 
 	function getData() {
 		axios.get(API_URL).then((res) => {
@@ -23,24 +23,17 @@ export default function page() {
 
 	function send() {
 		axios({
-			url: "/api/password/check",
+			url: `/api/jobseeker/password-check/${login}`,
 			method: "get",
 			params: {
-				id: login, // joIdx로 수정
-				usId: user.id,
 				usPw: chkPwd, // 입력된 비밀번호를 전송
 			},
 		})
 			.then((res) => {
-				if (res.data == "1") {
-					router.push(`/user/pwd-update`);
-				} else if (res.data == "0") {
-					alert("비밀번호가 일치하지 않습니다.");
-				}
+				router.push(`/user/pwd-update`);
 			})
 			.catch((error) => {
-				console.error("에러 발생:", error);
-				alert("에러가 발생했습니다.");
+				alert("비밀번호가 일치하지 않습니다.");
 			});
 	}
 

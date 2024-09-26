@@ -15,7 +15,7 @@ export default function Page() {
 	const [selectedStars, setSelectedStars] = useState(0);
 
 	function getCompany() {
-		axios.get("/api/companies").then((res) => {
+		axios.get("/api/jobseeker/companies").then((res) => {
 			setCompany(res.data);
 		});
 	}
@@ -30,7 +30,7 @@ export default function Page() {
 			return;
 		}
 		axios({
-			url: "/api/review",
+			url: "/api/jobseeker/review",
 			method: "post",
 			params: {
 				joIdx: login,
@@ -39,13 +39,14 @@ export default function Page() {
 				reContent: reContent,
 				reScore: selectedStars,
 			},
-		}).then((res) => {
-			console.log(res);
-			if (res.status == 200) {
-				alert("저장완료");
+		})
+			.then((res) => {
+				alert("작성 완료");
 				router.push(`/user/company-review-list`);
-			}
-		});
+			})
+			.catch((error) => {
+				alert("에러가 발생했습니다.");
+			});
 	}
 
 	function handleStarClick(index) {

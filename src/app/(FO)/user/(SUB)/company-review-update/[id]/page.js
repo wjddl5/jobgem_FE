@@ -15,13 +15,13 @@ export default function Page(props) {
 	const [selectedStars, setSelectedStars] = useState(0);
 
 	function getCompany() {
-		axios.get("/api/companies").then((res) => {
+		axios.get("/api/jobseeker/companies").then((res) => {
 			setCompany(res.data); // 받아온 데이터를 상태에 저장
 		});
 	}
 
 	function getReview() {
-		axios.get(`/api/review?id=${props.params.id}`).then((res) => {
+		axios.get(`/api/jobseeker/review/${props.params.id}`).then((res) => {
 			getCompany();
 			const data = res.data;
 			setCoIdx(data.coIdx); // 회사 ID 설정
@@ -42,7 +42,7 @@ export default function Page(props) {
 			return;
 		}
 		axios({
-			url: "/api/review",
+			url: "/api/jobseeker/review",
 			method: "put", // 업데이트를 위한 PUT 요청
 			params: {
 				id: props.params.id,

@@ -14,13 +14,13 @@ export default function Page(props) {
 	const [inLevel, setInLevel] = useState(0);
 
 	function getCompany() {
-		axios.get("/api/companies").then((res) => {
+		axios.get("/api/jobseeker/companies").then((res) => {
 			setCompany(res.data); // 받아온 데이터를 상태에 저장
 		});
 	}
 
 	function getInterview() {
-		axios.get(`/api/interview?id=${props.params.id}`).then((res) => {
+		axios.get(`/api/jobseeker/interview/${props.params.id}`).then((res) => {
 			getCompany();
 
 			const data = res.data;
@@ -41,7 +41,7 @@ export default function Page(props) {
 			return;
 		}
 		axios({
-			url: "/api/interview",
+			url: "/api/jobseeker/interview",
 			method: "put", // 업데이트를 위한 GET 요청
 			params: {
 				id: props.params.id,

@@ -16,7 +16,7 @@ export default function Page() {
 	const [inLevel, setInLevel] = useState(0);
 
 	function getCompany() {
-		axios.get("/api/companies").then((res) => {
+		axios.get("/api/jobseeker/companies").then((res) => {
 			setCompany(res.data);
 		});
 	}
@@ -31,7 +31,7 @@ export default function Page() {
 			return;
 		}
 		axios({
-			url: "/api/interview",
+			url: "/api/jobseeker/interview",
 			method: "post",
 			params: {
 				joIdx: login,
@@ -39,13 +39,14 @@ export default function Page() {
 				inContent: inContent,
 				inLevel: inLevel,
 			},
-		}).then((res) => {
-			console.log(res);
-			if (res.status == 200) {
-				alert("저장완료");
+		})
+			.then((res) => {
+				alert("작성 완료");
 				router.push(`/user/interview-list`);
-			}
-		});
+			})
+			.catch((error) => {
+				alert("에러가 발생했습니다.");
+			});
 	}
 
 	// 난이도 선택 핸들러
