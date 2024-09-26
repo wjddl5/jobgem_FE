@@ -168,7 +168,7 @@ export default function page(props) {
 							<TableCell sx={{ width: '50px', color: 'common.white', fontWeight: 'medium' }} align='center'>
 								<Checkbox
 									onChange={allCheckChange}
-									checked={chkSet.size === arLength}
+									checked={chkSet.size === arLength && arLength > 0}
 									style={{
 										color: 'white',
 									}}
@@ -198,26 +198,34 @@ export default function page(props) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{ar.map((row) => (
-							<TableRow
-								key={row.id}
-								className={styles.tableRow}
-								onClick={() => router.push(`view/${row.id}?cPage=${page}&searchType=${searchType}&searchValue=${searchValue}`)}
-								hover
-								style={{ borderLeft: '1px solid #cccccc', borderRight: '1px solid #cccccc' }}
-							>
-								<TableCell align='center'>
-									<Checkbox checked={chkSet.has(row.id)} onChange={(event) => checkChange(event, row.id)} onClick={(event) => event.stopPropagation()} />
+						{ar.length < 1 ? (
+							<TableRow style={{ borderLeft: '1px solid #cccccc', borderRight: '1px solid #cccccc' }}>
+								<TableCell align='center' colSpan={8}>
+									게시글이 없습니다.
 								</TableCell>
-								<TableCell align='center'>{row.id}</TableCell>
-								<TableCell className={styles.tableRow}>{row.boTitle}</TableCell>
-								<TableCell align='left'>{row.usId}</TableCell>
-								<TableCell align='center'>{row.commCount}</TableCell>
-								<TableCell align='center'>{row.boHit}</TableCell>
-								<TableCell align='center'>{row.boLike}</TableCell>
-								<TableCell align='center'>{row.boWritedate}</TableCell>
 							</TableRow>
-						))}
+						) : (
+							ar.map((row) => (
+								<TableRow
+									key={row.id}
+									className={styles.tableRow}
+									onClick={() => router.push(`view/${row.id}?cPage=${page}&searchType=${searchType}&searchValue=${searchValue}`)}
+									hover
+									style={{ borderLeft: '1px solid #cccccc', borderRight: '1px solid #cccccc' }}
+								>
+									<TableCell align='center'>
+										<Checkbox checked={chkSet.has(row.id)} onChange={(event) => checkChange(event, row.id)} onClick={(event) => event.stopPropagation()} />
+									</TableCell>
+									<TableCell align='center'>{row.id}</TableCell>
+									<TableCell className={styles.tableRow}>{row.boTitle}</TableCell>
+									<TableCell align='left'>{row.usId}</TableCell>
+									<TableCell align='center'>{row.commCount}</TableCell>
+									<TableCell align='center'>{row.boHit}</TableCell>
+									<TableCell align='center'>{row.boLike}</TableCell>
+									<TableCell align='center'>{row.boWritedate}</TableCell>
+								</TableRow>
+							))
+						)}
 					</TableBody>
 				</Table>
 			</div>

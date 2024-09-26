@@ -9,6 +9,7 @@ import { Button, TextField } from '@mui/material';
 export default function page(props) {
 	// 초기화
 	const router = useRouter();
+	const [cPage, setCPage] = useState(props.searchParams.cPage || 0);
 	const [vo, setVo] = useState({});
 	const [commentList, setCommentList] = useState([]);
 	const [disabled, setDisabled] = useState(true);
@@ -73,7 +74,7 @@ export default function page(props) {
 				</ul>
 			</div>
 			<div className='btn_group'>
-				<Button variant='outlined' size='small' onClick={() => router.push(`/user/bbs-qna-list?cPage=${props.searchParams.cPage}`)}>
+				<Button variant='outlined' size='small' onClick={() => router.push(`/user/bbs-qna-list?cPage=${cPage}`)}>
 					목록
 				</Button>
 				<Button variant='outlined' size='small' onClick={() => router.push(`/user/bbs-qna-edit/${props.params.id}`)}>
