@@ -15,7 +15,7 @@ export default function Page() {
 	const router = useRouter();
 	const [page, setPage] = useState(0);
 	const [resume, setResume] = useState([]);
-	const API_URL = `/api/resumes?id=${login}&curPage=${curPage}`;
+	const API_URL = `/api/jobseeker/resumes/${login}?curPage=${curPage}`;
 
 	// 데이터 가져오기
 	function getData() {
@@ -29,26 +29,19 @@ export default function Page() {
 	// 이력서 삭제하기deleteResume
 	function remove(resumeId) {
 		axios
-			.delete(`/api/resume?id=${resumeId}`)
+			.delete(`/api/jobseeker/resume/${resumeId}`)
 			.then((res) => {
-				console.log(res);
-				if (res.data === 1) {
-					alert("삭제 완료");
-					getData();
-				} else {
-					alert("대표 이력서는 삭제할 수 없습니다.");
-				}
+				alert("삭제 완료");
+				getData();
 			})
 			.catch((error) => {
-				console.error("삭제 중 오류 발생:", error);
-				alert("삭제에 실패했습니다.");
+				alert("대표 이력서는 삭제할 수 없습니다.");
 			});
 	}
 
 	// 대표 이력서 설정하기
 	function setDefault(resumeId) {
-		axios.put(`/api/resume/default?id=${resumeId}&joIdx=${login}`).then((res) => {
-			console.log(res);
+		axios.put(`/api/jobseeker/resume/default/${resumeId}?joIdx=${login}`).then((res) => {
 			if (res.status === 200) {
 				alert("대표 이력서가 설정되었습니다.");
 				getData();

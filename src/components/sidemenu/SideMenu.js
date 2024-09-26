@@ -22,7 +22,7 @@ export default function Sidebar() {
 						<div className='space-y-1'>
 							<h3 className='font-semibold text-gray-700 mb-3'>
 								{/* 마이페이지로 이동 */}
-								<span onClick={() => router.push(`/user/mypage`)} className='hover:text-blue-600 cursor-pointer'>
+								<span onClick={() => router.push(`/user/`)} className='hover:text-blue-600 cursor-pointer'>
 									마이페이지
 								</span>
 							</h3>
