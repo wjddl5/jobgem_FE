@@ -153,8 +153,7 @@ export default function page(props) {
 						</Button>
 					</div>
 					<div className='bbs_btn'>
-						<Button variant='contained' onClick={() => router.push(`write/${1}`)}>
-							{/*로그인한 유저 idx로 변경 (!)*/}
+						<Button variant='contained' onClick={() => router.push(`write/${token.USIDX}`)}>
 							글쓰기
 						</Button>
 						<Button

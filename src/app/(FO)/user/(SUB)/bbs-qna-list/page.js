@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import styles from '/public/css/board.css';
 import axios from 'axios';
 import SideMenu from '@/components/sidemenu/SideMenu';
+import { getToken } from '@/app/util/token/token';
 
 // QnA 게시판 리스트
 export default function page(props) {
@@ -12,6 +13,13 @@ export default function page(props) {
 	const router = useRouter();
 	const [ar, setAr] = useState([]);
 	const API_URL = '/api/bbs/qna/my';
+	const [token, setToken] = useState(null);
+
+	useEffect(() => {
+		getToken().then((res) => {
+			setToken(res);
+		});
+	}, []);
 
 	// 페이징
 	const [cPage, setCPage] = useState(Number(props.searchParams.cPage));
@@ -36,7 +44,7 @@ export default function page(props) {
 				params: {
 					page: page,
 					size: pageSize,
-					usIdx: 1, // (!) 로그인한 유저 idx로 변경
+					usIdx: token.USIDX,
 				},
 			})
 			.then((res) => {

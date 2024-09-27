@@ -7,6 +7,7 @@ import sunEditorStyle from 'suneditor/dist/css/suneditor.min.css';
 import '/public/css/board.css';
 import axios from 'axios';
 import { data } from 'autoprefixer';
+import { getToken } from '@/app/util/token/token';
 
 // QnA 게시글 작성 z
 export default function page(props) {
@@ -15,6 +16,13 @@ export default function page(props) {
 	const [content, setContent] = useState('');
 	const [disabled, setDisabled] = useState(true);
 	const editorRef = useRef(null);
+	const [token, setToken] = useState(null);
+
+	useEffect(() => {
+		getToken().then((res) => {
+			setToken(res);
+		});
+	}, []);
 
 	function changeContent(content) {
 		setContent(content);
@@ -40,7 +48,7 @@ export default function page(props) {
 			.post('/api/bbs/write', null, {
 				params: {
 					boType: 2, // 2: QnA
-					usIdx: 1, //로그인한 유저 idx로 변경 (!)
+					usIdx: token.USIDX,
 					title: title,
 					content: content,
 				},
@@ -51,15 +59,6 @@ export default function page(props) {
 					router.push('/user/bbs-qna-list');
 				}
 			});
-	}
-
-	function handleImageUploadBefore(files, info, uploadHandler) {
-		// uploadHandler is a function
-		console.log(files, info);
-	}
-
-	function handleImageUpload(targetImgElement, index, state, imageInfo, remainingFilesCount) {
-		console.log(targetImgElement, index, state, imageInfo, remainingFilesCount);
 	}
 
 	useEffect(() => {
