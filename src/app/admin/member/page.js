@@ -26,7 +26,6 @@ function EnhancedTable() {
     const changePage = (event, value) => {
         setPage(value - 1); // 페이지 번호는 0부터 시작하므로 1을 빼줍니다.
         setApiUrl("/api/admin/jobseekers?size=10&page=" + (value - 1));
-        getMemberList();
     };
 
     const handleKeyDown = (e) => {
@@ -57,30 +56,31 @@ function EnhancedTable() {
     };
 
     return (
-        <Paper sx={{ width: '100%', overflow: 'hidden', mt: 3, boxShadow: 3, padding: 5 }}>
+            <Paper sx={{ width: '100%', overflow: 'hidden', mt: 3, boxShadow: 3, padding: 5 }}>
             <Toolbar sx={{ pl: { sm: 2 }, pr: { xs: 1, sm: 1 } }}>
-                <Typography sx={{ flex: '1 1 100%', fontWeight: 'bold' }} variant="h6" id="tableTitle" component="div">
+                <Typography sx={{ flex: '1 1 100%', fontWeight: 'bold',fontFamily: 'pl,sans-serif',fontSize: 30 }} variant="h6" id="tableTitle" component="div" >
                     회원 리스트
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 1, bgcolor: 'common.white', p: 0.5, borderRadius: 1 }}>
                     <FormControl size="small" sx={{ width: '15ch' }}>
-                        <InputLabel id="category-select-label">카테고리</InputLabel>
+                        <InputLabel id="category-select-label" sx={{ fontFamily: 'pl,sans-serif' }}>카테고리</InputLabel>
                         <Select
                             labelId="category-select-label"
                             id="category-select"
                             value={searchType}
                             label="카테고리"
                             onChange={(e) => setSearchType(e.target.value)}
+                            sx={{fontFamily: 'pl,sans-serif'}}
                         >
-                            <MenuItem value="name">회원명</MenuItem>
-                            <MenuItem value="birth">생년월일</MenuItem>
-                            <MenuItem value="tel">전화번호</MenuItem>
-                            <MenuItem value="address">주소</MenuItem>
-                            <MenuItem value="edu">학력</MenuItem>
-                            <MenuItem value="sal">월급</MenuItem>
-                            <MenuItem value="gender">성별</MenuItem>
-                            <MenuItem value="joinDate">가입일자</MenuItem>
-                            <MenuItem value="leaveDate">탈퇴일자</MenuItem>
+                            <MenuItem value="name" sx={{fontFamily: 'pl,sans-serif'}}>회원명</MenuItem>
+                            <MenuItem value="birth" sx={{fontFamily: 'pl,sans-serif'}}>생년월일</MenuItem>
+                            <MenuItem value="tel" sx={{fontFamily: 'pl,sans-serif'}}>전화번호</MenuItem>
+                            <MenuItem value="address" sx={{fontFamily: 'pl,sans-serif'}}>주소</MenuItem>
+                            <MenuItem value="edu" sx={{fontFamily: 'pl,sans-serif'}}>학력</MenuItem>
+                            <MenuItem value="sal" sx={{fontFamily: 'pl,sans-serif'}}>월급</MenuItem>
+                            <MenuItem value="gender" sx={{fontFamily: 'pl,sans-serif'}}>성별</MenuItem>
+                            <MenuItem value="joinDate" sx={{fontFamily: 'pl,sans-serif'}}>가입일자</MenuItem>
+                            <MenuItem value="leaveDate" sx={{fontFamily: 'pl,sans-serif'}}>탈퇴일자</MenuItem>
                         </Select>
                     </FormControl>
                     <TextField
@@ -88,7 +88,7 @@ function EnhancedTable() {
                         variant="outlined"
                         size="small"
                         value={searchValue}
-                        sx={{ width: '25ch' }}
+                        sx={{ width: '25ch',fontFamily: 'pl,sans-serif' }}
                         onKeyDown={handleKeyDown}
                         onChange={(e) => setSearchValue(e.target.value)}
                     />
@@ -97,20 +97,20 @@ function EnhancedTable() {
                     </IconButton>
                 </Box>
             </Toolbar>
-            <TableContainer>
-                <Table sx={{ minWidth: 750, border: '1px solid #e0e0e0' }} aria-labelledby="tableTitle" size="medium">
+            <TableContainer >
+                <Table sx={{ minWidth: 750, border: '1px solid #e0e0e0',fontFamily: 'pl,sans-serif'}} aria-labelledby="tableTitle" size="medium">
                     <TableHead >
                         <TableRow sx={{ bgcolor: 'primary.main' }}>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>이름</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>생년월일</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>전화번호</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>주소</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>학력</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>월급</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>성별</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>사진</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>가입일자</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>탈퇴여부</TableCell>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>이름</TableCell>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>생년월일</TableCell>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>전화번호</TableCell>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>주소</TableCell>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>학력</TableCell>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>월급</TableCell>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>성별</TableCell>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>사진</TableCell>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>가입일자</TableCell>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>탈퇴여부</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -120,16 +120,16 @@ function EnhancedTable() {
                                 hover
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell align="center">{user.joName}</TableCell>
-                                <TableCell align="center">{user.joBirth}</TableCell>
-                                <TableCell align="center">{user.joTel}</TableCell>
-                                <TableCell align="center">{user.joAddress}</TableCell>
-                                <TableCell align="center">{user.joEdu}</TableCell>
-                                <TableCell align="center">{user.joSal}</TableCell>
-                                <TableCell align="center">{user.joGender}</TableCell>
-                                <TableCell align="center">{user.joImgUrl == null ? '없음' : <img src={user.joImgUrl} alt="회원사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
-                                <TableCell align="center">{user.user.usJoinDate}</TableCell>
-                                <TableCell align="center">{user.user.usLeaveDate == null ? '활동중' : user.user.usLeaveDate}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif' }}>{user.joName}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif' }}>{user.joBirth}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif' }}>{user.joTel}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif' }}>{user.joAddress.length > 10 ? user.joAddress.substring(0, 10) + '...' : user.joAddress}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif' }}>{user.joEdu.length > 10 ? user.joEdu.substring(0, 10) + '...' : user.joEdu}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif' }}>{user.joSal}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif' }}>{user.joGender}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif' }}>{user.joImgUrl == null ? '없음' : <img src={user.joImgUrl} alt="회원사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif' }}>{user.user.usJoinDate}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif' }}>{user.user.usLeaveDate == null ? '활동중' : user.user.usLeaveDate}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
