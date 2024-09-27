@@ -1,12 +1,18 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Input from "@/components/form/Input";
-import SideMenu from "@/components/sidemenu/SideMenu";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { getToken } from "@/app/util/token/token";
 
 export default function Page(props) {
-	const login = 1;
+	const [login, setLogin] = useState("0");
+	useEffect(() => {
+		getToken().then((res) => {
+			setLogin(res.IDX);
+			console.log(res);
+		});
+	}, []);
 	const router = useRouter();
 	const [coIdx, setCoIdx] = useState("");
 	const [company, setCompany] = useState([]);
