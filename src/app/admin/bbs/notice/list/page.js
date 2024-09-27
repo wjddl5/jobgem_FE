@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import styles from '/public/css/board.css';
 import axios from 'axios';
+import { getToken } from '@/app/util/token/token';
 
 // (관리자) 공지사항 게시판 리스트
 export default function page(props) {
@@ -14,6 +15,14 @@ export default function page(props) {
 	const [ar, setAr] = useState([]);
 	const [arLength, setArLength] = useState(0);
 	const API_URL = '/api/bbs/notice';
+	const [token, setToken] = useState(null);
+
+	useEffect(() => {
+		getToken().then((res) => {
+			console.log(res);
+			setToken(res);
+		});
+	}, []);
 
 	// 페이징
 	const [cPage, setCPage] = useState(Number(props.searchParams.cPage));
