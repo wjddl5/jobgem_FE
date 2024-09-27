@@ -1,32 +1,43 @@
 "use client";
-import SideMenu from "@/components/sidemenu/SideMenu";
+import { getToken } from "@/app/util/token/token";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 export default function Page() {
-	const login = 1;
+	const [login, setLogin] = useState(null); // 초기값을 null로 설정
 	const [jobseeker, setJobseeker] = useState({});
 	const [myPageCnt, setMyPageCnt] = useState({});
-	const API_URL = `/api/jobseeker/${login}`;
-	const API_URL2 = `/api/jobseeker/mypage/count/${login}`;
 
+	// login 값이 설정된 후에만 데이터 가져오기
+	useEffect(() => {
+		getToken().then((res) => {
+			setLogin(res.IDX); // login 값 설정
+			console.log(res);
+		});
+	}, []);
+
+	useEffect(() => {
+		if (login !== null) {
+			getData(); // login 값이 설정된 후에만 데이터 호출
+			getCnt();
+		}
+	}, [login]); // login 값이 변경될 때마다 호출
+
+	// 데이터 가져오기
 	function getData() {
+		const API_URL = `/api/jobseeker/${login}`;
 		axios.get(API_URL).then((res) => {
 			setJobseeker(res.data);
 		});
 	}
 
+	// 마이페이지 카운트 가져오기
 	function getCnt() {
+		const API_URL2 = `/api/jobseeker/mypage/count/${login}`;
 		axios.get(API_URL2).then((res) => {
 			setMyPageCnt(res.data);
 		});
 	}
-
-	useEffect(() => {
-		getData();
-		getCnt();
-	}, []);
 
 	return (
 		<div className='bg-gray-100 min-h-screen'>

@@ -1,4 +1,5 @@
 "use client";
+import { getToken } from "@/app/util/token/token";
 import Button from "@/components/button/Button";
 import Input from "@/components/form/Input";
 import Select from "@/components/form/Select";
@@ -7,7 +8,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 export default function Page() {
-	const login = 1;
+	const [login, setLogin] = useState(null); // 초기값을 null로 설정
 	const [jobseeker, setJobseeker] = useState({});
 	const [user, setUser] = useState({});
 	const [skillList, setSkillList] = useState([]);
@@ -15,16 +16,17 @@ export default function Page() {
 	const [selectedFile, setSelectedFile] = useState(null); // 파일이 선택되었는지 추적
 	const [previewUrl, setPreviewUrl] = useState(""); // 이미지 미리보기 URL 저장
 	const router = useRouter();
-	const API_URL = `/api/jobseeker/${login}`;
-	const API_FILE_UPLOAD = "/api/files/upload";
 
 	// 데이터 가져오는 함수
 	function getData() {
-		axios.get(API_URL).then((res) => {
-			setJobseeker(res.data);
-			setUser(res.data.user);
-			setSelectedSkills(res.data.skills.map((skill) => skill.id));
-		});
+		if (login !== null) {
+			const API_URL = `/api/jobseeker/${login}`;
+			axios.get(API_URL).then((res) => {
+				setJobseeker(res.data);
+				setUser(res.data.user);
+				setSelectedSkills(res.data.skills.map((skill) => skill.id));
+			});
+		}
 	}
 
 	// 스킬 목록 가져오는 함수
@@ -40,7 +42,7 @@ export default function Page() {
 		formData.append("file", file);
 
 		try {
-			const res = await axios.post(API_FILE_UPLOAD, formData, {
+			const res = await axios.post("/api/files/upload", formData, {
 				headers: {
 					"Content-Type": "multipart/form-data",
 				},
@@ -104,7 +106,7 @@ export default function Page() {
 
 			if (res.status === 200) {
 				alert("수정 완료");
-				router.push(`/user/mypage`);
+				router.push(`/user`);
 			}
 		} catch (error) {
 			console.error("에러 발생:", error);
@@ -141,10 +143,18 @@ export default function Page() {
 
 	// 컴포넌트가 마운트될 때 데이터 가져오기
 	useEffect(() => {
-		getSkillList();
-		getData();
+		getToken().then((res) => {
+			setLogin(res.IDX); // login 값 설정
+			console.log(res);
+		});
 	}, []);
 
+	useEffect(() => {
+		if (login !== null) {
+			getSkillList();
+			getData();
+		}
+	}, [login]); // login 값이 설정된 후에만 호출
 	return (
 		<div className='bg-gray-100'>
 			<div className='flex-1 bg-white p-8 rounded-lg shadow-lg'>

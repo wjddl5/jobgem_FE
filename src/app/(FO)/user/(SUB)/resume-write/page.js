@@ -1,13 +1,19 @@
 "use client";
 import Button from "@/components/button/Button";
 import Input from "@/components/form/Input";
-import SideMenu from "@/components/sidemenu/SideMenu";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios"; // axios 추가
+import { getToken } from "@/app/util/token/token";
 
 export default function Page() {
-	const login = 1;
+	const [login, setLogin] = useState("0");
+	useEffect(() => {
+		getToken().then((res) => {
+			setLogin(res.IDX);
+			console.log(res);
+		});
+	}, []);
 	const router = useRouter();
 
 	const [reTitle, setReTitle] = useState("");

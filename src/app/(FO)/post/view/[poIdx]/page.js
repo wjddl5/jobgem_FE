@@ -9,9 +9,16 @@ import ApplicationPeriodMethod from "@/components/posting/ApplicationPeriodMetho
 import CompanyInfo from "@/components/posting/CompanyInfo";
 import RecommendedJobs from "@/components/posting/RecommendedJobs";
 import NavigationTabs from "@/components/posting/NavigationTabs";
+import { getToken } from "@/app/util/token/token";
 
 export default function ViewPage(props) {
-	const login = 1;
+	const [login, setLogin] = useState("0");
+	useEffect(() => {
+		getToken().then((res) => {
+			setLogin(res.IDX);
+			console.log(res);
+		});
+	}, []);
 	const [location, setLocation] = useState({ lat: 37.566826, lng: 126.9786567 });
 	const [center, setCenter] = useState({ lat: 37.566826, lng: 126.9786567 });
 	const [posting, setPosting] = useState(null);
@@ -83,17 +90,17 @@ export default function ViewPage(props) {
 
 	function send() {
 		axios({
-			url: "/api/applyment",
+			url: "/api/jobseeker/applyment",
 			method: "post",
 			params: {
 				joIdx: login,
 				poIdx: props.params.poIdx,
 			},
 		}).then((res) => {
-			if (res.data == "0") {
+			if (res.status == 400) {
 				alert("이미 지원한 공고입니다.");
 			} else {
-				if (res.status == 200) {
+				if (res.status == 201) {
 					alert("지원완료");
 					router.push(`/user/apply-company`);
 				}

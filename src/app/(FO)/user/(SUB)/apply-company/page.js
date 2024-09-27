@@ -1,14 +1,14 @@
 "use client";
+import { getToken } from "@/app/util/token/token";
 import Button from "@/components/button/Button";
 import Input from "@/components/form/Input";
 import Select from "@/components/form/Select";
 import Pagination from "@/components/pagination/Pagination";
-import SideMenu from "@/components/sidemenu/SideMenu";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
 export default function page() {
-	const login = 1;
+	const [login, setLogin] = useState(null); // 초기값을 null로 설정
 	const [totalPages, setTotalPages] = useState("");
 	const [curPage, setCurPage] = useState(0);
 	const [startDate, setStartDate] = useState("");
@@ -21,12 +21,26 @@ export default function page() {
 		미열람: 0,
 	});
 
-	const API_URL = `/api/jobseeker/applyments/${login}?curPage=${curPage}`;
-	const APPLYMENT_COUNT_URL = `/api/jobseeker/applyment/count/${login}`;
-	const FILTER_API_URL = `/api/jobseeker/search/applyment`;
+	// login 값이 있을 때 API 호출
+	useEffect(() => {
+		getToken().then((res) => {
+			setLogin(res.IDX); // login 값 설정
+			console.log(res);
+		});
+	}, []);
+
+	// login 값이 설정된 후에 API 호출
+	useEffect(() => {
+		if (login !== null) {
+			getData();
+			getApplymentCount();
+		}
+	}, [login, curPage]); // login과 curPage가 변경될 때마다 호출
 
 	// 데이터 가져오기
 	function getData() {
+		const API_URL = `/api/jobseeker/applyments/${login}?curPage=${curPage}`;
+		console.log(API_URL);
 		axios.get(API_URL).then((res) => {
 			setApplyment(res.data.content); // 데이터를 상태에 저장
 			setTotalPages(res.data.totalPages);
@@ -35,6 +49,7 @@ export default function page() {
 
 	// applymentCount 가져오기
 	function getApplymentCount() {
+		const APPLYMENT_COUNT_URL = `/api/jobseeker/applyment/count/${login}`;
 		axios.get(APPLYMENT_COUNT_URL).then((res) => {
 			setApplymentCount(res.data); // applymentCount 데이터를 상태에 저장
 		});
@@ -42,6 +57,7 @@ export default function page() {
 
 	// 날짜 범위와 열람 여부로 검색된 데이터 가져오기
 	function getFilteredData() {
+		const FILTER_API_URL = `/api/jobseeker/search/applyment`;
 		axios
 			.get(FILTER_API_URL, {
 				params: {
@@ -59,11 +75,6 @@ export default function page() {
 				console.error("Error fetching filtered data:", err);
 			});
 	}
-
-	useEffect(() => {
-		getData();
-		getApplymentCount();
-	}, [curPage]);
 
 	return (
 		<div className='flex-1 ml-4 p-6 bg-gray-50 rounded-lg shadow-lg'>
