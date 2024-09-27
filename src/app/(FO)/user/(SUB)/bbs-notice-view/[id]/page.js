@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 import styles from '/public/css/board.css';
 import { Button, TextField } from '@mui/material';
+import { getToken } from '@/app/util/token/token';
 
 // 공지사항 게시글 상세보기
 export default function page(props) {
@@ -15,8 +16,14 @@ export default function page(props) {
 	const [vo, setVo] = useState({});
 	const [commentList, setCommentList] = useState([]);
 	const [commentContent, setCommentContent] = useState('');
-	const [disabled, setDisabled] = useState(true);
 	const API_URL = `/api/bbs/${props.params.id}`;
+	const [token, setToken] = useState(null);
+
+	useEffect(() => {
+		getToken().then((res) => {
+			setToken(res);
+		});
+	}, []);
 
 	function getData() {
 		axios
@@ -82,7 +89,7 @@ export default function page(props) {
 				.post('/api/comment/write', null, {
 					params: {
 						content: commentContent,
-						usIdx: 1, //로그인한 유저 idx로 변경 (!)
+						usIdx: token.USIDX,
 						boIdx: props.params.id,
 					},
 				})
@@ -162,8 +169,7 @@ export default function page(props) {
 								</>
 							) : (
 								<>
-									<Button className='edit-button' variant='text' size='small' hidden={comment.usIdx != 1} onClick={() => EditClick(comment)}>
-										{/* (!) 로그인한 유저idx로 수정 */}
+									<Button className='edit-button' variant='text' size='small' hidden={comment.usIdx != token.USIDX} onClick={() => EditClick(comment)}>
 										수정
 									</Button>
 									<Button className='delete-button' variant='text' color='error' size='small' hidden={comment.usIdx != 1} onClick={() => removeComment(comment.id)}>
