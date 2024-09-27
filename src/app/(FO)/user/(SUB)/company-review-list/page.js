@@ -1,22 +1,38 @@
 "use client";
+import { getToken } from "@/app/util/token/token";
 import Button from "@/components/button/Button";
 import IconButton from "@/components/button/IconButton";
 import Pagination from "@/components/pagination/Pagination";
-import SideMenu from "@/components/sidemenu/SideMenu";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { FiTrash2, FiEdit2 } from "react-icons/fi";
 
 export default function Page() {
-	const login = 1;
+	const [login, setLogin] = useState(null); // 초기값을 null로 설정
 	const [totalPages, setTotalPages] = useState("");
 	const [curPage, setCurPage] = useState(0);
-	const router = useRouter();
 	const [review, setReview] = useState([]);
-	const API_URL = `/api/jobseeker/reviews/${login}?curPage=${curPage}`;
+	const router = useRouter();
 
+	// login 값이 있을 때 API 호출
+	useEffect(() => {
+		getToken().then((res) => {
+			setLogin(res.IDX); // login 값 설정
+			console.log(res);
+		});
+	}, []);
+
+	// login 값이 설정된 후에 데이터 가져오기
+	useEffect(() => {
+		if (login !== null) {
+			getData(); // login 값이 설정된 후에만 데이터 호출
+		}
+	}, [login, curPage]); // login과 curPage가 변경될 때마다 호출
+
+	// 데이터 가져오기
 	function getData() {
+		const API_URL = `/api/jobseeker/reviews/${login}?curPage=${curPage}`;
 		axios.get(API_URL).then((res) => {
 			setReview(res.data.content);
 			setTotalPages(res.data.totalPages);
@@ -24,6 +40,7 @@ export default function Page() {
 		});
 	}
 
+	// 리뷰 삭제하기
 	function remove(reviewId) {
 		axios.delete(`/api/jobseeker/review/${reviewId}`).then((res) => {
 			console.log(res);
@@ -33,10 +50,6 @@ export default function Page() {
 			}
 		});
 	}
-
-	useEffect(() => {
-		getData();
-	}, [curPage]);
 
 	return (
 		<div className='bg-gray-100 flex-1 ml-2'>

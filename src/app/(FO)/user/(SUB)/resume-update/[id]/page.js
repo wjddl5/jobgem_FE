@@ -7,7 +7,13 @@ import axios from "axios";
 import Button from "@/components/button/Button";
 
 export default function Page(props) {
-	const login = 1;
+	const [login, setLogin] = useState("0");
+	useEffect(() => {
+		getToken().then((res) => {
+			setLogin(res.IDX);
+			console.log(res);
+		});
+	}, []);
 	const router = useRouter();
 	const [coIdx, setCoIdx] = useState("");
 	const [reTitle, setReTitle] = useState("");

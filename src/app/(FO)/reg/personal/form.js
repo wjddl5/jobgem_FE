@@ -1,17 +1,21 @@
+import { useRouter } from 'next/navigation';
+import { useFormContext } from "react-hook-form";
 import { personalJoin } from '../action/RegAction';
 import JoinButton from '../component/JoinButton';
 import Section from '../component/Section';
 import PersonalForm from '../component/form/PersonalForm';
 import TermsAgreementForm from '../component/form/TermsAgreementForm';
 import UserForm from '../component/form/UserForm';
-import { useFormContext } from "react-hook-form";
-
 export default function PersonalReg() {
 
   const { handleSubmit, reset } = useFormContext();
+  const router = useRouter();
 
-  const onSubmit = (data) => {
-    personalJoin(data);
+  const onSubmit = async (data) => {
+    const result = await personalJoin(data);
+    if(result == "회원가입 성공") {
+      router.push('/login');
+    }
     reset();
   };
 
