@@ -168,55 +168,55 @@ function EnhancedTable() {
 			<TableContainer>
 				<Table sx={{ minWidth: 750, border: '1px solid #e0e0e0' }} aria-labelledby='tableTitle' size='medium'>
 					<TableHead>
-						<TableRow sx={{ bgcolor: 'primary.dark' }}>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
-								<Checkbox checked={chkAll} onChange={allCheckChange} />
-							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
-								차단일
-							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
-								차단사유
-							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
-								기업명
-							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
-								기업번호
-							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
-								주소
-							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
-								전화번호
-							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
-								종류
-							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
-								개업일
-							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
-								직원수
-							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
-								사진
-							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
-								썸네일 사진
-							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
-								매출
-							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
-								평점
-							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
-								담당자 이름
-							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
-								담당자 전화번호
-							</TableCell>
+						<TableRow sx={{ bgcolor: 'primary.main' }}>
+								<TableCell sx={{ width: '50px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+									<Checkbox checked={chkAll} onChange={allCheckChange} color='primary' style={{ color: 'white' }} />
+								</TableCell>
+								<TableCell sx={{ width: '130px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+									차단일
+								</TableCell>
+								<TableCell sx={{ width: '250px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+									차단사유
+								</TableCell>
+								<TableCell sx={{ width: '150px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+									기업명
+								</TableCell>
+								<TableCell sx={{ width: '130px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+									기업번호
+								</TableCell>
+								<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+									주소
+								</TableCell>
+								<TableCell sx={{ width: '130px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+									전화번호
+								</TableCell>
+								<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+									종류
+								</TableCell>
+								<TableCell sx={{ width: '130px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+									개업일
+								</TableCell>
+								<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+									직원수
+								</TableCell>
+								<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+									사진
+								</TableCell>
+								<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+									썸네일
+								</TableCell>
+								<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+									매출
+								</TableCell>
+								<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+									평점
+								</TableCell>
+								<TableCell sx={{ width: '130px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+									담당자 이름
+								</TableCell>
+								<TableCell sx={{ width: '150px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+									담당자 전화번호
+								</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -230,7 +230,7 @@ function EnhancedTable() {
 									<Checkbox checked={chkSet.has(company.id)} onChange={(e) => checkChange(e, company.id)} />
 								</TableCell>
 								<TableCell align='center'>{company.blDate}</TableCell>
-								<TableCell align='center'>{company.blContent}</TableCell>
+								<TableCell align='center'>{company.blContent.length > 10 ? company.blContent.substring(0, 10) + '...' : company.blContent}</TableCell>
 								<TableCell align='center'>{company.company.coName}</TableCell>
 								<TableCell align='center'>{company.company.coNumber}</TableCell>
 								<TableCell align='center'>{company.company.coAddress}</TableCell>
@@ -238,25 +238,9 @@ function EnhancedTable() {
 								<TableCell align='center'>{company.company.coType}</TableCell>
 								<TableCell align='center'>{company.company.coOpen}</TableCell>
 								<TableCell align='center'>{company.company.coEmployee}</TableCell>
-								<TableCell align='center'>
-									{company.company.coImgUrl == null ? (
-										'없음'
-									) : (
-										<TableCell align='center'>
-											<img src={company.company.coImgUrl} alt='회원사진' style={{ width: '50px', height: '50px' }} />
-										</TableCell>
-									)}
-								</TableCell>
-								<TableCell align='center'>
-									{company.company.coThumbImgUrl == null ? (
-										'없음'
-									) : (
-										<TableCell align='center'>
-											<img src={company.company.coThumbImgUrl} alt='회원사진' style={{ width: '50px', height: '50px' }} />
-										</TableCell>
-									)}
-								</TableCell>
-								<TableCell align='center'>{company.company.coSales}</TableCell>
+								<TableCell align="center">{company.company.coImgUrl == null ? '없음' : <img src={company.company.coImgUrl} alt="사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
+								<TableCell align="center">{company.company.coThumbImgUrl == null ? '없음' : <img src={company.company.coThumbImgUrl} alt="썸네일" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
+								<TableCell align='center'>{company.company.coSales.length > 10 ? company.company.coSales.substring(0, 10) + '...' : company.company.coSales}</TableCell>
 								<TableCell align='center'>{company.company.coScore}</TableCell>
 								<TableCell align='center'>{company.company.coManagerName}</TableCell>
 								<TableCell align='center'>{company.company.coManagerTel}</TableCell>

@@ -100,7 +100,7 @@ function EnhancedTable() {
             <TableContainer>
                 <Table sx={{ minWidth: 750, border: '1px solid #e0e0e0' }} aria-labelledby="tableTitle" size="medium">
                     <TableHead >
-                        <TableRow sx={{ bgcolor: 'primary.dark' }}>
+                        <TableRow sx={{ bgcolor: 'primary.main' }}>
                             {/* co_idx, us_idx, co_name, co_number, co_address, co_tel, co_type, co_open, co_employee, co_img_url, co_thumbimg_url, co_sales, co_score, co_manager_name, co_manager_tel */}
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>기업명</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>기업번호</TableCell>
@@ -131,8 +131,8 @@ function EnhancedTable() {
                                 <TableCell align="center">{user.coType}</TableCell>
                                 <TableCell align="center">{user.coOpen}</TableCell>
                                 <TableCell align="center">{user.coEmployee}</TableCell>
-                                <TableCell align="center">{user.coImgUrl == null ? '없음' : <TableCell align="center"><img src={user.coImgUrl} alt="회원사진" style={{ width: '50px', height: '50px' }} /></TableCell>}</TableCell>
-                                <TableCell align="center">{user.coThumbImgUrl == null ? '없음' : <TableCell align="center"><img src={user.coThumbImgUrl} alt="회원사진" style={{ width: '50px', height: '50px' }} /></TableCell>}</TableCell>
+                                <TableCell align="center">{user.coImgUrl == null ? '없음' : <img src={user.coImgUrl} alt="사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
+                                <TableCell align="center">{user.coThumbImgUrl == null ? '없음' : <img src={user.coThumbImgUrl} alt="썸네일" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
                                 <TableCell align="center">{user.coSales}</TableCell>
                                 <TableCell align="center">{user.coScore}</TableCell>
                                 <TableCell align="center">{user.coManagerName}</TableCell>

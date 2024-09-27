@@ -173,44 +173,44 @@ function EnhancedTable() {
 			<TableContainer>
 				<Table sx={{ minWidth: 750, border: '1px solid #e0e0e0' }} aria-labelledby='tableTitle' size='medium'>
 					<TableHead>
-						<TableRow sx={{ bgcolor: 'primary.dark' }}>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
-								<Checkbox checked={chkAll} onChange={allCheckChange} />
+						<TableRow sx={{ bgcolor: 'primary.main' }}>
+							<TableCell sx={{ width: '50px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								<Checkbox checked={chkAll} onChange={allCheckChange} color='primary' style={{ color: 'white' }} />
 							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
+							<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
 								차단일
 							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
+							<TableCell sx={{ width: '250px', color: 'common.white', fontWeight: 'medium' }} align='center'>
 								차단사유
 							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
+							<TableCell sx={{ width: '150px', color: 'common.white', fontWeight: 'medium' }} align='center'>
 								회원명
 							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
+							<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
 								생년월일
 							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
+							<TableCell sx={{ width: '120px', color: 'common.white', fontWeight: 'medium' }} align='center'>
 								전화번호
 							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
+							<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
 								주소
 							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
+								<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
 								학력
 							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
+								<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
 								월급
 							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
+							<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
 								성별
 							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
+							<TableCell sx={{ width: '150px', color: 'common.white', fontWeight: 'medium' }} align='center'>
 								사진
 							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
+							<TableCell sx={{ width: '150px', color: 'common.white', fontWeight: 'medium' }} align='center'>
 								가입일자
 							</TableCell>
-							<TableCell align='center' sx={{ color: 'common.white', fontWeight: 'medium' }}>
+							<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
 								탈퇴여부
 							</TableCell>
 						</TableRow>
@@ -222,7 +222,7 @@ function EnhancedTable() {
 									<Checkbox checked={chkSet.has(user.id)} onChange={(e) => checkChange(e, user.id)} />
 								</TableCell>
 								<TableCell align='center'>{user.blDate}</TableCell>
-								<TableCell align='center'>{user.blContent}</TableCell>
+								<TableCell align='center'>{user.blContent.length > 10 ? user.blContent.substring(0, 10) + '...' : user.blContent}</TableCell>
 								<TableCell align='center'>{user.jobseeker.joName}</TableCell>
 								<TableCell align='center'>{user.jobseeker.joBirth}</TableCell>
 								<TableCell align='center'>{user.jobseeker.joTel}</TableCell>
@@ -230,15 +230,7 @@ function EnhancedTable() {
 								<TableCell align='center'>{user.jobseeker.joEdu}</TableCell>
 								<TableCell align='center'>{user.jobseeker.joSal}</TableCell>
 								<TableCell align='center'>{user.jobseeker.joGender}</TableCell>
-								<TableCell align='center'>
-									{user.jobseeker.joImgUrl == null ? (
-										'없음'
-									) : (
-										<TableCell align='center'>
-											<img src={user.jobseeker.joImgUrl} alt='회원사진' style={{ width: '50px', height: '50px' }} />
-										</TableCell>
-									)}
-								</TableCell>
+								<TableCell align="center">{user.jobseeker.joImgUrl == null ? '없음' : <img src={user.jobseeker.joImgUrl} alt="회원사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
 								<TableCell align='center'>{user.jobseeker.user.usJoinDate}</TableCell>
 								<TableCell align='center'>{user.jobseeker.user.usLeaveDate == null ? '활동중' : user.jobseeker.user.usLeaveDate}</TableCell>
 							</TableRow>

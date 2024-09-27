@@ -1,10 +1,8 @@
-import { Inter } from "next/font/google";
 import "../../app/globals.css";
 import Header from "../../components/admin/header/Header";
 import Footer from "../../components/admin/footer/Footer";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import "./sb-admin-2.css";
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "JOB JAM",
@@ -13,7 +11,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-      <div id="page-top" className={inter.className}>
+      <div id="page-top">
         <div id="wrapper">
           <Sidebar />
           <div id="content-wrapper" className="d-flex flex-column">

@@ -40,9 +40,6 @@
 	--breakpoint-md: 768px;
 	--breakpoint-lg: 992px;
 	--breakpoint-xl: 1200px;
-	--font-family-sans-serif: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-		'Noto Color Emoji';
-	--font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 }
 
 *,
@@ -52,7 +49,6 @@
 }
 
 html {
-	font-family: sans-serif;
 	line-height: 1.15;
 	-webkit-text-size-adjust: 100%;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -73,7 +69,6 @@ section {
 
 body {
 	margin: 0;
-	font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 	font-size: 1rem;
 	font-weight: 400;
 	line-height: 1.5;
@@ -201,7 +196,6 @@ pre,
 code,
 kbd,
 samp {
-	font-family: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 	font-size: 1em;
 }
 
@@ -262,7 +256,6 @@ select,
 optgroup,
 textarea {
 	margin: 0;
-	font-family: inherit;
 	font-size: inherit;
 	line-height: inherit;
 }
@@ -6168,7 +6161,6 @@ a.close.disabled {
 	z-index: 1070;
 	display: block;
 	margin: 0;
-	font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 	font-style: normal;
 	font-weight: 400;
 	line-height: 1.5;
@@ -6293,7 +6285,6 @@ a.close.disabled {
 	z-index: 1060;
 	display: block;
 	max-width: 276px;
-	font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 	font-style: normal;
 	font-weight: 400;
 	line-height: 1.5;
@@ -9823,9 +9814,6 @@ button.bg-dark:focus {
 	background-color: rgba(0, 0, 0, 0);
 }
 
-.text-monospace {
-	font-family: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace !important;
-}
 
 .text-justify {
 	text-align: justify !important;
@@ -10505,7 +10493,6 @@ a:focus {
 	border: 0;
 	font-weight: 900;
 	content: '\f105';
-	font-family: 'Font Awesome 5 Free';
 }
 
 .sidebar .nav-item.dropdown.show .dropdown-toggle::after,
@@ -11129,7 +11116,6 @@ a:focus {
 	line-height: 51px;
 	font-weight: 900;
 	content: '\f107';
-	font-family: 'Font Awesome 5 Free';
 	color: #d1d3e2;
 }
 

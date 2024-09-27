@@ -100,7 +100,7 @@ function EnhancedTable() {
             <TableContainer>
                 <Table sx={{ minWidth: 750, border: '1px solid #e0e0e0' }} aria-labelledby="tableTitle" size="medium">
                     <TableHead >
-                        <TableRow sx={{ bgcolor: 'primary.dark' }}>
+                        <TableRow sx={{ bgcolor: 'primary.main' }}>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>이름</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>생년월일</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>전화번호</TableCell>
@@ -127,7 +127,7 @@ function EnhancedTable() {
                                 <TableCell align="center">{user.joEdu}</TableCell>
                                 <TableCell align="center">{user.joSal}</TableCell>
                                 <TableCell align="center">{user.joGender}</TableCell>
-                                <TableCell align="center">{user.joImgUrl == null ? '없음' : <TableCell align="center"><img src={user.joImgUrl} alt="회원사진" style={{ width: '50px', height: '50px' }} /></TableCell>}</TableCell>
+                                <TableCell align="center">{user.joImgUrl == null ? '없음' : <img src={user.joImgUrl} alt="회원사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
                                 <TableCell align="center">{user.user.usJoinDate}</TableCell>
                                 <TableCell align="center">{user.user.usLeaveDate == null ? '활동중' : user.user.usLeaveDate}</TableCell>
                             </TableRow>
