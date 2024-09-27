@@ -1,7 +1,7 @@
 'use client'
-import { Alert } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { loginAction } from "./action/LoginAction";
@@ -9,6 +9,7 @@ import { loginAction } from "./action/LoginAction";
 export default function LoginPage() {
   
   const [type, setType] = useState('personal'); // personal or company
+  const router = useRouter();
 
   const {
     register,
@@ -20,9 +21,10 @@ export default function LoginPage() {
   const onSubmit = async (formdata) => {
     const login_msg = await loginAction(formdata);
     if (login_msg == "로그인 성공") {
+      router.push('/');
       reset();
     } else {
-      alert(<Alert variant="outlined" severity="error"> 이메일을 확인해주세요.</Alert>);
+      alert(login_msg);
     }
   }
 
