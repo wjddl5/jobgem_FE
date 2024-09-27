@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import styles from '/public/css/board.css';
 import { Button, TextField } from '@mui/material';
+import { getToken } from '@/app/util/token/token';
 
 // (관리자) 문의사항 게시글 상세보기
 export default function page(props) {
@@ -15,14 +16,18 @@ export default function page(props) {
 	const [vo, setVo] = useState({});
 	const [commentList, setCommentList] = useState([]);
 	const [commentContent, setCommentContent] = useState('');
-	const [lastComment, setLastComment] = useState('');
-	const [disabled, setDisabled] = useState(true);
 	const API_URL = `/api/bbs/${props.params.id}`;
-	const [answerStatus, setAnswerStatus] = useState();
+	const [token, setToken] = useState({});
+
+	useEffect(() => {
+		getToken().then((res) => {
+			setToken(res);
+		});
+	}, []);
 
 	useEffect(() => {
 		getData();
-	}, []);
+	}, [token]);
 
 	function getData() {
 		axios
@@ -35,16 +40,6 @@ export default function page(props) {
 				console.error('error:', e);
 			});
 	}
-
-	useEffect(() => {
-		if (vo != null) {
-			if (vo.usIdx == 1 /*(!) 로그인한 유저idx로 변경*/) {
-				setDisabled(false);
-			} else {
-				setDisabled(true);
-			}
-		}
-	}, [vo]);
 
 	function removeBbs(id) {
 		if (confirm('게시글을 삭제 하시겠습니까?')) {
@@ -79,7 +74,7 @@ export default function page(props) {
 				.post('/api/comment/write', null, {
 					params: {
 						content: commentContent,
-						usIdx: 1, //로그인한 유저 idx로 변경 (!)
+						usIdx: token.USIDX,
 						boIdx: props.params.id,
 					},
 				})
@@ -170,8 +165,7 @@ export default function page(props) {
 								</>
 							) : (
 								<>
-									<Button className='edit-button' variant='text' size='small' hidden={comment.usIdx != 1} onClick={() => EditClick(comment)}>
-										{/* (!) 로그인한 유저idx로 수정 */}
+									<Button className='edit-button' variant='text' size='small' hidden={comment.usIdx != token.USIDX} onClick={() => EditClick(comment)}>
 										수정
 									</Button>
 									<Button className='delete-button' variant='text' color='error' size='small' onClick={() => removeComment(comment.id)}>

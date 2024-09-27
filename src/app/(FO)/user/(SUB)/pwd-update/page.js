@@ -1,36 +1,42 @@
 "use client";
 import Button from "@/components/button/Button";
 import Input from "@/components/form/Input";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios"; // axios 임포트 추가
 import { useRouter } from "next/navigation";
+import { getToken } from "@/app/util/token/token";
 
 export default function page() {
-	const login = 1;
+	const [login, setLogin] = useState(null); // 초기값을 null로 설정
 	const [newPwd, setNewPwd] = useState("");
 	const [confirmPwd, setConfirmPwd] = useState("");
 	const [errorMessage, setErrorMessage] = useState("");
 	const router = useRouter(); // router 사용
 
-	const API_URL = `/api/jobseeker/password/${login}`;
-
+	// 비밀번호 변경 요청 함수
 	function send() {
-		axios({
-			url: API_URL,
-			method: "put",
-			params: {
-				newPwd: newPwd,
-			},
-		})
-			.then((res) => {
-				alert("비밀번호가 변경되었습니다");
-				router.push(`/user/mypage`); // 비밀번호 변경 후 페이지 이동
+		if (login !== null) {
+			const API_URL = `/api/jobseeker/password/${login}`;
+			axios({
+				url: API_URL,
+				method: "put",
+				params: {
+					newPwd: newPwd,
+				},
 			})
-			.catch((error) => {
-				alert("에러가 발생했습니다.");
-			});
+				.then((res) => {
+					alert("비밀번호가 변경되었습니다");
+					router.push(`/user`); // 비밀번호 변경 후 페이지 이동
+				})
+				.catch((error) => {
+					alert("에러가 발생했습니다.");
+				});
+		} else {
+			alert("로그인이 필요합니다.");
+		}
 	}
 
+	// 비밀번호 변경 제출 함수
 	const handleSubmit = () => {
 		if (newPwd !== confirmPwd) {
 			setErrorMessage("새 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
@@ -39,6 +45,14 @@ export default function page() {
 			send();
 		}
 	};
+
+	// login 값을 가져오고 설정하는 useEffect
+	useEffect(() => {
+		getToken().then((res) => {
+			setLogin(res.IDX); // login 값 설정
+			console.log(res);
+		});
+	}, []);
 
 	return (
 		<div className='bg-white p-6 rounded-lg shadow-lg flex-1'>

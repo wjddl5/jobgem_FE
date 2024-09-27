@@ -1,3 +1,4 @@
+import { useRouter } from 'next/navigation';
 import { useFormContext } from 'react-hook-form';
 import { companyJoin } from '../action/RegAction';
 import JoinButton from '../component/JoinButton';
@@ -9,9 +10,13 @@ import UserForm from '../component/form/UserForm';
 
 export default function CompanyReg() {
   const { handleSubmit, reset } = useFormContext();
-  
-  const onSubmit = (data) => {
-    companyJoin(data);
+  const router = useRouter();
+
+  const onSubmit = async (data) => {
+    const result = await companyJoin(data);
+    if(result == "회원가입 성공") {
+      router.push('/login');
+    }
     reset();
   };
 

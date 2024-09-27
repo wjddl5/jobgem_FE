@@ -4,7 +4,13 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 
 export default function Page() {
-	const login = 1;
+	const [login, setLogin] = useState("0");
+	useEffect(() => {
+		getToken().then((res) => {
+			setLogin(res.IDX);
+			console.log(res);
+		});
+	}, []);
 	const router = useRouter();
 	const API_URL = `/api/jobseeker/account`;
 

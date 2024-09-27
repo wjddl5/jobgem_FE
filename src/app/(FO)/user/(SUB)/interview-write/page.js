@@ -1,20 +1,27 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Input from "@/components/form/Input";
-import SideMenu from "@/components/sidemenu/SideMenu";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { getToken } from "@/app/util/token/token";
 
 export default function Page() {
-	const login = 1;
+	const [login, setLogin] = useState(null); // 초기값을 null로 설정
 	const router = useRouter();
 
 	const [coIdx, setCoIdx] = useState("");
-	const [joIdx, setJoIdx] = useState("");
 	const [company, setCompany] = useState([]);
 	const [inContent, setInContent] = useState("");
 	const [inLevel, setInLevel] = useState(0);
 
+	// login 값이 있을 때 토큰을 가져오는 비동기 함수
+	useEffect(() => {
+		getToken().then((res) => {
+			setLogin(res.IDX); // login 값 설정
+			console.log(res);
+		});
+	}, []);
+
+	// 회사 리스트 가져오기
 	function getCompany() {
 		axios.get("/api/jobseeker/companies").then((res) => {
 			setCompany(res.data);
@@ -25,28 +32,33 @@ export default function Page() {
 		getCompany();
 	}, []);
 
+	// 인터뷰 작성 함수
 	function send() {
 		if (!coIdx) {
 			alert("회사명을 선택해 주세요.");
 			return;
 		}
-		axios({
-			url: "/api/jobseeker/interview",
-			method: "post",
-			params: {
-				joIdx: login,
-				coIdx: coIdx,
-				inContent: inContent,
-				inLevel: inLevel,
-			},
-		})
-			.then((res) => {
-				alert("작성 완료");
-				router.push(`/user/interview-list`);
+		if (login !== null) {
+			axios({
+				url: "/api/jobseeker/interview",
+				method: "post",
+				params: {
+					joIdx: login, // login 값 전달
+					coIdx: coIdx,
+					inContent: inContent,
+					inLevel: inLevel,
+				},
 			})
-			.catch((error) => {
-				alert("에러가 발생했습니다.");
-			});
+				.then((res) => {
+					alert("작성 완료");
+					router.push(`/user/interview-list`);
+				})
+				.catch((error) => {
+					alert("에러가 발생했습니다.");
+				});
+		} else {
+			alert("로그인이 필요합니다.");
+		}
 	}
 
 	// 난이도 선택 핸들러

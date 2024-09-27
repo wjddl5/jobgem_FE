@@ -1,31 +1,69 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import { decode } from 'js-base64';
 
-export function middleware(request) {
-	const url = request.nextUrl.clone();
+const AUTH_PAGES = ['/', '/login'];
+const LOGIN_PAGE = '/login';
+const MAIN_PAGE = '/';
 
-	// /company로 시작하는 경로에 대한 요청을 체크
-	if (url.pathname.startsWith("/company")) {
-		// /login으로 리다이렉트
-		url.pathname = "/login";
+export async function middleware(req) {
+	const { pathname } = req.nextUrl;
+	const cookie = cookies();
+	const accessToken = cookie.get('accessToken');
+	const method = req.method;
+	let payloadObject;
 
-		// 응답 생성
-		const response = NextResponse.redirect(url);
+	// accessToken -> JSON변환
+	if (accessToken) {
+		const payload = accessToken.value.split('.')[1];
+		const decodedPayload = decode(payload);
+		payloadObject = JSON.parse(decodedPayload);
+	}
+	//===
 
-		// "text" 쿠키를 1로 설정
-		response.cookies.set("text", "1", {
-			httpOnly: true, // 클라이언트에서 접근 불가하게 설정 (보안)
-			path: "/", // 모든 경로에 적용
-			maxAge: 60 * 60, // 쿠키 유효기간 1시간 설정 (옵션)
-		});
-
-		return response;
+	// 비회원이 접근 가능한 페이지 (메인, 로그인, POST 메서드로 시작하는 페이지)
+	if (AUTH_PAGES.includes(pathname) || method === 'POST') {
+		if (accessToken) {
+			// 로그인 상태에서 로그인 페이지로 접근 시 메인 페이지로 리다이렉트
+			if (pathname === LOGIN_PAGE) {
+				return NextResponse.redirect(new URL('/', req.url));
+			}
+		}
+		// 비회원 접근 허용
+		return NextResponse.next();
 	}
 
-	// 기본적으로 요청을 통과시킴
+	// /user 경로로 시작하는 경우 로그인 필요
+	// usType이 일치하지 않을 경우 메인페이지로 이동
+	if (pathname.startsWith('/user')) {
+		if (!accessToken) {
+			return NextResponse.redirect(new URL(LOGIN_PAGE, req.url));
+		}
+		if (payloadObject.ROLE != 1) {
+			return NextResponse.redirect(new URL(MAIN_PAGE, req.url));
+		}
+	}
+
+	// /company 경로로 시작하는 경우
+	if (pathname.startsWith('/company')) {
+		if (!accessToken) {
+			return NextResponse.redirect(new URL(LOGIN_PAGE, req.url));
+		}
+		if (payloadObject.ROLE != 2) {
+			return NextResponse.redirect(new URL(MAIN_PAGE, req.url));
+		}
+	}
+
+	// /admin 경로로 시작하는 경우
+	if (pathname.startsWith('/admin')) {
+		if (!accessToken) {
+			return NextResponse.redirect(new URL(LOGIN_PAGE, req.url));
+		}
+		if (payloadObject.ROLE != 0) {
+			return NextResponse.redirect(new URL(MAIN_PAGE, req.url));
+		}
+	}
+
+	// 그 외 모든 경우 요청을 정상적으로 진행
 	return NextResponse.next();
 }
-
-// 이 미들웨어가 작동할 경로 설정
-export const config = {
-	matcher: ["/company/:path*"],
-};
