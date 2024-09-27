@@ -6,7 +6,7 @@ import axios from "axios";
 
 function CardLayout({list}) {
     return (
-        <div className="relative p-20 lg:p-20 ">
+        <div className="relative p-8 lg:p-8 ">
             <div className="bg-cover w-full flex justify-center items-center">
                 <div className="w-full bg-white bg-opacity-40 backdrop-filter backdrop-blur-lg">
                     <div className="w-12/12 mx-auto rounded-2xl bg-white bg-opacity-40 backdrop-filter backdrop-blur-lg">

@@ -123,29 +123,30 @@ export default function page() {
     };
 
     return (
-        <Paper sx={{ width: '90%', overflow: 'hidden', mt: 0, boxShadow: 3, padding: 10, bgcolor: 'background.paper', margin: 'auto' }}>
+        <Paper sx={{ width: '100%', overflow: 'hidden', mt: 0, boxShadow: 3, padding: 5, bgcolor: 'background.paper', margin: 'auto' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, mt: 4 }}>
-                <Typography variant="h4" component="div" sx={{ fontWeight: 'bold', color: 'black' }}>
+                <Typography variant="h4" component="div" sx={{ fontWeight: 'bold', color: 'black', fontFamily: 'pl,sans-serif',fontSize: 30 ,ml: 2}}>
                     공고 관리
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 1, bgcolor: 'common.white', p: 0.5, borderRadius: 1 }}>
                     <FormControl size="small" sx={{ width: '15ch' }}>
-                        <InputLabel id="title">카테고리</InputLabel>
+                        <InputLabel id="title" sx={{fontFamily: 'pl,sans-serif'}}>카테고리</InputLabel>
                         <Select
                             labelId="category-select-label"
                             id="category-select"
                             value={searchType}
                             label="카테고리"
                             onChange={handleSearchTypeChange}
+                            sx={{fontFamily: 'pl,sans-serif'}}
                         >
                             <MenuItem value="" disabled>
                                 <em>카테고리 선택</em>
                             </MenuItem>
-                            <MenuItem value="title">제목</MenuItem>
-                            <MenuItem value="content">내용</MenuItem>
-                            <MenuItem value="date">등록날짜</MenuItem>
-                            <MenuItem value="deadline">마감날짜</MenuItem>
-                            <MenuItem value="sal">월급</MenuItem>
+                            <MenuItem sx={{fontFamily: 'pl,sans-serif'}} value="title">제목</MenuItem>
+                            <MenuItem sx={{fontFamily: 'pl,sans-serif'}} value="content">내용</MenuItem>
+                            <MenuItem sx={{fontFamily: 'pl,sans-serif'}} value="date">등록날짜</MenuItem>
+                            <MenuItem sx={{fontFamily: 'pl,sans-serif'}} value="deadline">마감날짜</MenuItem>
+                            <MenuItem sx={{fontFamily: 'pl,sans-serif'}} value="sal">월급</MenuItem>
                         </Select>
                     </FormControl>
                     {isSalaryRange ? (
