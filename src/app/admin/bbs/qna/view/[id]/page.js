@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import styles from '/public/css/board.css';
 import { Button, TextField } from '@mui/material';
+import { getToken } from '@/app/util/token/token';
 
 // (관리자) 문의사항 게시글 상세보기
 export default function page(props) {
@@ -16,7 +17,7 @@ export default function page(props) {
 	const [commentList, setCommentList] = useState([]);
 	const [commentContent, setCommentContent] = useState('');
 	const API_URL = `/api/bbs/${props.params.id}`;
-	const [token, setToken] = useState(null);
+	const [token, setToken] = useState({});
 
 	useEffect(() => {
 		getToken().then((res) => {
@@ -26,7 +27,7 @@ export default function page(props) {
 
 	useEffect(() => {
 		getData();
-	}, []);
+	}, [token]);
 
 	function getData() {
 		axios

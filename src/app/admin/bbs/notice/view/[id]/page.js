@@ -17,7 +17,7 @@ export default function page(props) {
 	const [commentList, setCommentList] = useState([]);
 	const [commentContent, setCommentContent] = useState('');
 	const API_URL = `/api/bbs/${props.params.id}`;
-	const [token, setToken] = useState(null);
+	const [token, setToken] = useState({});
 
 	useEffect(() => {
 		getToken().then((res) => {
@@ -27,7 +27,7 @@ export default function page(props) {
 
 	useEffect(() => {
 		getData();
-	}, []);
+	}, [token]);
 
 	function getData() {
 		axios
