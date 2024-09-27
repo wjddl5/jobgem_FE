@@ -45,7 +45,6 @@ function EnhancedTable() {
 
 	function getBlockList() {
 		axios.get(api_url).then((response) => {
-			console.log(response.data);
 			setAr(response.data.content);
 			setTotalPage(response.data.totalPages);
 			setPage(response.data.pageable.pageNumber);
@@ -76,7 +75,6 @@ function EnhancedTable() {
 	const changePage = (event, value) => {
 		setPage(value - 1);
 		setApiUrl('/api/admin/blocked-jobseekers?size=10&page=' + (value - 1));
-		getBlockList();
 		setChkSet(new Set());
 		setChkAll(false);
 	};
@@ -138,34 +136,34 @@ function EnhancedTable() {
 	return (
 		<Paper sx={{ width: '100%', overflow: 'hidden', mt: 3, boxShadow: 3, padding: 5 }}>
 			<Toolbar sx={{ pl: { sm: 2 }, pr: { xs: 1, sm: 1 } }}>
-				<Typography sx={{ flex: '1 1 100%', fontWeight: 'bold' }} variant='h6' id='tableTitle' component='div'>
+				<Typography sx={{ flex: '1 1 100%', fontWeight: 'bold',fontFamily: 'pl,sans-serif',fontSize: 30 }} variant="h6" id="tableTitle" component="div" >
 					블랙 리스트
 				</Typography>
 				<Box sx={{ display: 'flex', gap: 1, bgcolor: 'common.white', p: 0.5, borderRadius: 1 }}>
 					<FormControl size='small' sx={{ width: '15ch' }}>
-						<InputLabel id='category-select-label'>카테고리</InputLabel>
-						<Select labelId='category-select-label' id='category-select' value={searchType} label='카테고리' onChange={(e) => setSearchType(e.target.value)}>
-							<MenuItem value='bldate'>차단일</MenuItem>
-							<MenuItem value='blcontent'>차단사유</MenuItem>
-							<MenuItem value='name'>회원명</MenuItem>
-							<MenuItem value='birth'>생년월일</MenuItem>
-							<MenuItem value='tel'>전화번호</MenuItem>
-							<MenuItem value='address'>주소</MenuItem>
-							<MenuItem value='edu'>학력</MenuItem>
-							<MenuItem value='sal'>월급</MenuItem>
-							<MenuItem value='gender'>성별</MenuItem>
-							<MenuItem value='joinDate'>가입일자</MenuItem>
-							<MenuItem value='leaveDate'>탈퇴일자</MenuItem>
+						<InputLabel id='category-select-label' sx={{fontFamily: 'pl,sans-serif'}}>카테고리</InputLabel>
+						<Select labelId='category-select-label' id='category-select' value={searchType} sx={{fontFamily: 'pl,sans-serif'}} label='카테고리' onChange={(e) => setSearchType(e.target.value)}>
+							<MenuItem value='bldate' sx={{fontFamily: 'pl,sans-serif'}}>차단일</MenuItem>
+							<MenuItem value='blcontent' sx={{fontFamily: 'pl,sans-serif'}}>차단사유</MenuItem>
+							<MenuItem value='name' sx={{fontFamily: 'pl,sans-serif'}}>회원명</MenuItem>
+							<MenuItem value='birth' sx={{fontFamily: 'pl,sans-serif'}}>생년월일</MenuItem>
+							<MenuItem value='tel' sx={{fontFamily: 'pl,sans-serif'}}>전화번호</MenuItem>
+							<MenuItem value='address' sx={{fontFamily: 'pl,sans-serif'}}>주소</MenuItem>
+							<MenuItem value='edu' sx={{fontFamily: 'pl,sans-serif'}}>학력</MenuItem>
+							<MenuItem value='sal' sx={{fontFamily: 'pl,sans-serif'}}>월급</MenuItem>
+							<MenuItem value='gender' sx={{fontFamily: 'pl,sans-serif'}}>성별</MenuItem>
+							<MenuItem value='joinDate' sx={{fontFamily: 'pl,sans-serif'}}>가입일자</MenuItem>
+							<MenuItem value='leaveDate' sx={{fontFamily: 'pl,sans-serif'}}>탈퇴일자</MenuItem>
 						</Select>
 					</FormControl>
 					<TextField label='검색' variant='outlined' size='small' value={searchValue} onKeyDown={handleKeyDown} onChange={(e) => setSearchValue(e.target.value)} sx={{ width: '25ch' }} />
 					<IconButton sx={{ p: '10px' }} aria-label='search'>
 						<SearchIcon onClick={handleSearch} />
 					</IconButton>
-					<Button variant='contained' color='info' onClick={handleAdd}>
+					<Button variant='contained' color='info' onClick={handleAdd} sx={{fontFamily: 'pl,sans-serif'}}>
 						추가
 					</Button>
-					<Button variant='contained' color='error' onClick={() => handleDelete()}>
+					<Button variant='contained' color='error' onClick={() => handleDelete()} sx={{fontFamily: 'pl,sans-serif'}}>
 						삭제
 					</Button>
 				</Box>
@@ -177,40 +175,40 @@ function EnhancedTable() {
 							<TableCell sx={{ width: '50px', color: 'common.white', fontWeight: 'medium' }} align='center'>
 								<Checkbox checked={chkAll} onChange={allCheckChange} color='primary' style={{ color: 'white' }} />
 							</TableCell>
-							<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+							<TableCell sx={{ width: '180px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 								차단일
 							</TableCell>
-							<TableCell sx={{ width: '250px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+							<TableCell sx={{ width: '250px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 								차단사유
 							</TableCell>
-							<TableCell sx={{ width: '150px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+							<TableCell sx={{ width: '150px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 								회원명
 							</TableCell>
-							<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+							<TableCell sx={{ width: '150px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 								생년월일
 							</TableCell>
-							<TableCell sx={{ width: '120px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+							<TableCell sx={{ width: '200px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 								전화번호
 							</TableCell>
-							<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+							<TableCell sx={{ width: '180px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 								주소
 							</TableCell>
-								<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								<TableCell sx={{ width: '180px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 								학력
 							</TableCell>
-								<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 								월급
 							</TableCell>
-							<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+							<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 								성별
 							</TableCell>
-							<TableCell sx={{ width: '150px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+							<TableCell sx={{ width: '150px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 								사진
 							</TableCell>
-							<TableCell sx={{ width: '150px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+							<TableCell sx={{ width: '250px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 								가입일자
 							</TableCell>
-							<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+							<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 								탈퇴여부
 							</TableCell>
 						</TableRow>
@@ -221,18 +219,18 @@ function EnhancedTable() {
 								<TableCell align='center'>
 									<Checkbox checked={chkSet.has(user.id)} onChange={(e) => checkChange(e, user.id)} />
 								</TableCell>
-								<TableCell align='center'>{user.blDate}</TableCell>
-								<TableCell align='center'>{user.blContent.length > 10 ? user.blContent.substring(0, 10) + '...' : user.blContent}</TableCell>
-								<TableCell align='center'>{user.jobseeker.joName}</TableCell>
-								<TableCell align='center'>{user.jobseeker.joBirth}</TableCell>
-								<TableCell align='center'>{user.jobseeker.joTel}</TableCell>
-								<TableCell align='center'>{user.jobseeker.joAddress}</TableCell>
-								<TableCell align='center'>{user.jobseeker.joEdu}</TableCell>
-								<TableCell align='center'>{user.jobseeker.joSal}</TableCell>
-								<TableCell align='center'>{user.jobseeker.joGender}</TableCell>
-								<TableCell align="center">{user.jobseeker.joImgUrl == null ? '없음' : <img src={user.jobseeker.joImgUrl} alt="회원사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
-								<TableCell align='center'>{user.jobseeker.user.usJoinDate}</TableCell>
-								<TableCell align='center'>{user.jobseeker.user.usLeaveDate == null ? '활동중' : user.jobseeker.user.usLeaveDate}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{user.blDate}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{user.blContent.length > 10 ? user.blContent.substring(0, 10) + '...' : user.blContent}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{user.jobseeker.joName}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{user.jobseeker.joBirth}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{user.jobseeker.joTel}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{user.jobseeker.joAddress.length > 10 ? user.jobseeker.joAddress.substring(0, 10) + '...' : user.jobseeker.joAddress}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{user.jobseeker.joEdu.length > 10 ? user.jobseeker.joEdu.substring(0, 10) + '...' : user.jobseeker.joEdu}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{user.jobseeker.joSal}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{user.jobseeker.joGender}</TableCell>
+								<TableCell align="center" sx={{fontFamily: 'pl,sans-serif'}}>{user.jobseeker.joImgUrl == null ? '없음' : <img src={user.jobseeker.joImgUrl} alt="회원사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{user.jobseeker.user.usJoinDate}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{user.jobseeker.user.usLeaveDate == null ? '활동중' : user.jobseeker.user.usLeaveDate}</TableCell>
 							</TableRow>
 						))}
 					</TableBody>

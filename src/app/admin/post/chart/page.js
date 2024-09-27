@@ -18,10 +18,12 @@ export default function AdminDashboard() {
 		const fetchData = async () => {
 			try {
 				const response = await axios.get(api_url);
-				setPost(response.data);
-				setDate(response.data.map((item) => ({ poDate: item.poDate })));
-				setType(response.data.map((item) => ({ type: item.poSubType })));
-				setLocation(response.data.map((item) => ({ location: item.poAddr })));
+				const posts = response.data;
+				setPost(posts);
+				setDate(posts.map((item) => ({ poDate: item.poDate })));
+				setType(posts.map((item) => ({ type: item.poSubType })));
+				setLocation(posts.map((item) => ({ location: item.poAddr })));
+				getFilteredPosts("week", posts);
 			} catch (error) {
 				console.error('데이터 가져오기 오류:', error);
 			}
@@ -170,12 +172,12 @@ export default function AdminDashboard() {
 		getFilteredPosts(e.target.value);
 	};
 
-	function getFilteredPosts(date) {
+	function getFilteredPosts(date, posts = post) {
 		const period = date === 'week' ? 7 : date === 'month' ? 30 : 365;
 		const startDate = new Date();
 		const endDate = new Date();
 		startDate.setDate(endDate.getDate() - period);
-		const filteredPosts = post.filter((post) => {
+		const filteredPosts = posts.filter((post) => {
 			const postDate = new Date(post.poDate);
 			return postDate >= startDate && postDate <= endDate;
 		});
@@ -184,35 +186,35 @@ export default function AdminDashboard() {
 
 	return (
 		<Paper className='max-w-screen-2xl mx-auto p-4 space-y-6 '>
-			<h1 className='text-3xl font-bold mb-6 '>공고통계 </h1>
+			<Typography sx={{fontFamily: 'pl,sans-serif',fontSize: 30, fontWeight: 'bold', ml: 2}}>공고통계</Typography>
 
-			<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-				<Card className='flex flex-col justify-between p-2'>
-					<Typography variant='h5'>주간 공고 수</Typography>
+			<div className='grid grid-cols-1 md:grid-cols-2 gap-6 ' >
+				<Card className='flex flex-col justify-between p-20'>
+					<Typography variant='h5' sx={{fontFamily: 'pl,sans-serif',fontSize: 20, fontWeight: 'bold'}}>주간 공고 수</Typography>
 					<CardContent>
 						<Bar data={weeklyData} options={options} />
 					</CardContent>
-					<Typography variant='h5'>월간 공고 수</Typography>
+					<Typography variant='h5' sx={{fontFamily: 'pl,sans-serif',fontSize: 20, fontWeight: 'bold'}}>월간 공고 수</Typography>
 					<CardContent>
 						<Bar data={monthlyData} options={options} />
 					</CardContent>
-					<Typography variant='h5'>연간 공고 수</Typography>
+					<Typography variant='h5' sx={{fontFamily: 'pl,sans-serif',fontSize: 20, fontWeight: 'bold'}}>연간 공고 수</Typography>
 					<CardContent>
 						<Line data={yearlyData} options={options} />
 					</CardContent>
 				</Card>
 
-				<Card className='p-2'>
-					<Typography variant='h5'>업종별 분류</Typography>
+				<Card className='p-20'>
+					<Typography variant='h5' sx={{fontFamily: 'pl,sans-serif',fontSize: 20, fontWeight: 'bold'}}>업종별 분류</Typography>
 					<div className='flex justify-center items-center mt-5'>
-						<Typography variant='body2'>업종별 공고 분포</Typography>
+						<Typography variant='body2' sx={{fontFamily: 'pl,sans-serif',fontSize: 15, fontWeight: 'bold'}}>업종별 공고 분포</Typography>
 					</div>
 					<CardContent>
 						<Pie data={industryData} options={options} />
 					</CardContent>
-					<Typography variant='h5'>지역별 분류</Typography>
+					<Typography variant='h5' sx={{fontFamily: 'pl,sans-serif',fontSize: 20, fontWeight: 'bold'}}>지역별 분류</Typography>
 					<div className='flex justify-center items-center mt-5'>
-						<Typography variant='body2'>지역별 공고 분포</Typography>
+						<Typography variant='body2' sx={{fontFamily: 'pl,sans-serif',fontSize: 15, fontWeight: 'bold'}}>지역별 공고 분포</Typography>
 					</div>
 					<CardContent>
 						<Pie data={locationData} options={options} />
@@ -221,54 +223,54 @@ export default function AdminDashboard() {
 			</div>
 
 			<Card className='p-2'>
-				<div className='flex justify-between items-center'>
-					<Typography variant='h5'>최근 공고 목록</Typography>
-					<div className='flex items-center space-x-2 p-3'>
+				<div className='flex justify-between items-center p-3'>
+					<Typography variant='h5' sx={{fontFamily: 'pl,sans-serif',fontSize: 20, fontWeight: 'bold'}}>최근 공고 목록</Typography>
+					<div className='flex items-center space-x-2 '>
 						<FormControl size='small' sx={{ width: '15ch' }}>
-							<InputLabel id='week'>기간</InputLabel>
-							<Select labelId='period-select-label' id='period-select' label='기간' defaultValue='week' onChange={handlePeriodChange}>
-								<MenuItem value='week'>최근 1주일</MenuItem>
-								<MenuItem value='month'>최근 1개월</MenuItem>
-								<MenuItem value='year'>최근 1년</MenuItem>
+							<InputLabel sx={{fontFamily: 'pl,sans-serif',fontSize: 15, fontWeight: 'bold'}} id='week'>기간</InputLabel>
+							<Select labelId='period-select-label' id='period-select' label='기간' defaultValue='week' onChange={handlePeriodChange} sx={{fontFamily: 'pl,sans-serif'}}>
+								<MenuItem value='week' sx={{fontFamily: 'pl,sans-serif'}}>최근 1주일</MenuItem>
+								<MenuItem value='month' sx={{fontFamily: 'pl,sans-serif'}}>최근 1개월</MenuItem>
+								<MenuItem value='year' sx={{fontFamily: 'pl,sans-serif'}}>최근 1년</MenuItem>
 							</Select>
 						</FormControl>
 					</div>
 				</div>
 				<CardContent>
-					<Table>
+					<Table >
 						<TableHead>
 							<TableRow>
-								<TableCell>ID</TableCell>
-								<TableCell>제목</TableCell>
-								<TableCell>회사</TableCell>
-								<TableCell>등록일</TableCell>
-								<TableCell>마감일</TableCell>
-								<TableCell>급여</TableCell>
-								<TableCell>업종</TableCell>
-								<TableCell>지역</TableCell>
-								<TableCell>이메일</TableCell>
-								<TableCell>팩스</TableCell>
-								<TableCell>출근 시간</TableCell>
-								<TableCell>퇴근 시간</TableCell>
-								<TableCell>상태</TableCell>
+								<TableCell sx={{fontFamily: 'pl,sans-serif', fontWeight: 'bold', textAlign: 'center'}}>ID</TableCell>
+								<TableCell sx={{fontFamily: 'pl,sans-serif', fontWeight: 'bold', textAlign: 'center'}}>제목</TableCell>
+								<TableCell sx={{fontFamily: 'pl,sans-serif', fontWeight: 'bold', textAlign: 'center'}}>회사</TableCell>
+								<TableCell sx={{fontFamily: 'pl,sans-serif', fontWeight: 'bold', textAlign: 'center'}}>등록일</TableCell>
+								<TableCell sx={{fontFamily: 'pl,sans-serif', fontWeight: 'bold', textAlign: 'center'}}>마감일</TableCell>
+								<TableCell sx={{fontFamily: 'pl,sans-serif', fontWeight: 'bold', textAlign: 'center'}}>급여</TableCell>
+								<TableCell sx={{fontFamily: 'pl,sans-serif', fontWeight: 'bold', textAlign: 'center'}}>업종</TableCell>
+								<TableCell sx={{fontFamily: 'pl,sans-serif', fontWeight: 'bold', textAlign: 'center'}}>지역</TableCell>
+								<TableCell sx={{fontFamily: 'pl,sans-serif', fontWeight: 'bold', textAlign: 'center'}}>이메일</TableCell>
+								<TableCell sx={{fontFamily: 'pl,sans-serif', fontWeight: 'bold', textAlign: 'center'}}>팩스</TableCell>
+								<TableCell sx={{fontFamily: 'pl,sans-serif', fontWeight: 'bold', textAlign: 'center'}}>출근 시간</TableCell>
+								<TableCell sx={{fontFamily: 'pl,sans-serif', fontWeight: 'bold', textAlign: 'center'}}>퇴근 시간</TableCell>
+								<TableCell sx={{fontFamily: 'pl,sans-serif', fontWeight: 'bold', textAlign: 'center'}}>상태</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
 							{filteredPosts.map((post, index) => (
 								<TableRow key={index}>
-									<TableCell>{index + 1}</TableCell>
-									<TableCell>{post.poTitle}</TableCell>
-									<TableCell>{post.company.coName}</TableCell>
-									<TableCell>{post.poDate}</TableCell>
-									<TableCell>{post.poDeadline}</TableCell>
-									<TableCell>{post.poSal}</TableCell>
-									<TableCell>{post.poSubType}</TableCell>
-									<TableCell>{post.poAddr}</TableCell>
-									<TableCell>{post.poEmail}</TableCell>
-									<TableCell>{post.poFax}</TableCell>
-									<TableCell>{post.wsStartTime}</TableCell>
-									<TableCell>{post.wsEndTime}</TableCell>
-									<TableCell>{post.poState === 0 ? '모집중' : post.poState === 1 ? '모집완료' : '종료'}</TableCell>
+									<TableCell sx={{fontFamily: 'pl,sans-serif', textAlign: 'center'}}>{index + 1}</TableCell>
+									<TableCell sx={{fontFamily: 'pl,sans-serif', textAlign: 'center'}}>{post.poTitle}</TableCell>
+									<TableCell sx={{fontFamily: 'pl,sans-serif', textAlign: 'center'}}>{post.company.coName}</TableCell>
+									<TableCell sx={{fontFamily: 'pl,sans-serif', textAlign: 'center'}}>{post.poDate}</TableCell>
+									<TableCell sx={{fontFamily: 'pl,sans-serif', textAlign: 'center'}}>{post.poDeadline}</TableCell>
+									<TableCell sx={{fontFamily: 'pl,sans-serif', textAlign: 'center'}}>{post.poSal}</TableCell>
+									<TableCell sx={{fontFamily: 'pl,sans-serif', textAlign: 'center'}}>{post.poSubType}</TableCell>
+									<TableCell sx={{fontFamily: 'pl,sans-serif', textAlign: 'center'}}>{post.poAddr}</TableCell>
+									<TableCell sx={{fontFamily: 'pl,sans-serif', textAlign: 'center'}}>{post.poEmail}</TableCell>
+									<TableCell sx={{fontFamily: 'pl,sans-serif', textAlign: 'center'}}>{post.poFax}</TableCell>
+									<TableCell sx={{fontFamily: 'pl,sans-serif', textAlign: 'center'}}>{post.wsStartTime === null ? '미지정' : post.wsStartTime}</TableCell>
+									<TableCell sx={{fontFamily: 'pl,sans-serif', textAlign: 'center'}}>{post.wsEndTime === null ? '미지정' : post.wsEndTime}</TableCell>
+									<TableCell sx={{fontFamily: 'pl,sans-serif', textAlign: 'center'}}>{post.poState === 0 ? '모집중' : post.poState === 1 ? '모집완료' : '종료'}</TableCell>
 								</TableRow>
 							))}
 						</TableBody>

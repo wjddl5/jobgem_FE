@@ -93,7 +93,7 @@ export default function Page(props) {
 			return;
 		} else {
 			try {
-				const response = await axios.post('/api/admin/company-blocks', {}, {
+				const response = await axios.post('/api/admin/company-blocks',{}, {
 					params: {
 						id: company.id,
 						value: reason,
@@ -138,34 +138,31 @@ export default function Page(props) {
 	return (
 		<Paper sx={{ width: '100%', overflow: 'hidden', mt: 3, boxShadow: 3, padding: 5 }}>
 			<Toolbar sx={{ pl: { sm: 2 }, pr: { xs: 1, sm: 1 } }}>
-				<Typography sx={{ flex: '1 1 100%', fontWeight: 'bold' }} variant='h6' id='tableTitle' component='div'>
+				<Typography sx={{ flex: '1 1 100%', fontWeight: 'bold',fontFamily: 'pl,sans-serif',fontSize: 30 }} variant='h6' id='tableTitle' component='div'>
 					기업 블랙리스트 추가
 				</Typography>
 			</Toolbar>
-			<Box sx={{ display: 'flex', gap: 2 }}>
+			<Box sx={{ display: 'flex', gap: 2 ,my: 3}}>
 				<Box sx={{ width: '30%', borderRight: '1px solid #e0e0e0', paddingRight: 2 }}>
-					<Typography variant='h6' gutterBottom>
+					<Typography variant='h6' gutterBottom sx={{fontFamily: 'pl,sans-serif',fontSize: 20, fontWeight: 'bold'}}>
 						기업선택
 					</Typography>
-					<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 2, mt: 2 }}>
-						<Typography variant='subtitle1' gutterBottom>
-							기업 검색
-						</Typography>
+					<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 2, mt: 3 }}>
 						<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 							<FormControl size='small' sx={{ minWidth: 120 }}>
-								<InputLabel id='category-select-label'>카테고리</InputLabel>
-								<Select labelId='category-select-label' id='category-select' value={searchType} label='카테고리' onChange={(e) => setSearchType(e.target.value)}>
-									<MenuItem value='name'>기업명</MenuItem>
-									<MenuItem value='number'>기업번호</MenuItem>
-									<MenuItem value='tel'>전화번호</MenuItem>
-									<MenuItem value='address'>주소</MenuItem>
-									<MenuItem value='type'>종류</MenuItem>
-									<MenuItem value='open'>개업일</MenuItem>
-									<MenuItem value='employee'>직원수</MenuItem>
-									<MenuItem value='sales'>매출</MenuItem>
-									<MenuItem value='score'>평점</MenuItem>
-									<MenuItem value='managerName'>담당자이름</MenuItem>
-									<MenuItem value='managerTel'>담당자전화번호</MenuItem>
+								<InputLabel id='category-select-label' sx={{fontFamily: 'pl,sans-serif'}}>카테고리</InputLabel>
+								<Select labelId='category-select-label' id='category-select' value={searchType} label='카테고리' onChange={(e) => setSearchType(e.target.value)} sx={{fontFamily: 'pl,sans-serif'}}>
+									<MenuItem value='name' sx={{fontFamily: 'pl,sans-serif'}}>기업명</MenuItem>
+									<MenuItem value='number' sx={{fontFamily: 'pl,sans-serif'}}>기업번호</MenuItem>
+									<MenuItem value='tel' sx={{fontFamily: 'pl,sans-serif'}}>전화번호</MenuItem>
+									<MenuItem value='address' sx={{fontFamily: 'pl,sans-serif'}}>주소</MenuItem>
+									<MenuItem value='type' sx={{fontFamily: 'pl,sans-serif'}}>종류</MenuItem>
+									<MenuItem value='open' sx={{fontFamily: 'pl,sans-serif'}}>개업일</MenuItem>
+									<MenuItem value='employee' sx={{fontFamily: 'pl,sans-serif'}}>직원수</MenuItem>
+									<MenuItem value='sales' sx={{fontFamily: 'pl,sans-serif'}}>매출</MenuItem>
+									<MenuItem value='score' sx={{fontFamily: 'pl,sans-serif'}}>평점</MenuItem>
+									<MenuItem value='managerName' sx={{fontFamily: 'pl,sans-serif'}}>담당자이름</MenuItem>
+									<MenuItem value='managerTel' sx={{fontFamily: 'pl,sans-serif'}}>담당자전화번호</MenuItem>
 								</Select>
 							</FormControl>
 							<TextField label='검색' variant='outlined' size='small' value={searchValue} sx={{ flexGrow: 1 }} onKeyDown={handleKeyDown} onChange={(e) => setSearchValue(e.target.value)} />
@@ -181,17 +178,17 @@ export default function Page(props) {
 									primary={company.coName}
 									secondary={
 										<>
-											<Typography variant='body2'>기업명: {company.coName}</Typography>
-											<Typography variant='body2'>기업번호: {company.coNumber}</Typography>
-											<Typography variant='body2'>주소: {company.coAddress}</Typography>
-											<Typography variant='body2'>전화번호: {company.coTel}</Typography>
-											<Typography variant='body2'>종류: {company.coType}</Typography>
-											<Typography variant='body2'>개업일: {company.coOpen}</Typography>
-											<Typography variant='body2'>직원수: {company.coEmployee}</Typography>
-											<Typography variant='body2'>매출: {company.coSales}</Typography>
-											<Typography variant='body2'>평점: {company.coScore}</Typography>
-											<Typography variant='body2'>담당자 이름: {company.coManagerName}</Typography>
-											<Typography variant='body2'>담당자 전화번호: {company.coManagerTel}</Typography>
+											<Typography variant='body2' sx={{fontFamily: 'pl,sans-serif'}}>기업명: {company.coName}</Typography>
+											<Typography variant='body2' sx={{fontFamily: 'pl,sans-serif'}}>기업번호: {company.coNumber}</Typography>
+											<Typography variant='body2' sx={{fontFamily: 'pl,sans-serif'}}>주소: {company.coAddress}</Typography>
+											<Typography variant='body2' sx={{fontFamily: 'pl,sans-serif'}}>전화번호: {company.coTel}</Typography>
+											<Typography variant='body2' sx={{fontFamily: 'pl,sans-serif'}}>종류: {company.coType}</Typography>
+											<Typography variant='body2' sx={{fontFamily: 'pl,sans-serif'}}>개업일: {company.coOpen}</Typography>
+											<Typography variant='body2' sx={{fontFamily: 'pl,sans-serif'}}>직원수: {company.coEmployee}</Typography>
+											<Typography variant='body2' sx={{fontFamily: 'pl,sans-serif'}}>매출: {company.coSales}</Typography>
+											<Typography variant='body2' sx={{fontFamily: 'pl,sans-serif'}}>평점: {company.coScore}</Typography>
+											<Typography variant='body2' sx={{fontFamily: 'pl,sans-serif'}}>담당자 이름: {company.coManagerName}</Typography>
+											<Typography variant='body2' sx={{fontFamily: 'pl,sans-serif'}}>담당자 전화번호: {company.coManagerTel}</Typography>
 											<Divider sx={{ margin: '20px 0' }} />
 										</>
 									}
@@ -201,27 +198,27 @@ export default function Page(props) {
 					</List>
 				</Box>
 				<Box sx={{ width: '70%', paddingLeft: 2 }}>
-					<Typography variant='h6' gutterBottom>
+					<Typography variant='h6' gutterBottom sx={{fontFamily: 'pl,sans-serif',fontSize: 20, fontWeight: 'bold'}}>
 						블랙리스트 추가
 					</Typography>
 					<form onSubmit={handleSubmit}>
 						<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-							<Typography variant='subtitle1'>선택한 기업</Typography>
+							<Typography variant='subtitle1' sx={{fontFamily: 'pl,sans-serif',fontSize: 15, fontWeight: 'bold'}}>선택한 기업</Typography>
 							<TextField
 								variant='outlined'
 								fullWidth
-								value={company ? `${company.id} - ${company.coName} - ${company.coTel}` : '선택한 기업 정보'}
+								value={company ? `${company.coName} ( ${company.coAddress} / ${company.coType} )` : '선택한 기업 정보'}
 								InputProps={{
 									readOnly: true,
 								}}
 							/>
-							<Typography variant='subtitle1'>블랙리스트 사유 입력</Typography>
+							<Typography variant='subtitle1' sx={{fontFamily: 'pl,sans-serif',fontSize: 15, fontWeight: 'bold'}}>블랙리스트 사유 입력</Typography>
 							<TextField variant='outlined' multiline rows={15} value={reason} onChange={(e) => setReason(e.target.value)} />
 							<Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-								<Button variant='contained' color='primary' type='submit'>
+								<Button variant='contained' color='primary' type='submit' sx={{fontFamily: 'pl,sans-serif'}}>
 									추가
 								</Button>
-								<Button variant='contained' color='secondary' onClick={handleCancel}>
+								<Button variant='contained' color='secondary' onClick={handleCancel} sx={{fontFamily: 'pl,sans-serif'}}>
 									취소
 								</Button>
 							</Box>

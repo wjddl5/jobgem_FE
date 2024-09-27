@@ -71,8 +71,7 @@ function EnhancedTable() {
 	};
 	const changePage = (event, value) => {
 		setPage(value - 1); // 페이지 번호는 0부터 시작하므로 1을 빼줍니다.
-		setApiUrl('/api/company/blackList?size=10&page=' + (value - 1));
-		getBlockList();
+		setApiUrl('/api/admin/blocked-companies?size=10&page=' + (value - 1));
 		setChkSet(new Set());
 		setChkAll(false);
 	};
@@ -130,39 +129,38 @@ function EnhancedTable() {
 	return (
 		<Paper sx={{ width: '100%', overflow: 'hidden', mt: 3, boxShadow: 3, padding: 5 }}>
 			<Toolbar sx={{ pl: { sm: 2 }, pr: { xs: 1, sm: 1 } }}>
-				<Typography sx={{ flex: '1 1 100%', fontWeight: 'bold' }} variant='h6' id='tableTitle' component='div'>
+				<Typography sx={{ flex: '1 1 100%', fontWeight: 'bold',fontFamily: 'pl,sans-serif',fontSize: 30 }} variant='h6' id='tableTitle' component='div'>
 					기업 블랙 리스트
 				</Typography>
 				<Box sx={{ display: 'flex', gap: 1, bgcolor: 'common.white', p: 0.5, borderRadius: 1 }}>
 					<FormControl size='small' sx={{ width: '15ch' }}>
-						<InputLabel id='category-select-label'>카테고리</InputLabel>
-						<Select labelId='category-select-label' id='category-select' value={searchType} label='카테고리' onChange={(e) => setSearchType(e.target.value)}>
-							<MenuItem value='bldate'>차단일</MenuItem>
-							<MenuItem value='blcontent'>차단사유</MenuItem>
-							<MenuItem value='name'>기업명</MenuItem>
-							<MenuItem value='number'>기업번호</MenuItem>
-							<MenuItem value='tel'>전화번호</MenuItem>
-							<MenuItem value='address'>주소</MenuItem>
-							<MenuItem value='type'>종류</MenuItem>
-							<MenuItem value='open'>개업일</MenuItem>
-							<MenuItem value='employee'>직원수</MenuItem>
-							<MenuItem value='sales'>매출</MenuItem>
-							<MenuItem value='score'>평점</MenuItem>
-							<MenuItem value='managerName'>담당자이름</MenuItem>
-							<MenuItem value='managerTel'>담당자전화번호</MenuItem>
+						<InputLabel id='category-select-label' sx={{fontFamily: 'pl,sans-serif'}}>카테고리</InputLabel>
+						<Select labelId='category-select-label' id='category-select' value={searchType} label='카테고리' onChange={(e) => setSearchType(e.target.value)} sx={{fontFamily: 'pl,sans-serif'}}>
+							<MenuItem value='bldate' sx={{fontFamily: 'pl,sans-serif'}}>차단일</MenuItem>
+							<MenuItem value='blcontent' sx={{fontFamily: 'pl,sans-serif'}}>차단사유</MenuItem>
+							<MenuItem value='name' sx={{fontFamily: 'pl,sans-serif'}}>기업명</MenuItem>
+							<MenuItem value='number' sx={{fontFamily: 'pl,sans-serif'}}>기업번호</MenuItem>
+							<MenuItem value='tel' sx={{fontFamily: 'pl,sans-serif'}}>전화번호</MenuItem>
+							<MenuItem value='address' sx={{fontFamily: 'pl,sans-serif'}}>주소</MenuItem>
+							<MenuItem value='type' sx={{fontFamily: 'pl,sans-serif'}}>종류</MenuItem>
+							<MenuItem value='open' sx={{fontFamily: 'pl,sans-serif'}}>개업일</MenuItem>
+							<MenuItem value='employee' sx={{fontFamily: 'pl,sans-serif'}}>직원수</MenuItem>
+							<MenuItem value='sales' sx={{fontFamily: 'pl,sans-serif'}}>매출</MenuItem>
+							<MenuItem value='score' sx={{fontFamily: 'pl,sans-serif'}}>평점</MenuItem>
+							<MenuItem value='managerName' sx={{fontFamily: 'pl,sans-serif'}}>담당자이름</MenuItem>
+							<MenuItem value='managerTel' sx={{fontFamily: 'pl,sans-serif'}}>담당자전화번호</MenuItem>
 						</Select>
 					</FormControl>
-					<TextField label='검색' variant='outlined' size='small' value={searchValue} onKeyDown={handleKeyDown} onChange={(e) => setSearchValue(e.target.value)} sx={{ width: '25ch' }} />
+					<TextField label='검색' variant='outlined' size='small' value={searchValue} onKeyDown={handleKeyDown} onChange={(e) => setSearchValue(e.target.value)} sx={{ width: '25ch',fontFamily: 'pl,sans-serif' }} />
 					<IconButton sx={{ p: '10px' }} aria-label='search'>
 						<SearchIcon onClick={handleSearch} />
 					</IconButton>
-					<Button variant='contained' color='info' onClick={handleAdd}>
+					<Button variant='contained' color='info' onClick={handleAdd} sx={{fontFamily: 'pl,sans-serif'}}>
 						추가
 					</Button>
-					<Button variant='contained' color='error' onClick={handleDelete}>
+					<Button variant='contained' color='error' onClick={handleDelete} sx={{fontFamily: 'pl,sans-serif'}}>
 						삭제
 					</Button>
-					{/* <Button variant="contained" color="error">차단</Button> */}
 				</Box>
 			</Toolbar>
 			<TableContainer>
@@ -172,49 +170,49 @@ function EnhancedTable() {
 								<TableCell sx={{ width: '50px', color: 'common.white', fontWeight: 'medium' }} align='center'>
 									<Checkbox checked={chkAll} onChange={allCheckChange} color='primary' style={{ color: 'white' }} />
 								</TableCell>
-								<TableCell sx={{ width: '130px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								<TableCell sx={{ width: '200px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 									차단일
 								</TableCell>
-								<TableCell sx={{ width: '250px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								<TableCell sx={{ width: '250px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 									차단사유
 								</TableCell>
-								<TableCell sx={{ width: '150px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								<TableCell sx={{ width: '150px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 									기업명
 								</TableCell>
-								<TableCell sx={{ width: '130px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								<TableCell sx={{ width: '250px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 									기업번호
 								</TableCell>
-								<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								<TableCell sx={{ width: '180px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 									주소
 								</TableCell>
-								<TableCell sx={{ width: '130px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								<TableCell sx={{ width: '250px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 									전화번호
 								</TableCell>
-								<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								<TableCell sx={{ width: '170px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 									종류
 								</TableCell>
-								<TableCell sx={{ width: '130px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								<TableCell sx={{ width: '180px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 									개업일
 								</TableCell>
-								<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 									직원수
 								</TableCell>
-								<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 									사진
 								</TableCell>
-								<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								<TableCell sx={{ width: '120px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 									썸네일
 								</TableCell>
-								<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 									매출
 								</TableCell>
-								<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								<TableCell sx={{ width: '100px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 									평점
 								</TableCell>
-								<TableCell sx={{ width: '130px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								<TableCell sx={{ width: '170px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 									담당자 이름
 								</TableCell>
-								<TableCell sx={{ width: '150px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								<TableCell sx={{ width: '260px', color: 'common.white', fontWeight: 'medium',fontFamily: 'pl,sans-serif' }} align='center'>
 									담당자 전화번호
 								</TableCell>
 						</TableRow>
@@ -229,21 +227,21 @@ function EnhancedTable() {
 								<TableCell align='center'>
 									<Checkbox checked={chkSet.has(company.id)} onChange={(e) => checkChange(e, company.id)} />
 								</TableCell>
-								<TableCell align='center'>{company.blDate}</TableCell>
-								<TableCell align='center'>{company.blContent.length > 10 ? company.blContent.substring(0, 10) + '...' : company.blContent}</TableCell>
-								<TableCell align='center'>{company.company.coName}</TableCell>
-								<TableCell align='center'>{company.company.coNumber}</TableCell>
-								<TableCell align='center'>{company.company.coAddress}</TableCell>
-								<TableCell align='center'>{company.company.coTel}</TableCell>
-								<TableCell align='center'>{company.company.coType}</TableCell>
-								<TableCell align='center'>{company.company.coOpen}</TableCell>
-								<TableCell align='center'>{company.company.coEmployee}</TableCell>
-								<TableCell align="center">{company.company.coImgUrl == null ? '없음' : <img src={company.company.coImgUrl} alt="사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
-								<TableCell align="center">{company.company.coThumbImgUrl == null ? '없음' : <img src={company.company.coThumbImgUrl} alt="썸네일" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
-								<TableCell align='center'>{company.company.coSales.length > 10 ? company.company.coSales.substring(0, 10) + '...' : company.company.coSales}</TableCell>
-								<TableCell align='center'>{company.company.coScore}</TableCell>
-								<TableCell align='center'>{company.company.coManagerName}</TableCell>
-								<TableCell align='center'>{company.company.coManagerTel}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{company.blDate}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{company.blContent.length > 10 ? company.blContent.substring(0, 10) + '...' : company.blContent}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{company.company.coName}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{company.company.coNumber}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{company.company.coAddress.length > 10 ? company.company.coAddress.substring(0, 10) + '...' : company.company.coAddress}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{company.company.coTel}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{company.company.coType}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{company.company.coOpen}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{company.company.coEmployee}</TableCell>
+								<TableCell align="center" sx={{fontFamily: 'pl,sans-serif'}}>{company.company.coImgUrl == null ? '없음' : <img src={company.company.coImgUrl} alt="사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
+								<TableCell align="center" sx={{fontFamily: 'pl,sans-serif'}}>{company.company.coThumbImgUrl == null ? '없음' : <img src={company.company.coThumbImgUrl} alt="썸네일" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{company.company.coSales.length > 10 ? company.company.coSales.substring(0, 10) + '...' : company.company.coSales}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{company.company.coScore}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{company.company.coManagerName}</TableCell>
+								<TableCell align='center' sx={{fontFamily: 'pl,sans-serif'}}>{company.company.coManagerTel}</TableCell>
 							</TableRow>
 						))}
 					</TableBody>
