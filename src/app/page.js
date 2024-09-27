@@ -16,9 +16,6 @@ export default function () {
 			const res = await axios(`/api/jobseeker/posts/main?loadPage=${loadPage}`);
 			setPost((prevPost) => [...prevPost, ...res.data.content]);
 			console.log(res);
-			getToken().then((res) => {
-				console.log(res);
-			});
 
 			setHasMore(!res.data.last);
 		} catch (error) {
