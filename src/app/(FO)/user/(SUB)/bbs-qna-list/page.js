@@ -39,26 +39,28 @@ export default function page(props) {
 
 	// 함수
 	function getData() {
-		axios
-			.get(API_URL, {
-				params: {
-					page: page,
-					size: pageSize,
-					usIdx: token.USIDX,
-				},
-			})
-			.then((res) => {
-				setAr(res.data.content);
-				setTotalPage(res.data.totalPages);
-			})
-			.catch((e) => {
-				console.error('error:', e);
-			});
+		if (token) {
+			axios
+				.get(API_URL, {
+					params: {
+						page: page,
+						size: pageSize,
+						usIdx: token.USIDX,
+					},
+				})
+				.then((res) => {
+					setAr(res.data.content);
+					setTotalPage(res.data.totalPages);
+				})
+				.catch((e) => {
+					console.error('error:', e);
+				});
+		}
 	}
 
 	useEffect(() => {
 		getData();
-	}, [page]);
+	}, [page, token]);
 	//=========================
 
 	// 페이지
