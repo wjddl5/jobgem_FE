@@ -325,126 +325,121 @@ export default function page() {
 	//
 	// ================
 	// 페이지
+
 	return (
 		<>
-			<Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 550, boxShadow: 2 }}>
-				<Tabs orientation='vertical' variant='scrollable' value={value} onChange={handleChange} aria-label='Vertical tabs example' sx={{ borderRight: 1, borderColor: 'divider', width: 300 }}>
-					{loc_do.map((row) => (
-						<Tab
-							label={
-								row.id != editDoRow ? (
-									row.name
-								) : (
-									<div style={{ display: 'flex', alignItems: 'center' }}>
-										<TextField
-											style={{
-												width: '70%',
-												marginRight: 'auto',
-												minHeight: '46px',
-											}}
-											defaultValue={row.name}
-											onChange={changeEditDoName}
-										/>
-										<div style={{ display: 'flex', flexDirection: 'column' }}>
-											<Button size='small' style={{ marginBottom: '2px', height: '27px' }} onClick={() => saveEditDoName(row.id)}>
-												저장
-											</Button>
-											<Button size='small' style={{ height: '27px' }} color='error' onClick={() => removeDoName(row.id)}>
-												삭제
-											</Button>
-											{/* <Button size='small' style={{ height: '27px' }} color='error' onClick={() => setEditDoRow('')}>
-												취소
-											</Button> */}
-										</div>
-									</div>
-								)
-							}
-							key={row.id}
-							onClick={() => {
-								if (editDoRow != row.id) {
-									getGuSi(row.id);
-									setAddDoClick(false);
-									setSelectDoName(row.name);
-									setEditDoRow(row.id);
-									setLdIdx(row.id);
-								}
-							}}
-						/>
-					))}
-					<Tab
-						style={{ maxHeight: '50%', color: '#1976d2', fontWeight: 'bold' }}
-						onClick={() => {
-							addDoItem(false);
-							setEditDoRow('');
-						}}
-						disabled={addDoClick}
-						label={addDoClick ? '추가할 카테고리 입력' : <AddIcon />}
-					/>
-					{addDoClick ? (
-						<div style={{ display: 'flex', alignItems: 'center', width: '250px' }}>
-							<TextField
-								id='AddDoNameField'
-								style={{
-									width: '140px',
-									marginRight: '13px',
-									marginLeft: '16px',
-									minHeight: '46px',
-								}}
-								onChange={changeAddDoName}
-							/>
-							<div style={{ display: 'flex', flexDirection: 'column' }}>
-								<Button size='small' style={{ marginBottom: '2px', height: '27px' }} onClick={() => saveAddDoName()}>
-									저장
-								</Button>
-								<Button size='small' style={{ height: '27px' }} color='error' onClick={() => addDoItem(true)}>
-									취소
-								</Button>
-							</div>
-						</div>
+			<Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', flexDirection: 'column', height: 550, boxShadow: 2 }}>
+				<Toolbar
+					sx={[
+						{
+							pl: { sm: 2 },
+							pr: { xs: 1, sm: 1 },
+						},
+						chkSet.size > 0 && {
+							bgcolor: (theme) => alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
+						},
+					]}
+				>
+					{chkSet.size > 0 ? (
+						<Typography sx={{ flex: '1 1 100%' }} color='inherit' variant='subtitle1' component='div'>
+							{chkSet.size} selected
+						</Typography>
+					) : (
+						<Typography sx={{ flex: '1 1 100%' }} variant='h6' id='tableTitle' component='div' color='#000000DE'>
+							Location
+						</Typography>
+					)}
+
+					{chkSet.size > 0 ? (
+						<Tooltip title='Delete'>
+							<IconButton onClick={() => removeItem(chkSet)}>
+								<DeleteIcon />
+							</IconButton>
+						</Tooltip>
 					) : (
 						''
 					)}
-				</Tabs>
+				</Toolbar>
 
-				{/* 지역(구,시) 테이블 컴포넌트 */}
-				<div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-					<Toolbar
-						sx={[
-							{
-								pl: { sm: 2 },
-								pr: { xs: 1, sm: 1 },
-							},
-							chkSet.size > 0 && {
-								bgcolor: (theme) => alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-							},
-						]}
-					>
-						{chkSet.size > 0 ? (
-							<Typography sx={{ flex: '1 1 100%' }} color='inherit' variant='subtitle1' component='div'>
-								{chkSet.size} selected
-							</Typography>
-						) : (
-							<Typography sx={{ flex: '1 1 100%' }} variant='h6' id='tableTitle' component='div'>
-								Location
-							</Typography>
-						)}
-
-						{chkSet.size > 0 ? (
-							<Tooltip title='Delete'>
-								<IconButton
-									onClick={() => {
-										removeItem(chkSet);
+				{/* 탭과 테이블을 가로로 정렬하기 위한 컨테이너 */}
+				<Box sx={{ display: 'flex', flex: 1 }}>
+					<Tabs orientation='vertical' variant='scrollable' value={value} onChange={handleChange} aria-label='Vertical tabs example' sx={{ borderRight: 1, borderColor: 'divider', width: 300 }}>
+						{loc_do.map((row) => (
+							<Tab
+								label={
+									row.id != editDoRow ? (
+										row.name
+									) : (
+										<div style={{ display: 'flex', alignItems: 'center' }}>
+											<TextField
+												style={{
+													width: '70%',
+													marginRight: 'auto',
+													minHeight: '46px',
+												}}
+												defaultValue={row.name}
+												onChange={changeEditDoName}
+											/>
+											<div style={{ display: 'flex', flexDirection: 'column' }}>
+												<Button size='small' style={{ marginBottom: '2px', height: '27px' }} onClick={() => saveEditDoName(row.id)}>
+													저장
+												</Button>
+												<Button size='small' style={{ height: '27px' }} color='error' onClick={() => removeDoName(row.id)}>
+													삭제
+												</Button>
+											</div>
+										</div>
+									)
+								}
+								key={row.id}
+								onClick={() => {
+									if (editDoRow != row.id) {
+										getGuSi(row.id);
+										setAddDoClick(false);
+										setSelectDoName(row.name);
+										setEditDoRow(row.id);
+										setLdIdx(row.id);
+									}
+								}}
+							/>
+						))}
+						<Tab
+							style={{ maxHeight: '50%', color: '#1976d2', fontWeight: 'bold' }}
+							onClick={() => {
+								addDoItem(false);
+								setEditDoRow('');
+							}}
+							disabled={addDoClick}
+							label={addDoClick ? '추가할 카테고리 입력' : <AddIcon />}
+						/>
+						{addDoClick ? (
+							<div style={{ display: 'flex', alignItems: 'center', width: '250px' }}>
+								<TextField
+									id='AddDoNameField'
+									style={{
+										width: '140px',
+										marginRight: '13px',
+										marginLeft: '16px',
+										minHeight: '46px',
 									}}
-								>
-									<DeleteIcon />
-								</IconButton>
-							</Tooltip>
+									onChange={changeAddDoName}
+								/>
+								<div style={{ display: 'flex', flexDirection: 'column' }}>
+									<Button size='small' style={{ marginBottom: '2px', height: '27px' }} onClick={() => saveAddDoName()}>
+										저장
+									</Button>
+									<Button size='small' style={{ height: '27px' }} color='error' onClick={() => addDoItem(true)}>
+										취소
+									</Button>
+								</div>
+							</div>
 						) : (
 							''
 						)}
-					</Toolbar>
+					</Tabs>
 
-					<TableContainer>
+					{/* 지역(구,시) 테이블 컴포넌트 */}
+					<TableContainer sx={{ flex: 1 }}>
 						<Table sx={{ width: '100%' }} aria-labelledby='tableTitle' size={'medium'}>
 							<TableHead>
 								<TableRow>
@@ -537,7 +532,7 @@ export default function page() {
 							</TableBody>
 						</Table>
 					</TableContainer>
-				</div>
+				</Box>
 			</Box>
 		</>
 	);
