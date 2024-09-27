@@ -5,9 +5,10 @@ import axios from 'axios';
 import Button from '@/components/button/Button';
 import InputPopup from '@/components/popup/InputPopup';
 import { useRouter } from 'next/navigation';
+import {getToken} from "@/app/util/token/token";
 
 function Page() {
-	const userId = 1;
+	const [userId, setUserId] = useState(0);
 	const router = useRouter();
 	const [jobseekers, setJobseekers] = useState([]);
 	const [loadPage, setLoadPage] = useState(0);
@@ -18,6 +19,11 @@ function Page() {
 
 	const inputs = [{ label: '메시지', name: 'ofContent', placeholder: '메시지를 입력하세요', type: 'textarea' }];
 
+	useEffect(() => {
+		getToken().then((res) => {
+			setUserId(res.IDX);
+		})
+	}, []);
 	// 최초 데이터 패칭 및 페이징
 	const fetchData = useCallback(async () => {
 		setIsLoading(true);
@@ -51,11 +57,9 @@ function Page() {
 	const addWishHandler = (id) => {
 		if (confirm('해당 인재를 찜목록에 저장하시겠습니까?')) {
 			axios
-				.post('/api/company/wish', null, {
-					params: {
+				.post('/api/company/wish', {
 						coIdx: userId,
 						joIdx: id,
-					},
 				})
 				.then((res) => {
 					alert('저장완료되었습니다');
@@ -67,12 +71,10 @@ function Page() {
 	// 폼 확인 시 제출
 	const handleSubmit = async (formData) => {
 		axios
-			.post('/api/company/offer', null, {
-				params: {
+			.post('/api/company/offer', {
 					coIdx: userId,
 					joIdx: jobseekerId,
 					ofContent: formData.ofContent,
-				},
 			})
 			.then((res) => {
 				if (confirm('채팅방으로 이동하시겠습니까?')) {

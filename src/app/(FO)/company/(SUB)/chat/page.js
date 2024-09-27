@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Stomp } from "@stomp/stompjs";
 
 function Page() {
-    const userId = 1;
+    const userId = 82;
     const stompClient = useRef(null); // 웹소켓 채팅
     const [chatRooms, setChatRooms] = useState([]);
     const [inputValue, setInputValue] = useState('');
@@ -12,23 +12,21 @@ function Page() {
     const [chatList, setChatList] = useState([]);
 
     // 채팅방 목록
-    const fetchChatRooms = async () => {
-        try {
-            const res = await axios.get("/api/chatroom", { params: { id: userId } });
-            setChatRooms(res.data);
-        } catch (err) {
-            console.error('Failed to fetch chat rooms:', err);
-        }
+    const fetchChatRooms =  () => {
+        axios.get("/api/chatroom", {params : { id: userId }} )
+            .then((res) => {
+                setChatRooms(res.data)
+            }
+        );
     };
 
     // 채팅내용
-    const fetchChatList = async (chatroomId) => {
-        try {
-            const res = await axios.get(`/api/chatroom/${chatroomId}/chat`, { params: { usIdx: userId } });
-            setChatList(res.data);
-        } catch (err) {
-            console.error('Failed to fetch chat list:', err);
-        }
+    const fetchChatList = (chatroomId) => {
+        axios.get(`/api/chatroom/${chatroomId}/chat`, { params: { usIdx: userId } } )
+            .then((res) => {
+                setChatList(res.data);
+            }
+        );
     }
 
     // 웹소켓 연결 설정
