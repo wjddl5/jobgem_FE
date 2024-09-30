@@ -1,28 +1,33 @@
 'use client';
 import { Button, TextField } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { getToken } from '@/app/util/token/token';
 
 export default function page() {
+	const router = useRouter();
 	const [newPwd, setNewPwd] = useState('');
 	const [confirmPwd, setConfirmPwd] = useState('');
 	const [errorMessage, setErrorMessage] = useState('');
-	const router = useRouter();
+	const [token, setToken] = useState({});
+	const API_URL = '/api/admin/password/';
 
-	const API_URL = `/api/password`;
+	useEffect(() => {
+		getToken().then((res) => {
+			setToken(res);
+		});
+	}, []);
 
 	function send() {
-		axios({
-			url: API_URL,
-			method: 'put',
-			params: {
-				id: 1, //admin idx
-				newPwd: newPwd,
-			},
-		})
+		axios
+			.put(API_URL + token.USIDX, null, {
+				params: {
+					newPwd: newPwd,
+				},
+			})
 			.then((res) => {
-				if (res.data == '1') {
+				if (res.data == 'change pwd success') {
 					alert('비밀번호가 변경되었습니다');
 					router.push(`/admin`); // 비밀번호 변경 후 페이지 이동
 				} else if (res.data == '0') {
