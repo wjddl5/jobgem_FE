@@ -1,24 +1,38 @@
 "use client";
+import { getToken } from "@/app/util/token/token";
 import Button from "@/components/button/Button";
 import IconButton from "@/components/button/IconButton";
 import Pagination from "@/components/pagination/Pagination";
-import SideMenu from "@/components/sidemenu/SideMenu";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { FiTrash2, FiEdit2, FiStar } from "react-icons/fi"; // 별표 아이콘 추가
 
 export default function Page() {
-	const login = 1;
+	const [login, setLogin] = useState(null); // 초기값을 null로 설정
 	const [totalPages, setTotalPages] = useState("");
 	const [curPage, setCurPage] = useState(0);
 	const router = useRouter();
-	const [page, setPage] = useState(0);
 	const [resume, setResume] = useState([]);
-	const API_URL = `/api/resumes?id=${login}&curPage=${curPage}`;
+
+	// login 값이 있을 때 API 호출
+	useEffect(() => {
+		getToken().then((res) => {
+			setLogin(res.IDX); // login 값 설정
+			console.log(res);
+		});
+	}, []);
+
+	// login 값이 설정된 후에 데이터 가져오기
+	useEffect(() => {
+		if (login !== null) {
+			getData(); // login 값이 설정된 후에만 데이터 호출
+		}
+	}, [login, curPage]); // login과 curPage가 변경될 때마다 호출
 
 	// 데이터 가져오기
 	function getData() {
+		const API_URL = `/api/jobseeker/resumes/${login}?curPage=${curPage}`;
 		axios.get(API_URL).then((res) => {
 			setResume(res.data.content);
 			setTotalPages(res.data.totalPages);
@@ -26,39 +40,28 @@ export default function Page() {
 		});
 	}
 
-	// 이력서 삭제하기deleteResume
+	// 이력서 삭제하기
 	function remove(resumeId) {
 		axios
-			.delete(`/api/resume?id=${resumeId}`)
+			.delete(`/api/jobseeker/resume/${resumeId}`)
 			.then((res) => {
-				console.log(res);
-				if (res.data === 1) {
-					alert("삭제 완료");
-					getData();
-				} else {
-					alert("대표 이력서는 삭제할 수 없습니다.");
-				}
+				alert("삭제 완료");
+				getData();
 			})
 			.catch((error) => {
-				console.error("삭제 중 오류 발생:", error);
-				alert("삭제에 실패했습니다.");
+				alert("대표 이력서는 삭제할 수 없습니다.");
 			});
 	}
 
 	// 대표 이력서 설정하기
 	function setDefault(resumeId) {
-		axios.put(`/api/resume/default?id=${resumeId}&joIdx=${login}`).then((res) => {
-			console.log(res);
+		axios.put(`/api/jobseeker/resume/default/${resumeId}?joIdx=${login}`).then((res) => {
 			if (res.status === 200) {
 				alert("대표 이력서가 설정되었습니다.");
 				getData();
 			}
 		});
 	}
-
-	useEffect(() => {
-		getData();
-	}, [curPage]);
 
 	return (
 		<div className='flex-1 ml-2'>

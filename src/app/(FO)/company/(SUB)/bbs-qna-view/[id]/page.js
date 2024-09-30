@@ -4,14 +4,14 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import styles from '/public/css/board.css';
 import { Button, TextField } from '@mui/material';
+import { getToken } from '@/app/util/token/token';
 
-// 문의사항 게시글 상세보기 z
+// 문의사항 게시글 상세보기
 export default function page(props) {
 	// 초기화
 	const router = useRouter();
 	const [vo, setVo] = useState({});
 	const [commentList, setCommentList] = useState([]);
-	const [disabled, setDisabled] = useState(true);
 	const API_URL = `/api/bbs/${props.params.id}`;
 
 	useEffect(() => {
@@ -24,14 +24,6 @@ export default function page(props) {
 			setCommentList(res.data.commentList);
 		});
 	}
-
-	useEffect(() => {
-		if (vo.usIdx == 1 /*(!) 로그인한 유저idx로 변경*/) {
-			setDisabled(false);
-		} else {
-			setDisabled(true);
-		}
-	}, [vo]);
 
 	function removeBbs(id) {
 		if (confirm('게시글을 삭제 하시겠습니까?')) {

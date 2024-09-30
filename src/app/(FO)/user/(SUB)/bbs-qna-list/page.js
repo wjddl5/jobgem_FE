@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import styles from '/public/css/board.css';
 import axios from 'axios';
 import SideMenu from '@/components/sidemenu/SideMenu';
+import { getToken } from '@/app/util/token/token';
 
 // QnA 게시판 리스트
 export default function page(props) {
@@ -12,6 +13,13 @@ export default function page(props) {
 	const router = useRouter();
 	const [ar, setAr] = useState([]);
 	const API_URL = '/api/bbs/qna/my';
+	const [token, setToken] = useState(null);
+
+	useEffect(() => {
+		getToken().then((res) => {
+			setToken(res);
+		});
+	}, []);
 
 	// 페이징
 	const [cPage, setCPage] = useState(Number(props.searchParams.cPage));
@@ -31,23 +39,28 @@ export default function page(props) {
 
 	// 함수
 	function getData() {
-		axios
-			.get(API_URL, {
-				params: {
-					page: page,
-					size: pageSize,
-					usIdx: 1, // (!) 로그인한 유저 idx로 변경
-				},
-			})
-			.then((res) => {
-				setAr(res.data.content);
-				setTotalPage(res.data.totalPages);
-			});
+		if (token) {
+			axios
+				.get(API_URL, {
+					params: {
+						page: page,
+						size: pageSize,
+						usIdx: token.USIDX,
+					},
+				})
+				.then((res) => {
+					setAr(res.data.content);
+					setTotalPage(res.data.totalPages);
+				})
+				.catch((e) => {
+					console.error('error:', e);
+				});
+		}
 	}
 
 	useEffect(() => {
 		getData();
-	}, [page]);
+	}, [page, token]);
 	//=========================
 
 	// 페이지
@@ -92,15 +105,23 @@ export default function page(props) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{ar.map((row) => (
-							<TableRow key={row.id} className={styles.tableRow} onClick={() => router.push(`bbs-qna-view/${row.id}?cPage=${page}`)} hover>
-								<TableCell align='center'>{row.id}</TableCell>
-								<TableCell>
-									{row.boTitle} &nbsp;&nbsp;| <strong> {row.boAnswer != 1 ? '답변대기' : '답변완료'}</strong>
+						{ar.length < 1 ? (
+							<TableRow style={{ borderLeft: '1px solid #cccccc', borderRight: '1px solid #cccccc' }}>
+								<TableCell align='center' colSpan={3}>
+									게시글이 없습니다.
 								</TableCell>
-								<TableCell align='center'>{row.boWritedate}</TableCell>
 							</TableRow>
-						))}
+						) : (
+							ar.map((row) => (
+								<TableRow key={row.id} className={styles.tableRow} onClick={() => router.push(`bbs-qna-view/${row.id}?cPage=${page}`)} hover>
+									<TableCell align='center'>{row.id}</TableCell>
+									<TableCell>
+										{row.boTitle} &nbsp;&nbsp;| <strong> {row.boAnswer != 1 ? '답변대기' : '답변완료'}</strong>
+									</TableCell>
+									<TableCell align='center'>{row.boWritedate}</TableCell>
+								</TableRow>
+							))
+						)}
 					</TableBody>
 				</Table>
 				<Pagination className='pagination' count={totalPage} page={page + 1} color='primary' onChange={changePage} />

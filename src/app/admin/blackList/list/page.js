@@ -1,5 +1,5 @@
 'use client';
-import { Button, Checkbox, FormControlLabel, Link, MenuItem, Pagination, Radio, RadioGroup, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField } from '@mui/material';
+import { Button, Checkbox, FormControlLabel, Link, MenuItem, Pagination, Paper, Radio, RadioGroup, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import styles from '/public/css/board.css';
@@ -9,9 +9,9 @@ import axios from 'axios';
 export default function page(props) {
 	// 초기화
 	const router = useRouter();
-	const [searchType, setSearchType] = useState(props.searchParams.searchType ? props.searchParams.searchType : 'title');
-	const [searchValue, setSearchValue] = useState(props.searchParams.searchValue ? props.searchParams.searchValue : '');
-	const [selectType, setselectType] = useState(props.searchParams.selectType ? props.searchParams.selectType : 'all');
+	const [searchType, setSearchType] = useState(props.searchParams.searchType || 'title');
+	const [searchValue, setSearchValue] = useState(props.searchParams.searchValue || '');
+	const [selectType, setselectType] = useState(props.searchParams.selectType || 'all');
 	const [ar, setAr] = useState([]);
 	const [arLength, setArLength] = useState(0);
 	const API_URL = '/api/blackList/list';
@@ -60,6 +60,9 @@ export default function page(props) {
 					setAr(res.data.content);
 					setArLength(res.data.content.length);
 					setTotalPage(res.data.totalPages);
+				})
+				.catch((e) => {
+					console.error('error:', e);
 				});
 		} else {
 			axios
@@ -76,6 +79,9 @@ export default function page(props) {
 					setAr(res.data.content);
 					setArLength(res.data.content.length);
 					setTotalPage(res.data.totalPages);
+				})
+				.catch((e) => {
+					console.error('error:', e);
 				});
 		}
 	}
@@ -140,10 +146,10 @@ export default function page(props) {
 
 	// 페이지
 	return (
-		<div>
+		<Paper sx={{ width: '100%', overflow: 'hidden', mt: 3, boxShadow: 3 }}>
 			<div className='bbs_header'>
 				<h2 className='bbs_title'>신고목록</h2>
-				<div className='bbs_toolBox'>
+				<div className='bbs_toolBox' style={{ padding: '0 10px 0 10px' }}>
 					<div className='bbs_search'>
 						<Select className='selectBox' value={searchType} onChange={(event) => selectChange(event)}>
 							<MenuItem value={'title'}>제목</MenuItem>
@@ -167,48 +173,65 @@ export default function page(props) {
 					</div>
 				</div>
 			</div>
-			<Table>
-				<TableHead>
-					<TableRow>
-						<TableCell sx={{ width: '50px' }} align='center'>
-							<Checkbox onChange={allCheckChange} checked={chkSet.size === arLength} />
-						</TableCell>
-						<TableCell sx={{ width: '80px' }} align='center'>
-							번호
-						</TableCell>
-						<TableCell sx={{ width: '*' }} align='center'>
-							제목
-						</TableCell>
-						<TableCell sx={{ width: '150px' }} align='left'>
-							작성자
-						</TableCell>
-						<TableCell sx={{ width: '150px' }} align='center'>
-							작성일
-						</TableCell>
-					</TableRow>
-				</TableHead>
-				<TableBody>
-					{ar.map((row) => (
-						<TableRow
-							key={row.id}
-							className={styles.tableRow}
-							onClick={() => router.push(`view/${row.id}?cPage=${page}&searchType=${searchType}&searchValue=${searchValue}&selectType=${selectType}`)}
-							hover
-						>
-							<TableCell>
-								<Checkbox checked={chkSet.has(row.id)} onChange={(event) => checkChange(event, row.id)} onClick={(event) => event.stopPropagation()} />
+			<div style={{ margin: '30px' }}>
+				<Table>
+					<TableHead style={{ backgroundColor: '#1976d2' }}>
+						<TableRow>
+							<TableCell sx={{ width: '50px' }} align='center'>
+								<Checkbox
+									onChange={allCheckChange}
+									checked={chkSet.size === arLength && arLength > 0}
+									style={{
+										color: 'white',
+									}}
+								/>
 							</TableCell>
-							<TableCell align='center'>{row.id}</TableCell>
-							<TableCell>
-								{row.blTitle} | {row.blProcess == 0 ? '처리대기' : '처리완료'}
+							<TableCell sx={{ width: '80px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								번호
 							</TableCell>
-							<TableCell align='left'>{row.usId}</TableCell>
-							<TableCell align='center'>{row.blDate}</TableCell>
+							<TableCell sx={{ width: '*', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								제목
+							</TableCell>
+							<TableCell sx={{ width: '150px', color: 'common.white', fontWeight: 'medium' }} align='left'>
+								작성자
+							</TableCell>
+							<TableCell sx={{ width: '150px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								작성일
+							</TableCell>
 						</TableRow>
-					))}
-				</TableBody>
-			</Table>
+					</TableHead>
+					<TableBody>
+						{ar.length < 1 ? (
+							<TableRow style={{ borderLeft: '1px solid #cccccc', borderRight: '1px solid #cccccc' }}>
+								<TableCell align='center' colSpan={5}>
+									게시글이 없습니다.
+								</TableCell>
+							</TableRow>
+						) : (
+							ar.map((row) => (
+								<TableRow
+									key={row.id}
+									className={styles.tableRow}
+									onClick={() => router.push(`view/${row.id}?cPage=${page}&searchType=${searchType}&searchValue=${searchValue}&selectType=${selectType}`)}
+									hover
+									style={{ borderLeft: '1px solid #cccccc', borderRight: '1px solid #cccccc' }}
+								>
+									<TableCell>
+										<Checkbox checked={chkSet.has(row.id)} onChange={(event) => checkChange(event, row.id)} onClick={(event) => event.stopPropagation()} />
+									</TableCell>
+									<TableCell align='center'>{row.id}</TableCell>
+									<TableCell>
+										{row.blTitle} | {row.blProcess == 0 ? '처리대기' : '처리완료'}
+									</TableCell>
+									<TableCell align='left'>{row.usId}</TableCell>
+									<TableCell align='center'>{row.blDate}</TableCell>
+								</TableRow>
+							))
+						)}
+					</TableBody>
+				</Table>
+			</div>
 			<Pagination className='pagination' count={totalPage} page={page + 1} color='primary' onChange={changePage} />
-		</div>
+		</Paper>
 	);
 }

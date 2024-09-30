@@ -1,5 +1,6 @@
 import Link from "next/link";
 import styles from "./Header.module.css";
+import HeaderNav from "@/components/common/header/HeaderNav";
 
 export default function Header() {
 	return (
@@ -16,12 +17,9 @@ export default function Header() {
 						<i className={styles.icon}></i>
 					</div>
 				</div>
-				<div className={styles.links}>
-					<Link href='/login'>로그인</Link>
-					<Link href='/reg'>회원가입</Link>
-					<Link href='/my'>마이페이지</Link>
-				</div>
+				<HeaderNav />
 			</div>
 		</header>
 	);
 }
+

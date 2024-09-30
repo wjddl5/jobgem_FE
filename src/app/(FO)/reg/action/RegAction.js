@@ -31,14 +31,8 @@ export async function personalJoin(formdata) {
             }
         })
         switch ((await result).status) {
-            case 200:
-                return "로그인 성공"
-                break;
-            case 208:
-                return "이메일이 존재하지 않습니다."
-                break;
-            case 209:
-                return "비밀번호를 확인해주세요."
+            case 201:
+                return "회원가입 성공"
                 break;
             default:
                 return "통신이 원활하지 않습니다."
@@ -70,14 +64,8 @@ export async function companyJoin(formdata) {
         })
 
         switch ((await result).status) {
-            case 200:
-                return "로그인 성공"
-                break;
-            case 208:
-                return "이메일이 존재하지 않습니다."
-                break;
-            case 209:
-                return "비밀번호를 확인해주세요."
+            case 201:
+                return "회원가입 성공"
                 break;
             default:
                 return "서버 문제 발생"

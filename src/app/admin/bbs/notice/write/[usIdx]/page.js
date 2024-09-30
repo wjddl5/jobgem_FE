@@ -6,6 +6,7 @@ import SunEditor from 'suneditor-react';
 import sunEditorStyle from 'suneditor/dist/css/suneditor.min.css';
 import '/public/css/board.css';
 import axios from 'axios';
+import { getToken } from '@/app/util/token/token';
 
 // (관리자) 공지사항 게시글 작성
 export default function page(props) {
@@ -14,6 +15,13 @@ export default function page(props) {
 	const [content, setContent] = useState('');
 	const [disabled, setDisabled] = useState(true);
 	const editorRef = useRef(null);
+	const [token, setToken] = useState(null);
+
+	useEffect(() => {
+		getToken().then((res) => {
+			setToken(res);
+		});
+	}, []);
 
 	function changeContent(content) {
 		setContent(content);
@@ -39,7 +47,7 @@ export default function page(props) {
 			.post('/api/bbs/write', null, {
 				params: {
 					boType: 1, // 1: 공지사항
-					usIdx: 1, //로그인한 유저 idx로 변경 (!)
+					usIdx: token.USIDX,
 					title: title,
 					content: content,
 				},

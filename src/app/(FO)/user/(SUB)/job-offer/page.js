@@ -7,16 +7,33 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Pagination from "@/components/pagination/Pagination";
+import { getToken } from "@/app/util/token/token";
 
 export default function () {
-	const login = 151;
+	const [login, setLogin] = useState(null); // 초기값을 null로 설정
 	const [totalPages, setTotalPages] = useState("");
 	const [curPage, setCurPage] = useState(0);
 	const [offers, setOffers] = useState([]);
 	const router = useRouter();
-	const API_URL = `/api/offers?id=${login}&curPage=${curPage}`;
 
+	// login 값이 있을 때 API 호출
+	useEffect(() => {
+		getToken().then((res) => {
+			setLogin(res.IDX); // login 값 설정
+			console.log(res);
+		});
+	}, []);
+
+	// login 값이 설정된 후에 데이터 가져오기
+	useEffect(() => {
+		if (login !== null) {
+			getData(); // login 값이 설정된 후에만 데이터 호출
+		}
+	}, [login, curPage]); // login과 curPage가 변경될 때마다 호출
+
+	// 데이터 가져오기
 	function getData() {
+		const API_URL = `/api/jobseeker/offers/${login}?curPage=${curPage}`;
 		axios.get(API_URL).then((res) => {
 			console.log(res);
 			setOffers(res.data.content);
@@ -24,13 +41,10 @@ export default function () {
 		});
 	}
 
+	// 채팅방 퇴장 이벤트
 	function clickNo(offerId) {
 		alert(`채팅방 퇴장: Offer ID ${offerId}`);
 	}
-
-	useEffect(() => {
-		getData();
-	}, [curPage]);
 
 	return (
 		<div className='flex-grow pl-5'>

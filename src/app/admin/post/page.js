@@ -1,21 +1,28 @@
 "use client"
 import React from 'react'
-import { Paper, Box, Typography, Button, Card, CardContent, CardActions, Grid, Pagination, FormControl, InputLabel, Select, MenuItem, TextField, IconButton } from '@mui/material';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Paper, Box, Typography, Pagination, FormControl, InputLabel, Select, MenuItem, TextField, IconButton, InputAdornment } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import CardLayout from '@/components/admin/card/CardLayout';
 import SearchIcon from '@mui/icons-material/Search';
+import DatePicker from 'react-datepicker'; // react-datepicker import 추가
+import 'react-datepicker/dist/react-datepicker.css'; // 스타일 추가
+import dayjs from 'dayjs'; // dayjs import 추가
 
 export default function page() {
     const [ar, setAr] = useState([]);
-    const [apiUrl, setApiUrl] = useState("/api/admin/posts?size=6");
+    const [apiUrl, setApiUrl] = useState("/api/posts?curPage=0&size=8");
     const [page, setPage] = useState(0);
     const [totalPage, setTotalPage] = useState(0);
-    const [searchType, setSearchType] = useState('title'); // 기본 선택으로 설정
+    const [searchType, setSearchType] = useState('title');
+    const [startDate, setStartDate] = useState(null); // 시작 날짜 상태 추가
+    const [endDate, setEndDate] = useState(null); // 끝 날짜 상태 추가
+    const [isSalaryRange, setIsSalaryRange] = useState(false);
+    const [minSalary, setMinSalary] = useState('');
+    const [maxSalary, setMaxSalary] = useState('');
+    const [isDatePicker, setIsDatePicker] = useState(false);
     const [searchValue, setSearchValue] = useState('');
+
     useEffect(() => {
         getPosts();
     }, [page]);
@@ -33,22 +40,35 @@ export default function page() {
     }
 
     const changePage = (event, value) => {
-        setPage(value - 1); // 페이지 번호는 0부터 시작하므로 1을 빼줍니다.
-        setApiUrl("/api/admin/posts?size=6&page=" + (value - 1));
+        setPage(value - 1);
+        setApiUrl("/api/posts?curPage=" + (value - 1) + "&size=8");
         getPosts();
     };
 
-    // 검색
     const handleSearch = async (e) => {
-        console.log(searchType, searchValue);
         try {
+            let params = {};
+            if (searchType && searchValue) {
+                params.searchType = searchType;
+                params.search = searchValue;
+            };
+            if (startDate) {
+                params.startDate = dayjs(startDate).format('YYYY-MM-DD');
+            }
+            if (endDate) {
+                params.endDate = dayjs(endDate).format('YYYY-MM-DD');
+            }
+            if (minSalary) {
+                params.minSal = minSalary;
+            }
+            if (maxSalary) {
+                params.maxSal = maxSalary;
+            }
             const response = await axios.get(apiUrl, {
-                params: {
-                    type: searchType,
-                    value: searchValue,
-                }
+                params: params
             });
             if (response.status === 200) {
+                console.log(response.data);
                 setAr(response.data.content);
                 setTotalPage(response.data.totalPages);
                 setPage(response.data.pageable.pageNumber);
@@ -67,48 +87,117 @@ export default function page() {
         }
     }
 
+    const handleSearchTypeChange = (e) => {
+        const value = e.target.value;
+        setSearchType(value);
+        if (value === 'sal') {
+            setIsSalaryRange(true);
+            setIsDatePicker(false);
+            setSearchValue('');
+            setStartDate(null);
+            setEndDate(null);
+        } else if (value === 'date' || value === 'deadline') {
+            setIsDatePicker(true);
+            setIsSalaryRange(false);
+            setMinSalary('');
+            setMaxSalary('');
+            setSearchValue('');
+        } else {
+            setIsSalaryRange(false);
+            setIsDatePicker(false);
+            setSearchValue('');
+            setStartDate(null);
+            setEndDate(null);
+            setMinSalary('');
+            setMaxSalary('');
+        }
+    };
+
+    const handleStartDateChange = (date) => {
+        setStartDate(date); // 시작 날짜를 설정
+    };
+
+    const handleEndDateChange = (date) => {
+        setEndDate(date); // 끝 날짜를 설정
+    };
+
     return (
-        <Paper sx={{ width: '100%', overflow: 'hidden', mt: 0, boxShadow: 3, padding: 5, bgcolor: 'background.paper' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 ,mt: 4 }}>
-                <Typography variant="h4" component="div" sx={{ fontWeight: 'bold', color: 'black' }}>
+        <Paper sx={{ width: '100%', overflow: 'hidden', mt: 0, boxShadow: 3, padding: 5, bgcolor: 'background.paper', margin: 'auto' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, mt: 4 }}>
+                <Typography variant="h4" component="div" sx={{ fontWeight: 'bold', color: 'black', fontFamily: 'pl,sans-serif',fontSize: 30 ,ml: 2}}>
                     공고 관리
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 1, bgcolor: 'common.white', p: 0.5, borderRadius: 1 }}>
                     <FormControl size="small" sx={{ width: '15ch' }}>
-                        <InputLabel id="title">카테고리</InputLabel>
+                        <InputLabel id="title" sx={{fontFamily: 'pl,sans-serif'}}>카테고리</InputLabel>
                         <Select
                             labelId="category-select-label"
                             id="category-select"
                             value={searchType}
                             label="카테고리"
-                            onChange={(e) => setSearchType(e.target.value)}
+                            onChange={handleSearchTypeChange}
+                            sx={{fontFamily: 'pl,sans-serif'}}
                         >
-                            <MenuItem value="" disabled>
-                                <em>카테고리 선택</em>
-                            </MenuItem>
-                            <MenuItem value="title">제목</MenuItem> 
-                            <MenuItem value="company">기업명</MenuItem> 
-                            <MenuItem value="content">내용</MenuItem>
-                            <MenuItem value="date">등록일</MenuItem>
-                            <MenuItem value="deadline">마감일</MenuItem>
-                            <MenuItem value="sal">월급</MenuItem>
-                            <MenuItem value="starttime">근무시작시간</MenuItem>
-                            <MenuItem value="endtime">근무종료시간</MenuItem>
-                            <MenuItem value="type">공고유형</MenuItem>
-                            <MenuItem value="addr">주소</MenuItem>
-                            <MenuItem value="email">이메일</MenuItem>
-                            <MenuItem value="fax">팩스</MenuItem>
+                            <MenuItem sx={{fontFamily: 'pl,sans-serif'}} value="title">제목</MenuItem>
+                            <MenuItem sx={{fontFamily: 'pl,sans-serif'}} value="content">내용</MenuItem>
+                            <MenuItem sx={{fontFamily: 'pl,sans-serif'}} value="date">등록날짜</MenuItem>
+                            <MenuItem sx={{fontFamily: 'pl,sans-serif'}} value="deadline">마감날짜</MenuItem>
+                            <MenuItem sx={{fontFamily: 'pl,sans-serif'}} value="sal">월급</MenuItem>
                         </Select>
                     </FormControl>
-                    <TextField
-                        label="검색"
-                        variant="outlined"
-                        size="small"
-                        value={searchValue}
-                        sx={{ width: '25ch' }}
-                        onKeyDown={handleKeyDown}
-                        onChange={(e) => setSearchValue(e.target.value)}
-                    />
+                    {isSalaryRange ? (
+                        <>
+                            <TextField
+                                label="최소 월급"
+                                variant="outlined"
+                                size="small"
+                                value={minSalary}
+                                sx={{ width: '12ch' }}
+                                onKeyDown={handleKeyDown}
+                                onChange={(e) => setMinSalary(e.target.value)}
+                                InputProps={{
+                                    startAdornment: <InputAdornment position="start">₩</InputAdornment>,
+                                }}
+                            />
+                            <TextField
+                                label="최대 월급"
+                                variant="outlined"
+                                size="small"
+                                value={maxSalary}
+                                sx={{ width: '12ch' }}
+                                onKeyDown={handleKeyDown}
+                                onChange={(e) => setMaxSalary(e.target.value)}
+                                InputProps={{
+                                    startAdornment: <InputAdornment position="start">₩</InputAdornment>,
+                                }}
+                            />
+                        </>
+                    ) : isDatePicker ? (
+                        <>
+                            <DatePicker
+                                selected={startDate}
+                                onChange={handleStartDateChange}
+                                dateFormat="yyyy-MM-dd"
+                                customInput={<TextField label="시작 날짜" variant="outlined" size="small" />}
+                            />
+                            <DatePicker
+                                selected={endDate}
+                                onChange={handleEndDateChange}
+                                dateFormat="yyyy-MM-dd"
+                                customInput={<TextField label="끝 날짜" variant="outlined" size="small" />}
+                            />
+                        </>
+                    ) : (
+                        <TextField
+                            label="검색"
+                            variant="outlined"
+                            size="small"
+                            value={searchValue}
+                            sx={{ width: '25ch' }}
+                            onKeyDown={handleKeyDown}
+                            onChange={(e) => setSearchValue(e.target.value)}
+                        />
+                    )}
                     <IconButton sx={{ p: '10px' }} aria-label="search" onClick={handleSearch} >
                         <SearchIcon />
                     </IconButton>
@@ -117,10 +206,10 @@ export default function page() {
             <CardLayout list={ar} />
             <Pagination
                 onChange={changePage}
-                page={page + 1} 
-                count={totalPage} 
+                page={page + 1}
+                count={totalPage}
                 color="primary"
-                style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}
+                style={{ display: 'flex', justifyContent: 'center', marginTop: '0px' }}
                 className="pagination"
             />
         </Paper>

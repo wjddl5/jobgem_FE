@@ -1,13 +1,19 @@
 "use client";
 import Button from "@/components/button/Button";
 import Input from "@/components/form/Input";
-import SideMenu from "@/components/sidemenu/SideMenu";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios"; // axios 추가
+import { getToken } from "@/app/util/token/token";
 
 export default function Page() {
-	const login = 1;
+	const [login, setLogin] = useState("0");
+	useEffect(() => {
+		getToken().then((res) => {
+			setLogin(res.IDX);
+			console.log(res);
+		});
+	}, []);
 	const router = useRouter();
 
 	const [reTitle, setReTitle] = useState("");
@@ -33,7 +39,6 @@ export default function Page() {
 
 			return fileName; // 추출한 파일 이름 반환
 		} catch (error) {
-			console.error("파일 업로드 실패:", error);
 			alert("파일 업로드 중 문제가 발생했습니다.");
 			return null;
 		}
@@ -50,21 +55,17 @@ export default function Page() {
 	// 데이터 전송 함수
 	async function send() {
 		try {
-			let uploadedFileName = ""; // 파일 업로드 후 반환될 파일 이름을 저장할 변수
+			let uploadedFileName = "";
 
-			// 파일이 선택된 경우, 파일 업로드
 			if (selectedFile) {
 				uploadedFileName = await uploadFile(selectedFile);
 				if (!uploadedFileName) {
-					// 파일 업로드에 실패한 경우, 함수를 종료
-					return;
+					return; // 파일 업로드에 실패하면 종료
 				}
 			}
 
 			// API_URL을 통한 정보 업데이트
-			const res = await axios({
-				url: "/api/resume",
-				method: "post",
+			const res = await axios.post("/api/jobseeker/resume", null, {
 				params: {
 					joIdx: login,
 					reTitle: reTitle,
@@ -74,12 +75,11 @@ export default function Page() {
 				},
 			});
 
-			if (res.status === 200) {
-				alert("저장완료");
-				router.push(`/user/resume-list`);
-			}
+			// 성공 처리
+			alert("작성 완료");
+			router.push(`/user/resume-list`);
 		} catch (error) {
-			console.error("에러 발생:", error);
+			// 에러 처리
 			alert("저장 중 문제가 발생했습니다.");
 		}
 	}

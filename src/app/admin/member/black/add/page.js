@@ -80,6 +80,11 @@ export default function Page(props) {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		if (reason.length > 255) {
+			alert('255자 이내로 입력해주세요.');
+			setReason('');
+			return;
+		}
 		// 블랙리스트 추가 로직
 		if (!member) {
 			alert('회원을 선택해주세요.');
@@ -135,35 +140,32 @@ export default function Page(props) {
 	return (
 		<Paper sx={{ width: '100%', overflow: 'hidden', mt: 3, boxShadow: 3, padding: 5 }}>
 			<Toolbar sx={{ pl: { sm: 2 }, pr: { xs: 1, sm: 1 } }}>
-				<Typography sx={{ flex: '1 1 100%', fontWeight: 'bold' }} variant='h6' id='tableTitle' component='div'>
+				<Typography sx={{ flex: '1 1 100%', fontWeight: 'bold', fontFamily: 'pl,sans-serif', fontSize: 30}} variant='h6' id='tableTitle' component='div'>
 					회원 블랙리스트 추가
 				</Typography>
 			</Toolbar>
-			<Box sx={{ display: 'flex', gap: 2 }}>
+			<Box sx={{ display: 'flex', gap: 2 ,mt: 3}}>
 				<Box sx={{ width: '30%', borderRight: '1px solid #e0e0e0', paddingRight: 2 }}>
-					<Typography variant='h6' gutterBottom>
+					<Typography variant='h6' gutterBottom sx={{fontFamily: 'pl,sans-serif', fontSize: 20, fontWeight: 'bold'}}>
 						회원선택
 					</Typography>
-					<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 2, mt: 2 }}>
-						<Typography variant='subtitle1' gutterBottom>
-							회원 검색
-						</Typography>
+					<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 2, mt: 3 }}>
 						<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 							<FormControl size='small' sx={{ minWidth: 120 }}>
-								<InputLabel id='category-select-label'>카테고리</InputLabel>
-								<Select labelId='category-select-label' id='category-select' value={searchType} label='카테고리' onChange={(e) => setSearchType(e.target.value)}>
-									<MenuItem value='name'>이름</MenuItem>
-									<MenuItem value='birth'>생년월일</MenuItem>
-									<MenuItem value='tel'>전화번호</MenuItem>
-									<MenuItem value='address'>주소</MenuItem>
-									<MenuItem value='edu'>학력</MenuItem>
-									<MenuItem value='sal'>월급</MenuItem>
-									<MenuItem value='gender'>성별</MenuItem>
-									<MenuItem value='joinDate'>가입일자</MenuItem>
-									<MenuItem value='leaveDate'>탈퇴일자</MenuItem>
+								<InputLabel id='category-select-label' sx={{fontFamily: 'pl,sans-serif'}}>카테고리</InputLabel>
+								<Select labelId='category-select-label' id='category-select' value={searchType} label='카테고리' onChange={(e) => setSearchType(e.target.value)} sx={{fontFamily: 'pl,sans-serif'}}>
+									<MenuItem value='name' sx={{fontFamily: 'pl,sans-serif'}}>이름</MenuItem>
+									<MenuItem value='birth' sx={{fontFamily: 'pl,sans-serif'}}>생년월일</MenuItem>
+									<MenuItem value='tel' sx={{fontFamily: 'pl,sans-serif'}}>전화번호</MenuItem>
+									<MenuItem value='address' sx={{fontFamily: 'pl,sans-serif'}}>주소</MenuItem>
+									<MenuItem value='edu' sx={{fontFamily: 'pl,sans-serif'}}>학력</MenuItem>
+									<MenuItem value='sal' sx={{fontFamily: 'pl,sans-serif'}}>월급</MenuItem>
+									<MenuItem value='gender' sx={{fontFamily: 'pl,sans-serif'}}>성별</MenuItem>
+									<MenuItem value='joinDate' sx={{fontFamily: 'pl,sans-serif'}}>가입일자</MenuItem>
+									<MenuItem value='leaveDate' sx={{fontFamily: 'pl,sans-serif'}}>탈퇴일자</MenuItem>
 								</Select>
 							</FormControl>
-							<TextField label='검색' variant='outlined' size='small' value={searchValue} sx={{ flexGrow: 1 }} onKeyDown={handleKeyDown} onChange={(e) => setSearchValue(e.target.value)} />
+							<TextField label='검색' variant='outlined' size='small' value={searchValue} sx={{ flexGrow: 1, fontFamily: 'pl,sans-serif' }} onKeyDown={handleKeyDown} onChange={(e) => setSearchValue(e.target.value)} />
 							<IconButton sx={{ p: '8px' }} aria-label='search' onClick={handleSearch}>
 								<SearchIcon />
 							</IconButton>
@@ -173,17 +175,17 @@ export default function Page(props) {
 						{ar.map((user, idx) => (
 							<ListItem key={idx} button={true.toString()} onClick={() => setMember(user)}>
 								<ListItemText
-									primary={user.joName}
+									primary ={user.joName}
 									secondary={
 										<>
-											<Typography variant='body2'>전화번호: {user.joTel}</Typography>
-											<Typography variant='body2'>성별: {user.joGender}</Typography>
-											<Typography variant='body2'>주소: {user.joAddress}</Typography>
-											<Typography variant='body2'>학력: {user.joEdu}</Typography>
-											<Typography variant='body2'>월급: {user.joSal}</Typography>
-											<Typography variant='body2'>사진: {user.joImgUrl ? '있음' : '없음'}</Typography>
-											<Typography variant='body2'>가입일자: {user.user.usJoinDate}</Typography>
-											<Typography variant='body2'>탈퇴일자: {user.user.usLeaveDate || '활동중'}</Typography>
+											<Typography variant='body2' sx={{fontFamily: 'pl,sans-serif'}}>전화번호: {user.joTel}</Typography>
+											<Typography variant='body2' sx={{fontFamily: 'pl,sans-serif'}}>성별: {user.joGender}</Typography>
+											<Typography variant='body2' sx={{fontFamily: 'pl,sans-serif'}}>주소: {user.joAddress}</Typography>
+											<Typography variant='body2' sx={{fontFamily: 'pl,sans-serif'}}>학력: {user.joEdu}</Typography>
+											<Typography variant='body2' sx={{fontFamily: 'pl,sans-serif'}}>월급: {user.joSal}</Typography>
+											<Typography variant='body2' sx={{fontFamily: 'pl,sans-serif'}}>사진: {user.joImgUrl ? '있음' : '없음'}</Typography>
+											<Typography variant='body2' sx={{fontFamily: 'pl,sans-serif'}}>가입일자: {user.user.usJoinDate}</Typography>
+											<Typography variant='body2' sx={{fontFamily: 'pl,sans-serif'}}>탈퇴일자: {user.user.usLeaveDate || '활동중'}</Typography>
 											<Divider sx={{ margin: '20px 0' }} />
 										</>
 									}
@@ -193,27 +195,27 @@ export default function Page(props) {
 					</List>
 				</Box>
 				<Box sx={{ width: '70%', paddingLeft: 2 }}>
-					<Typography variant='h6' gutterBottom>
+					<Typography variant='h6' gutterBottom sx={{fontFamily: 'pl,sans-serif', fontSize: 20, fontWeight: 'bold'}}>
 						블랙리스트 추가
 					</Typography>
 					<form onSubmit={handleSubmit}>
 						<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-							<Typography variant='subtitle1'>선택한 회원</Typography>
+							<Typography variant='subtitle1' sx={{fontFamily: 'pl,sans-serif', fontSize: 15, fontWeight: 'bold'}}>선택한 회원</Typography>
 							<TextField
 								variant='outlined'
 								fullWidth
-								value={member ? `${member.id} - ${member.joName} - ${member.joTel}` : '선택한 회원 정보'}
+								value={member ? `${member.joName} ( ${member.joAddress} / ${member.joGender} )` : '선택한 회원 정보'}
 								InputProps={{
 									readOnly: true,
 								}}
 							/>
-							<Typography variant='subtitle1'>블랙리스트 사유 입력</Typography>
+							<Typography variant='subtitle1' sx={{fontFamily: 'pl,sans-serif', fontSize: 15, fontWeight: 'bold'}}>블랙리스트 사유 입력</Typography>
 							<TextField variant='outlined' multiline rows={15} value={reason} onChange={(e) => setReason(e.target.value)} />
 							<Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-								<Button variant='contained' color='primary' type='submit'>
+								<Button variant='contained' color='primary' type='submit' sx={{fontFamily: 'pl,sans-serif'}}>
 									추가
 								</Button>
-								<Button variant='contained' color='secondary' onClick={handleCancel}>
+								<Button variant='contained' color='secondary' onClick={handleCancel} sx={{fontFamily: 'pl,sans-serif'}}>
 									취소
 								</Button>
 							</Box>

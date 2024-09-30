@@ -1,15 +1,20 @@
 "use client";
-import SideMenu from "@/components/sidemenu/SideMenu";
+import { getToken } from "@/app/util/token/token";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 export default function Page() {
-	const login = 1;
+	const [login, setLogin] = useState("0");
+	useEffect(() => {
+		getToken().then((res) => {
+			setLogin(res.IDX);
+			console.log(res);
+		});
+	}, []);
 	const [jobseeker, setJobseeker] = useState({});
 	const [myPageCnt, setMyPageCnt] = useState({});
-	const API_URL = `/api/jobseeker?id=${login}`;
-	const API_URL2 = `/api/mypage/count?id=${login}`;
+	const API_URL = `/api/jobseeker/${login}`;
+	const API_URL2 = `/api/jobseeker/mypage/count/${login}`;
 
 	function getData() {
 		axios.get(API_URL).then((res) => {

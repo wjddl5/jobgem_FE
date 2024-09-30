@@ -4,22 +4,38 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 import styles from '/public/css/board.css';
 import { Button, TextField } from '@mui/material';
+import { getToken } from '@/app/util/token/token';
 
 // 공지사항 게시글 상세보기
 export default function page(props) {
 	// 초기화
 	const router = useRouter();
+	const [cPage, setCPage] = useState(props.searchParams.cPage || 0);
+	const [searchType, setSearchType] = useState(props.searchParams.searchType || 'title');
+	const [searchValue, setSearchValue] = useState(props.searchParams.searchValue || '');
 	const [vo, setVo] = useState({});
 	const [commentList, setCommentList] = useState([]);
 	const [commentContent, setCommentContent] = useState('');
 	const [disabled, setDisabled] = useState(true);
 	const API_URL = `/api/bbs/${props.params.id}`;
+	const [token, setToken] = useState(null);
+
+	useEffect(() => {
+		getToken().then((res) => {
+			setToken(res);
+		});
+	}, []);
 
 	function getData() {
-		axios.get(API_URL).then((res) => {
-			setVo(res.data.vo);
-			setCommentList(res.data.commentList);
-		});
+		axios
+			.get(API_URL)
+			.then((res) => {
+				setVo(res.data.vo);
+				setCommentList(res.data.commentList);
+			})
+			.catch((e) => {
+				console.error('eroor:', e);
+			});
 	}
 
 	// 조회수
@@ -74,7 +90,7 @@ export default function page(props) {
 				.post('/api/comment/write', null, {
 					params: {
 						content: commentContent,
-						usIdx: 1, //로그인한 유저 idx로 변경 (!)
+						usIdx: token.USIDX,
 						boIdx: props.params.id,
 					},
 				})
@@ -154,8 +170,7 @@ export default function page(props) {
 								</>
 							) : (
 								<>
-									<Button className='edit-button' variant='text' size='small' hidden={comment.usIdx != 1} onClick={() => EditClick(comment)}>
-										{/* (!) 로그인한 유저idx로 수정 */}
+									<Button className='edit-button' variant='text' size='small' hidden={comment.usIdx != token.USIDX} onClick={() => EditClick(comment)}>
 										수정
 									</Button>
 									<Button className='delete-button' variant='text' color='error' size='small' hidden={comment.usIdx != 1} onClick={() => removeComment(comment.id)}>
@@ -182,11 +197,7 @@ export default function page(props) {
 				</Button>
 			</div>
 			<div className='btn_group'>
-				<Button
-					variant='outlined'
-					size='small'
-					onClick={() => router.push(`/user/bbs-notice-list?cPage=${props.searchParams.cPage}&searchType=${props.searchParams.searchType}&searchValue=${props.searchParams.searchValue}`)}
-				>
+				<Button variant='outlined' size='small' onClick={() => router.push(`/user/bbs-notice-list?cPage=${cPage}&searchType=${searchType}&searchValue=${searchValue}`)}>
 					목록
 				</Button>
 			</div>

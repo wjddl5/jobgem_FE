@@ -10,8 +10,8 @@ import SideMenu from '@/components/sidemenu/SideMenu';
 export default function page(props) {
 	// 초기화
 	const router = useRouter();
-	const [searchType, setSearchType] = useState(props.searchParams.searchType ? props.searchParams.searchType : 'title');
-	const [searchValue, setSearchValue] = useState(props.searchParams.searchValue ? props.searchParams.searchValue : '');
+	const [searchType, setSearchType] = useState(props.searchParams.searchType || 'title');
+	const [searchValue, setSearchValue] = useState(props.searchParams.searchValue || '');
 	const [ar, setAr] = useState([]);
 	const [arLength, setArLength] = useState(0);
 	const API_URL = '/api/bbs/notice';
@@ -51,6 +51,9 @@ export default function page(props) {
 					setAr(res.data.content);
 					setArLength(res.data.content.length);
 					setTotalPage(res.data.totalPages);
+				})
+				.catch((e) => {
+					console.error('error:', e);
 				});
 		} else {
 			axios
@@ -66,6 +69,9 @@ export default function page(props) {
 					setAr(res.data.content);
 					setArLength(res.data.content.length);
 					setTotalPage(res.data.totalPages);
+				})
+				.catch((e) => {
+					console.error('error:', e);
 				});
 		}
 	}
@@ -73,17 +79,6 @@ export default function page(props) {
 	useEffect(() => {
 		getData();
 	}, [page]);
-
-	useEffect(() => {
-		const handleBeforeUnload = () => {
-			// 페이지를 완전히 떠날 때 검색 데이터를 삭제
-			sessionStorage.removeItem('searchValue');
-		};
-		window.addEventListener('beforeunload', handleBeforeUnload);
-		return () => {
-			window.removeEventListener('beforeunload', handleBeforeUnload);
-		};
-	}, []);
 	//========================
 
 	// 페이지
@@ -130,17 +125,25 @@ export default function page(props) {
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{ar.map((row) => (
-						<TableRow key={row.id} className={styles.tableRow} onClick={() => router.push(`bbs-notice-view/${row.id}?cPage=${page}&searchType=${searchType}&searchValue=${searchValue}`)} hover>
-							<TableCell align='center'>{row.id}</TableCell>
-							<TableCell className={styles.tableRow}>{row.boTitle}</TableCell>
-							<TableCell align='left'>{row.usId}</TableCell>
-							<TableCell align='center'>{row.commCount}</TableCell>
-							<TableCell align='center'>{row.boHit}</TableCell>
-							<TableCell align='center'>{row.boLike}</TableCell>
-							<TableCell align='center'>{row.boWritedate}</TableCell>
+					{ar.length < 1 ? (
+						<TableRow style={{ borderLeft: '1px solid #cccccc', borderRight: '1px solid #cccccc' }}>
+							<TableCell align='center' colSpan={7}>
+								게시글이 없습니다.
+							</TableCell>
 						</TableRow>
-					))}
+					) : (
+						ar.map((row) => (
+							<TableRow key={row.id} className={styles.tableRow} onClick={() => router.push(`bbs-notice-view/${row.id}?cPage=${page}&searchType=${searchType}&searchValue=${searchValue}`)} hover>
+								<TableCell align='center'>{row.id}</TableCell>
+								<TableCell className={styles.tableRow}>{row.boTitle}</TableCell>
+								<TableCell align='left'>{row.usId}</TableCell>
+								<TableCell align='center'>{row.commCount}</TableCell>
+								<TableCell align='center'>{row.boHit}</TableCell>
+								<TableCell align='center'>{row.boLike}</TableCell>
+								<TableCell align='center'>{row.boWritedate}</TableCell>
+							</TableRow>
+						))
+					)}
 				</TableBody>
 			</Table>
 			<Pagination className='pagination' count={totalPage} page={page + 1} color='primary' onChange={changePage} />

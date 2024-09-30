@@ -1,4 +1,5 @@
 "use client";
+import { getToken } from "@/app/util/token/token";
 import Button from "@/components/button/Button";
 import Input from "@/components/form/Input";
 import SideMenu from "@/components/sidemenu/SideMenu";
@@ -7,41 +8,42 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 export default function page() {
-	const login = 1;
+	const [login, setLogin] = useState(null); // 초기값을 null로 설정
+	const [usId, setUsId] = useState(null); // 초기값을 null로 설정
 	const [user, setUser] = useState({});
 	const [chkPwd, setChkPwd] = useState(""); // 비밀번호 상태 추가
 	const router = useRouter();
 
-	const API_URL = `/api/jobseeker?id=${login}`;
-
+	// 로그인된 사용자의 데이터를 가져오는 함수
 	function getData() {
-		axios.get(API_URL).then((res) => {
-			setUser(res.data);
-			console.log(res);
-		});
+		if (login !== null) {
+			const API_URL = `/api/jobseeker/${login}`;
+			axios.get(API_URL).then((res) => {
+				setUser(res.data);
+				console.log(res);
+			});
+		}
 	}
 
+	// 비밀번호 검증 및 페이지 전환 함수
 	function send() {
-		axios({
-			url: "/api/password/check",
-			method: "get",
-			params: {
-				id: login, // joIdx로 수정
-				usId: user.id,
-				usPw: chkPwd, // 입력된 비밀번호를 전송
-			},
-		})
-			.then((res) => {
-				if (res.data == "1") {
-					router.push(`/user/pwd-update`);
-				} else if (res.data == "0") {
-					alert("비밀번호가 일치하지 않습니다.");
-				}
+		if (login !== null) {
+			axios({
+				url: `/api/jobseeker/password-check/${login}`,
+				method: "get",
+				params: {
+					usPw: chkPwd, // 입력된 비밀번호를 전송
+				},
 			})
-			.catch((error) => {
-				console.error("에러 발생:", error);
-				alert("에러가 발생했습니다.");
-			});
+				.then((res) => {
+					router.push(`/user/pwd-update`); // 비밀번호가 일치하면 페이지 이동
+				})
+				.catch((error) => {
+					alert("비밀번호가 일치하지 않습니다."); // 비밀번호 불일치 시 에러 처리
+				});
+		} else {
+			alert("로그인이 필요합니다.");
+		}
 	}
 
 	// 비밀번호 입력 핸들러
@@ -49,10 +51,21 @@ export default function page() {
 		setChkPwd(e.target.value); // 입력된 비밀번호를 상태로 저장
 	}
 
+	// login 값을 가져오고 설정하는 useEffect
 	useEffect(() => {
-		getData();
+		getToken().then((res) => {
+			setLogin(res.IDX); // login 값 설정
+			setUsId(res.EMAIL); // user ID 값
+			console.log(res);
+		});
 	}, []);
 
+	// login 값이 설정된 후 데이터를 가져오는 useEffect
+	useEffect(() => {
+		if (login !== null) {
+			getData(); // login 값이 설정된 후에만 데이터를 가져옴
+		}
+	}, [login]);
 	return (
 		<div className='bg-gray-100 flex-1'>
 			<div className='bg-white p-6 rounded-lg shadow-lg mb-6'>
@@ -62,7 +75,7 @@ export default function page() {
 					<label htmlFor='username' className='block text-sm font-medium text-gray-700'>
 						아이디
 					</label>
-					<Input type='text' id='joName' name='joName' value={user.joName || ""} className='mt-1 block w-full p-2 border border-gray-300 rounded-md bg-gray-100' disabled />
+					<Input type='text' id='joName' name='joName' value={usId || ""} className='mt-1 block w-full p-2 border border-gray-300 rounded-md bg-gray-100' disabled />
 				</div>
 				<div className='mb-6'>
 					<label htmlFor='password' className='block text-sm font-medium text-gray-700'>

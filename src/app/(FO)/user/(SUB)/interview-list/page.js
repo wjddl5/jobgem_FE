@@ -1,22 +1,38 @@
 "use client";
+import { getToken } from "@/app/util/token/token";
 import Button from "@/components/button/Button";
 import IconButton from "@/components/button/IconButton";
 import Pagination from "@/components/pagination/Pagination";
-import SideMenu from "@/components/sidemenu/SideMenu";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { FiTrash2, FiEdit2 } from "react-icons/fi";
 
 export default function Page() {
-	const login = 1;
+	const [login, setLogin] = useState(null); // 초기값을 null로 설정
 	const [totalPages, setTotalPages] = useState("");
 	const [curPage, setCurPage] = useState(0);
-	const router = useRouter();
 	const [interview, setInterview] = useState([]);
-	const API_URL = `/api/interviews?id=${login}&curPage=${curPage}`;
+	const router = useRouter();
 
+	// login 값이 있을 때 토큰을 가져오는 비동기 함수
+	useEffect(() => {
+		getToken().then((res) => {
+			setLogin(res.IDX); // login 값 설정
+			console.log(res);
+		});
+	}, []);
+
+	// login 값이 설정된 후에 데이터 가져오기
+	useEffect(() => {
+		if (login !== null) {
+			getData(); // login 값이 설정된 후에만 데이터 호출
+		}
+	}, [login, curPage]); // login과 curPage가 변경될 때마다 호출
+
+	// 데이터 가져오기
 	function getData() {
+		const API_URL = `/api/jobseeker/interviews/${login}?curPage=${curPage}`;
 		axios.get(API_URL).then((res) => {
 			setInterview(res.data.content);
 			setTotalPages(res.data.totalPages);
@@ -24,8 +40,9 @@ export default function Page() {
 		});
 	}
 
+	// 인터뷰 삭제하기
 	function remove(interviewId) {
-		axios.delete(`/api/interview?id=${interviewId}`).then((res) => {
+		axios.delete(`/api/jobseeker/interview/${interviewId}`).then((res) => {
 			console.log(res);
 			if (res.status === 200) {
 				alert("삭제 완료");
@@ -34,10 +51,7 @@ export default function Page() {
 		});
 	}
 
-	useEffect(() => {
-		getData();
-	}, [curPage]);
-
+	// 텍스트 길이를 줄이는 함수
 	function shortenText(text, maxLength) {
 		if (text.length > maxLength) {
 			return text.slice(0, maxLength) + "...";

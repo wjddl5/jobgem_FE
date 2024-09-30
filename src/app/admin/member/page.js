@@ -1,19 +1,42 @@
 "use client"
 import React, { useEffect, useState } from 'react';
-import { TextField, MenuItem, FormControl, Select, InputLabel, Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Toolbar, Typography, IconButton, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Pagination, Button, Grid, Avatar, Checkbox } from '@mui/material';
+import { TextField, MenuItem, FormControl, Select, InputLabel, Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Toolbar, Typography, IconButton, Pagination, InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import dayjs from 'dayjs';
+
+const initialState = {
+    isBlockDatePicker: false,
+    isJoinDatePicker: false,
+    isLeaveDatePicker: false,
+    isBirthDatePicker: false,
+    isSalaryRange: false,
+    blockStartDate: null,
+    blockEndDate: null,
+    joinStartDate: null,
+    joinEndDate: null,
+    leaveStartDate: null,
+    leaveEndDate: null,
+    birthStartDate: null,
+    birthEndDate: null,
+    minSalary: '',
+    maxSalary: '',
+};
 
 function EnhancedTable() {
     const [page, setPage] = useState(0);
-    const [api_url, setApiUrl] = useState("/api/admin/jobseekers?size=10");
+    const [api_url, setApiUrl] = useState("/api/admin/jobseekers");
     const [ar, setAr] = useState([]);
     const [totalPage, setTotalPage] = useState(0);
     const [searchType, setSearchType] = useState('name');
     const [searchValue, setSearchValue] = useState('');
+    const [state, setState] = useState(initialState);
+
     useEffect(() => {
         getMemberList();
-    }, [page]);
+    }, [page, api_url]);
 
     function getMemberList() {
         axios.get(api_url).then((response) => {
@@ -24,9 +47,8 @@ function EnhancedTable() {
     }
 
     const changePage = (event, value) => {
-        setPage(value - 1); // 페이지 번호는 0부터 시작하므로 1을 빼줍니다.
-        setApiUrl("/api/admin/jobseekers?size=10&page=" + (value - 1));
-        getMemberList();
+        setPage(value - 1);
+        setApiUrl(`/api/admin/jobseekers?size=10&page=${value - 1}`);
     };
 
     const handleKeyDown = (e) => {
@@ -35,82 +57,202 @@ function EnhancedTable() {
         }
     }
 
-    const handleSearch = async (e) => {
+    const handleSearch = async () => {
         try {
-            const response = await axios.get(api_url, {
-                params: {
-                    type: searchType,
-                    value: searchValue,
-                }
-            });
-            if (response.status === 200) {
-                setAr(response.data.content);
-                setTotalPage(response.data.pageable.totalPages);
-                setPage(response.data.pageable.pageNumber);
-            } else {
-                alert("검색 실패");
+            let params = {};
+            if (searchType && searchValue) {
+                params.searchType = searchType;
+                params.search = searchValue;
             }
+            if (state.birthStartDate) {
+                params.birthStartDate = dayjs(state.birthStartDate).format('YYYY-MM-DD');
+            }
+            if (state.birthEndDate) {
+                params.birthEndDate = dayjs(state.birthEndDate).format('YYYY-MM-DD');
+            }
+            if (state.joinStartDate) {
+                params.joinStartDate = dayjs(state.joinStartDate).format('YYYY-MM-DD');
+            }
+            if (state.joinEndDate) {
+                params.joinEndDate = dayjs(state.joinEndDate).format('YYYY-MM-DD');
+            }
+            if (state.leaveStartDate) {
+                params.leaveStartDate = dayjs(state.leaveStartDate).format('YYYY-MM-DD');
+            }
+            if (state.leaveEndDate) {
+                params.leaveEndDate = dayjs(state.leaveEndDate).format('YYYY-MM-DD');
+            }
+            if (state.minSalary) {
+                params.minSal = state.minSalary;
+            }
+            if (state.maxSalary) {
+                params.maxSal = state.maxSalary;
+            }
+            const queryString = new URLSearchParams(params).toString();
+            setApiUrl(`/api/admin/jobseekers?size=10&page=${page}&${queryString}`);
         } catch (error) {
             console.error('검색 중 오류 발생:', error);
             alert("검색 중 오류 발생");
         }
     };
 
+    const handleSearchTypeChange = (e) => {
+        const value = e.target.value;
+        setSearchType(value);
+        setSearchValue('');
+
+        const newState = { ...initialState };
+
+        switch (value) {
+            case 'birth':
+                newState.isBirthDatePicker = true;
+                break;
+            case 'joinDate':
+                newState.isJoinDatePicker = true;
+                break;
+            case 'leaveDate':
+                newState.isLeaveDatePicker = true;
+                break;
+            case 'sal':
+                newState.isSalaryRange = true;
+                break;
+            default:
+                break;
+        }
+
+        setState(newState);
+    };
+
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', mt: 3, boxShadow: 3, padding: 5 }}>
             <Toolbar sx={{ pl: { sm: 2 }, pr: { xs: 1, sm: 1 } }}>
-                <Typography sx={{ flex: '1 1 100%', fontWeight: 'bold' }} variant="h6" id="tableTitle" component="div">
+                <Typography sx={{ flex: '1 1 100%', fontWeight: 'bold', fontFamily: 'pl,sans-serif', fontSize: 30 }} variant="h6" id="tableTitle" component="div">
                     회원 리스트
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 1, bgcolor: 'common.white', p: 0.5, borderRadius: 1 }}>
                     <FormControl size="small" sx={{ width: '15ch' }}>
-                        <InputLabel id="category-select-label">카테고리</InputLabel>
+                        <InputLabel id="category-select-label" sx={{ fontFamily: 'pl,sans-serif' }}>카테고리</InputLabel>
                         <Select
                             labelId="category-select-label"
                             id="category-select"
                             value={searchType}
                             label="카테고리"
-                            onChange={(e) => setSearchType(e.target.value)}
+                            onChange={handleSearchTypeChange}
+                            sx={{ fontFamily: 'pl,sans-serif' }}
                         >
-                            <MenuItem value="name">회원명</MenuItem>
-                            <MenuItem value="birth">생년월일</MenuItem>
-                            <MenuItem value="tel">전화번호</MenuItem>
-                            <MenuItem value="address">주소</MenuItem>
-                            <MenuItem value="edu">학력</MenuItem>
-                            <MenuItem value="sal">월급</MenuItem>
-                            <MenuItem value="gender">성별</MenuItem>
-                            <MenuItem value="joinDate">가입일자</MenuItem>
-                            <MenuItem value="leaveDate">탈퇴일자</MenuItem>
+                            <MenuItem value="name" sx={{ fontFamily: 'pl,sans-serif' }}>회원명</MenuItem>
+                            <MenuItem value="birth" sx={{ fontFamily: 'pl,sans-serif' }}>생년월일</MenuItem>
+                            <MenuItem value="tel" sx={{ fontFamily: 'pl,sans-serif' }}>전화번호</MenuItem>
+                            <MenuItem value="address" sx={{ fontFamily: 'pl,sans-serif' }}>주소</MenuItem>
+                            <MenuItem value="edu" sx={{ fontFamily: 'pl,sans-serif' }}>학력</MenuItem>
+                            <MenuItem value="sal" sx={{ fontFamily: 'pl,sans-serif' }}>월급</MenuItem>
+                            <MenuItem value="gender" sx={{ fontFamily: 'pl,sans-serif' }}>성별</MenuItem>
+                            <MenuItem value="joinDate" sx={{ fontFamily: 'pl,sans-serif' }}>가입일자</MenuItem>
+                            <MenuItem value="leaveDate" sx={{ fontFamily: 'pl,sans-serif' }}>탈퇴일자</MenuItem>
                         </Select>
                     </FormControl>
-                    <TextField
-                        label="검색"
-                        variant="outlined"
-                        size="small"
-                        value={searchValue}
-                        sx={{ width: '25ch' }}
-                        onKeyDown={handleKeyDown}
-                        onChange={(e) => setSearchValue(e.target.value)}
-                    />
-                    <IconButton sx={{ p: '10px' }} aria-label="search" onClick={handleSearch} >
+                    {state.isBirthDatePicker ? (
+                        <>
+                            <DatePicker
+                                selected={state.birthStartDate}
+                                onChange={(date) => setState({ ...state, birthStartDate: date })}
+                                dateFormat="yyyy-MM-dd"
+                                customInput={<TextField label="시작 날짜" variant="outlined" size="small" sx={{ width: '12ch' }} />}
+                            />
+                            <DatePicker
+                                selected={state.birthEndDate}
+                                onChange={(date) => setState({ ...state, birthEndDate: date })}
+                                dateFormat="yyyy-MM-dd"
+                                customInput={<TextField label="끝 날짜" variant="outlined" size="small" sx={{ width: '12ch' }} />}
+                            />
+                        </>
+                    ) : state.isJoinDatePicker ? (
+                        <>
+                            <DatePicker
+                                selected={state.joinStartDate}
+                                onChange={(date) => setState({ ...state, joinStartDate: date })}
+                                dateFormat="yyyy-MM-dd"
+                                customInput={<TextField label="시작 날짜" variant="outlined" size="small" sx={{ width: '12ch' }} />}
+                            />
+                            <DatePicker
+                                selected={state.joinEndDate}
+                                onChange={(date) => setState({ ...state, joinEndDate: date })}
+                                dateFormat="yyyy-MM-dd"
+                                customInput={<TextField label="끝 날짜" variant="outlined" size="small" sx={{ width: '12ch' }} />}
+                            />
+                        </>
+                    ) : state.isLeaveDatePicker ? (
+                        <>
+                            <DatePicker
+                                selected={state.leaveStartDate}
+                                onChange={(date) => setState({ ...state, leaveStartDate: date })}
+                                dateFormat="yyyy-MM-dd"
+                                customInput={<TextField label="시작 날짜" variant="outlined" size="small" sx={{ width: '12ch' }} />}
+                            />
+                            <DatePicker
+                                selected={state.leaveEndDate}
+                                onChange={(date) => setState({ ...state, leaveEndDate: date })}
+                                dateFormat="yyyy-MM-dd"
+                                customInput={<TextField label="끝 날짜" variant="outlined" size="small" sx={{ width: '12ch' }} />}
+                            />
+                        </>
+                    ) : state.isSalaryRange ? (
+                        <>
+                            <TextField
+                                label="최소 월급"
+                                variant="outlined"
+                                size="small"
+                                value={state.minSalary}
+                                onChange={(e) => setState({ ...state, minSalary: e.target.value })}
+                                InputProps={{
+                                    startAdornment: <InputAdornment position="start">₩</InputAdornment>,
+                                }}
+                                sx={{ width: '12ch', fontFamily: 'pl,sans-serif' }}
+                                onKeyDown={handleKeyDown}
+                            />
+                            <TextField
+                                label="최대 월급"
+                                variant="outlined"
+                                size="small"
+                                value={state.maxSalary}
+                                onChange={(e) => setState({ ...state, maxSalary: e.target.value })}
+                                InputProps={{
+                                    startAdornment: <InputAdornment position="start">₩</InputAdornment>,
+                                }}
+                                sx={{ width: '12ch', fontFamily: 'pl,sans-serif' }}
+                                onKeyDown={handleKeyDown}
+                            />
+                        </>
+                    ) : (
+                        <TextField
+                            label="검색"
+                            variant="outlined"
+                            size="small"
+                            value={searchValue}
+                            sx={{ width: '25ch', fontFamily: 'pl,sans-serif' }}
+                            onKeyDown={handleKeyDown}
+                            onChange={(e) => setSearchValue(e.target.value)}
+                        />
+                    )}
+                    <IconButton sx={{ p: '10px' }} aria-label="search" onClick={handleSearch}>
                         <SearchIcon />
                     </IconButton>
                 </Box>
             </Toolbar>
             <TableContainer>
-                <Table sx={{ minWidth: 750, border: '1px solid #e0e0e0' }} aria-labelledby="tableTitle" size="medium">
-                    <TableHead >
-                        <TableRow sx={{ bgcolor: 'primary.dark' }}>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>이름</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>생년월일</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>전화번호</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>주소</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>학력</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>월급</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>성별</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>사진</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>가입일자</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium' }}>탈퇴여부</TableCell>
+                <Table sx={{ minWidth: 750, border: '1px solid #e0e0e0', fontFamily: 'pl,sans-serif' }} aria-labelledby="tableTitle" size="medium">
+                    <TableHead>
+                        <TableRow sx={{ bgcolor: 'primary.main' }}>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>이름</TableCell>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>생년월일</TableCell>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>전화번호</TableCell>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>주소</TableCell>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>학력</TableCell>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>월급</TableCell>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>성별</TableCell>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>사진</TableCell>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>가입일자</TableCell>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>탈퇴여부</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -120,16 +262,16 @@ function EnhancedTable() {
                                 hover
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell align="center">{user.joName}</TableCell>
-                                <TableCell align="center">{user.joBirth}</TableCell>
-                                <TableCell align="center">{user.joTel}</TableCell>
-                                <TableCell align="center">{user.joAddress}</TableCell>
-                                <TableCell align="center">{user.joEdu}</TableCell>
-                                <TableCell align="center">{user.joSal}</TableCell>
-                                <TableCell align="center">{user.joGender}</TableCell>
-                                <TableCell align="center">{user.joImgUrl == null ? '없음' : <TableCell align="center"><img src={user.joImgUrl} alt="회원사진" style={{ width: '50px', height: '50px' }} /></TableCell>}</TableCell>
-                                <TableCell align="center">{user.user.usJoinDate}</TableCell>
-                                <TableCell align="center">{user.user.usLeaveDate == null ? '활동중' : user.user.usLeaveDate}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joName}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joBirth ? user.joBirth : '없음'}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joTel ? user.joTel : '없음'}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joAddress ? user.joAddress : '없음'}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joEdu ? user.joEdu : '없음'}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joSal ? user.joSal : '없음'}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joGender ? user.joGender : '없음'}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joImgUrl == null ? '없음' : <img src={user.joImgUrl} alt="회원사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.user.usJoinDate ? user.user.usJoinDate : '없음'}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.user.usState == 1 ? '활동중' : '탈퇴한 회원'}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

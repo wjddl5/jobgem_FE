@@ -1,9 +1,10 @@
 'use client';
-import { Button, Checkbox, MenuItem, Pagination, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField } from '@mui/material';
+import { Button, Checkbox, MenuItem, Pagination, Paper, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import styles from '/public/css/board.css';
 import axios from 'axios';
+import { getToken } from '@/app/util/token/token';
 
 // (관리자) 공지사항 게시판 리스트
 export default function page(props) {
@@ -14,6 +15,14 @@ export default function page(props) {
 	const [ar, setAr] = useState([]);
 	const [arLength, setArLength] = useState(0);
 	const API_URL = '/api/bbs/notice';
+	const [token, setToken] = useState(null);
+
+	useEffect(() => {
+		getToken().then((res) => {
+			console.log(res);
+			setToken(res);
+		});
+	}, []);
 
 	// 페이징
 	const [cPage, setCPage] = useState(Number(props.searchParams.cPage));
@@ -128,10 +137,10 @@ export default function page(props) {
 
 	// 페이지
 	return (
-		<div>
+		<Paper sx={{ width: '100%', overflow: 'hidden', mt: 3, boxShadow: 3 }}>
 			<div className='bbs_header'>
 				<h2 className='bbs_title'>공지사항</h2>
-				<div className='bbs_toolBox'>
+				<div className='bbs_toolBox' style={{ padding: '0 10px 0 10px' }}>
 					<div className='bbs_search'>
 						<Select className='selectBox' value={searchType} onChange={(event) => setSearchType(event.target.value)}>
 							<MenuItem value={'title'}>제목</MenuItem>
@@ -144,8 +153,7 @@ export default function page(props) {
 						</Button>
 					</div>
 					<div className='bbs_btn'>
-						<Button variant='contained' onClick={() => router.push(`write/${1}`)}>
-							{/*로그인한 유저 idx로 변경 (!)*/}
+						<Button variant='contained' onClick={() => router.push(`write/${token.USIDX}`)}>
 							글쓰기
 						</Button>
 						<Button
@@ -161,53 +169,75 @@ export default function page(props) {
 					</div>
 				</div>
 			</div>
-			<Table>
-				<TableHead>
-					<TableRow>
-						<TableCell sx={{ width: '50px' }} align='center'>
-							<Checkbox onChange={allCheckChange} checked={chkSet.size === arLength} />
-						</TableCell>
-						<TableCell sx={{ width: '80px' }} align='center'>
-							번호
-						</TableCell>
-						<TableCell sx={{ width: '*' }} align='center'>
-							제목
-						</TableCell>
-						<TableCell sx={{ width: '150px' }} align='left'>
-							작성자
-						</TableCell>
-						<TableCell sx={{ width: '80px' }} align='center'>
-							댓글
-						</TableCell>
-						<TableCell sx={{ width: '80px' }} align='center'>
-							조회
-						</TableCell>
-						<TableCell sx={{ width: '80px' }} align='center'>
-							추천
-						</TableCell>
-						<TableCell sx={{ width: '150px' }} align='center'>
-							작성일
-						</TableCell>
-					</TableRow>
-				</TableHead>
-				<TableBody>
-					{ar.map((row) => (
-						<TableRow key={row.id} className={styles.tableRow} onClick={() => router.push(`view/${row.id}?cPage=${page}&searchType=${searchType}&searchValue=${searchValue}`)} hover>
-							<TableCell align='center'>
-								<Checkbox checked={chkSet.has(row.id)} onChange={(event) => checkChange(event, row.id)} onClick={(event) => event.stopPropagation()} />
+			<div style={{ margin: '30px' }}>
+				<Table>
+					<TableHead style={{ backgroundColor: '#1976d2' }}>
+						<TableRow sx={{ minWidth: 750, border: '1px solid #e0e0e0' }}>
+							<TableCell sx={{ width: '50px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								<Checkbox
+									onChange={allCheckChange}
+									checked={chkSet.size === arLength && arLength > 0}
+									style={{
+										color: 'white',
+									}}
+								/>
 							</TableCell>
-							<TableCell align='center'>{row.id}</TableCell>
-							<TableCell className={styles.tableRow}>{row.boTitle}</TableCell>
-							<TableCell align='left'>{row.usId}</TableCell>
-							<TableCell align='center'>{row.commCount}</TableCell>
-							<TableCell align='center'>{row.boHit}</TableCell>
-							<TableCell align='center'>{row.boLike}</TableCell>
-							<TableCell align='center'>{row.boWritedate}</TableCell>
+							<TableCell sx={{ width: '80px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								번호
+							</TableCell>
+							<TableCell sx={{ width: '*', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								제목
+							</TableCell>
+							<TableCell sx={{ width: '150px', color: 'common.white', fontWeight: 'medium' }} align='left'>
+								작성자
+							</TableCell>
+							<TableCell sx={{ width: '80px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								댓글
+							</TableCell>
+							<TableCell sx={{ width: '80px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								조회
+							</TableCell>
+							<TableCell sx={{ width: '80px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								추천
+							</TableCell>
+							<TableCell sx={{ width: '150px', color: 'common.white', fontWeight: 'medium' }} align='center'>
+								작성일
+							</TableCell>
 						</TableRow>
-					))}
-				</TableBody>
-			</Table>
+					</TableHead>
+					<TableBody>
+						{ar.length < 1 ? (
+							<TableRow style={{ borderLeft: '1px solid #cccccc', borderRight: '1px solid #cccccc' }}>
+								<TableCell align='center' colSpan={8}>
+									게시글이 없습니다.
+								</TableCell>
+							</TableRow>
+						) : (
+							ar.map((row) => (
+								<TableRow
+									key={row.id}
+									className={styles.tableRow}
+									onClick={() => router.push(`view/${row.id}?cPage=${page}&searchType=${searchType}&searchValue=${searchValue}`)}
+									hover
+									style={{ borderLeft: '1px solid #cccccc', borderRight: '1px solid #cccccc' }}
+								>
+									<TableCell align='center'>
+										<Checkbox checked={chkSet.has(row.id)} onChange={(event) => checkChange(event, row.id)} onClick={(event) => event.stopPropagation()} />
+									</TableCell>
+									<TableCell align='center'>{row.id}</TableCell>
+									<TableCell className={styles.tableRow}>{row.boTitle}</TableCell>
+									<TableCell align='left'>{row.usId}</TableCell>
+									<TableCell align='center'>{row.commCount}</TableCell>
+									<TableCell align='center'>{row.boHit}</TableCell>
+									<TableCell align='center'>{row.boLike}</TableCell>
+									<TableCell align='center'>{row.boWritedate}</TableCell>
+								</TableRow>
+							))
+						)}
+					</TableBody>
+				</Table>
+			</div>
 			<Pagination className='pagination' count={totalPage} page={page + 1} color='primary' onChange={changePage} />
-		</div>
+		</Paper>
 	);
 }
