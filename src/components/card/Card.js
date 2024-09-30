@@ -9,7 +9,7 @@ function Card({ item }) {
 	const deadlineDate = new Date(item.poDeadline);
 
 	const timeDiff = deadlineDate - nowDate;
-	const dayDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
+	const dayDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)) - 1; // Convert milliseconds to days
 
 	const deadlineDisplay = dayDiff > 0 ? `D-${dayDiff}` : dayDiff === 0 ? "D-Day" : `D+${Math.abs(dayDiff)}`;
 

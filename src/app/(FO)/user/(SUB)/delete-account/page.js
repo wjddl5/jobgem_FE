@@ -1,10 +1,10 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
 export default function Page() {
-	const [login, setLogin] = useState("0");
+	const [login, setLogin] = useState(null);
 	useEffect(() => {
 		getToken().then((res) => {
 			setLogin(res.IDX);
