@@ -62,6 +62,7 @@ export default function ViewPage(props) {
 			method: "get",
 			params: {
 				joIdx: login,
+				
 			},
 		})
 			.then((response) => {
