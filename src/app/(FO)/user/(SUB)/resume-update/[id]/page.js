@@ -5,6 +5,7 @@ import SideMenu from "@/components/sidemenu/SideMenu";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Button from "@/components/button/Button";
+import { getToken } from "@/app/util/token/token";
 
 export default function Page(props) {
 	const [login, setLogin] = useState("0");
