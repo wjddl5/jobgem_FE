@@ -64,7 +64,6 @@ export default function page() {
             if (maxSalary) {
                 params.maxSal = maxSalary;
             }
-            console.log(params);
             const response = await axios.get(apiUrl, {
                 params: params
             });
@@ -139,9 +138,6 @@ export default function page() {
                             onChange={handleSearchTypeChange}
                             sx={{fontFamily: 'pl,sans-serif'}}
                         >
-                            <MenuItem value="" disabled>
-                                <em>카테고리 선택</em>
-                            </MenuItem>
                             <MenuItem sx={{fontFamily: 'pl,sans-serif'}} value="title">제목</MenuItem>
                             <MenuItem sx={{fontFamily: 'pl,sans-serif'}} value="content">내용</MenuItem>
                             <MenuItem sx={{fontFamily: 'pl,sans-serif'}} value="date">등록날짜</MenuItem>
