@@ -43,13 +43,10 @@ jobs:
         run: |
           sudo chmod 666 /var/run/docker.sock
           
-      - name: Remove old files in EC2
+      - name: SSH into EC2
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST }} << 'EOF'
-            rm -rf /home/ubuntu/JobGem_FE/*
+            cd /home/ubuntu/JobGem_FE
+            docker-compose down
+            docker-compose up -d --build
           EOF
-
-      - name: Copy files to EC2
-        run: |
-          scp -r -o StrictHostKeyChecking=no ./* ubuntu@${{ secrets.HOST }}:/home/ubuntu/JobGem_FE
-
