@@ -62,7 +62,6 @@ export default function ViewPage(props) {
 			method: "get",
 			params: {
 				joIdx: login,
-				
 			},
 		})
 			.then((response) => {
@@ -97,16 +96,29 @@ export default function ViewPage(props) {
 				joIdx: login,
 				poIdx: props.params.poIdx,
 			},
-		}).then((res) => {
-			if (res.status == 400) {
-				alert("이미 지원한 공고입니다.");
-			} else {
+		})
+			.then((res) => {
 				if (res.status == 201) {
-					alert("지원완료");
+					alert("지원 완료");
 					router.push(`/user/apply-company`);
 				}
-			}
-		});
+			})
+			.catch((error) => {
+				if (error.response) {
+					// 서버에서 반환한 에러 메시지에 따라 처리
+					const errorMessage = error.response.data;
+					if (errorMessage === "이미 지원한 공고입니다.") {
+						alert("이미 지원한 공고입니다.");
+					} else if (errorMessage === "대표 이력서가 없습니다.") {
+						alert("대표 이력서를 설정하세요."); // 대표 이력서가 없을 때 알림
+					} else {
+						alert("지원 중 오류가 발생했습니다.");
+					}
+				} else {
+					console.error("지원 중 오류 발생:", error);
+					alert("지원 중 오류가 발생했습니다.");
+				}
+			});
 	}
 
 	useEffect(() => {
