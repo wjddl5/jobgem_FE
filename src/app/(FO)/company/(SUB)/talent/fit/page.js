@@ -24,6 +24,7 @@ function Page() {
 			setUserId(res.IDX);
 		})
 	}, []);
+
 	// 최초 데이터 패칭 및 페이징
 	const fetchData = useCallback(async () => {
 		setIsLoading(true);
@@ -68,9 +69,14 @@ function Page() {
 		}
 	};
 
+	const sendAlert = async () => {
+		const data = "입사 제안이 도착했습니다";
+		await axios.get(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/api/alert/send/${jobseekerId}/${data}`);
+	}
+
 	// 폼 확인 시 제출
 	const handleSubmit = async (formData) => {
-		axios
+		await axios
 			.post('/api/company/offer', {
 					coIdx: userId,
 					joIdx: jobseekerId,
@@ -81,6 +87,7 @@ function Page() {
 					router.push('/company/chat');
 				}
 			});
+		await sendAlert();
 	};
 
 	const offerHandler = (id) => {
