@@ -4,12 +4,14 @@ import React, { useState, useRef, useEffect } from 'react';
 import Script from 'next/script';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { getToken } from '@/app/util/token/token';
 export default function CompanyMyPage() {
   const router = useRouter();
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedCompanyImage, setSelectedCompanyImage] = useState(null);
+  const [login, setLogin] = useState(null); // 초기값을 null로 설정
   const [companyData, setCompanyData] = useState({
     coName: '',
     coType: '',
@@ -29,9 +31,17 @@ export default function CompanyMyPage() {
   
 
   useEffect(() => {
+    getToken().then((res) => {
+      setLogin(res.IDX); // login 값 설정
+      console.log(res);
+  });
     daumPostcode();
-    getCompanyData();
   }, []);
+  useEffect(() => {
+    if (!isLoading && login !== null) {
+        getCompanyData();
+    }
+}, [login, isLoading]);
   function daumPostcode() {
     const script = document.createElement('script');
     script.src = '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
@@ -42,7 +52,7 @@ export default function CompanyMyPage() {
     };
   }
   function getCompanyData() {
-    axios.get(`/api/company/${id}`)
+    axios.get(`/api/company/${login}`)
       .then((res) => {
         console.log(res);
         setCompanyData(res.data);

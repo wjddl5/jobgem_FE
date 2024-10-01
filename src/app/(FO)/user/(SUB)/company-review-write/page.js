@@ -6,7 +6,7 @@ import axios from "axios";
 import { getToken } from "@/app/util/token/token";
 
 export default function Page() {
-	const [login, setLogin] = useState("0");
+	const [login, setLogin] = useState(null);
 	useEffect(() => {
 		getToken().then((res) => {
 			setLogin(res.IDX);
