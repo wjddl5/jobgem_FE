@@ -41,21 +41,27 @@ export default function Page() {
 	}
 
 	// 이력서 삭제하기
-	function remove(resumeId) {
-		if (login !== null) {
-			axios
-				.delete(`/api/jobseeker/resume/${resumeId}`)
-				.then((res) => {
-					alert("삭제 완료");
-					getData();
-				})
-				.catch((error) => {
+function remove(resumeId) {
+	if (login !== null) {
+		axios
+			.delete(`/api/jobseeker/resume/${resumeId}`)
+			.then((res) => {
+				alert("삭제 완료");
+				getData(); // 데이터를 새로 불러옴
+			})
+			.catch((error) => {
+				if (error.response && error.response.status === 400) {
+					// 서버에서 400 Bad Request를 반환한 경우
 					alert("대표 이력서는 삭제할 수 없습니다.");
-				});
-		} else {
-			alert("로그인이 필요합니다."); // 로그인 안 되어있으면 경고 메시지
-		}
+				} else {
+					// 그 외의 에러 처리
+					alert("삭제에 실패했습니다. 다시 시도해주세요.");
+				}
+			});
+	} else {
+		alert("로그인이 필요합니다."); // 로그인 안 되어있으면 경고 메시지
 	}
+}
 
 	// 대표 이력서 설정하기
 	function setDefault(resumeId) {
