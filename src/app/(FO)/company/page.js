@@ -1,6 +1,6 @@
 "use client"; // 클라이언트 측 렌더링 활성화
 
-import React, { useState, useEffect } from "react";
+import {useState, useEffect} from "react";
 import Button from "@/components/button/Button";
 import { DiAptana } from "react-icons/di";
 import IconButton from "@/components/button/IconButton";
@@ -9,14 +9,29 @@ import Table from "@/components/table/Table";
 import Link from "next/link";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import {getToken} from "@/app/util/token/token";
+
 export default function Page() {
     const router = useRouter();
-    const coId = 1;
+    const [coId, setCoId] = useState(0);
     const [companyData, setCompanyData] = useState();
     const [isChangeLogo, setIsChangeLogo] = useState(true);
     const [logo, setLogo] = useState(null);
     const [file, setFile] = useState("");
     const [preview, setPreview] = useState(null);
+
+    const fetchToken = async () => {
+        const res = await getToken();
+        setCoId(res?.IDX);
+    };
+
+    useEffect(() => {
+        fetchToken();
+    }, []);
+
+    useEffect(() => {
+        if(coId > 0) getData();
+    }, [logo, coId]);
 
     // 데이터를 가져오는 함수
     const getData = () => {
@@ -77,11 +92,6 @@ export default function Page() {
             }
         }
     };
-
-    useEffect(() => {
-        getData();
-    }, [logo]);
-
     if (!companyData) return <div className='flex justify-center'><img src='/img/loading.gif' alt='로딩' /></div>;
 
     return (
