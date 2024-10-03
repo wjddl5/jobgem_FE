@@ -1,13 +1,23 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import { FaBell } from 'react-icons/fa';
+import axios from "axios";
 
-export default function SystemAlert() {
+export default function SystemAlert({ usIdx, alerts, newAlert, setNewAlert }) {
     const [isOpen, setIsOpen] = useState(false);
     const popoverRef = useRef(null);
     const buttonRef = useRef(null);
 
-    const togglePopover = () => setIsOpen(!isOpen);
+    const readAlert = () => {
+        axios.put(`/api/alert/read?usIdx=${usIdx}`).then((res) => {
+            setNewAlert(false);
+        })
+    }
+
+    const togglePopover = () => {
+        setIsOpen(!isOpen);
+        if (newAlert) readAlert();
+    };
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -22,9 +32,25 @@ export default function SystemAlert() {
         };
     }, []);
 
-    const handleKeyDown = (e) => {
-        if (e.key === 'Escape') {
-            setIsOpen(false);
+    const formatTimeAgo = (dateString) => {
+        const messageDate = new Date(dateString);
+        const now = new Date();
+        const diffMs = now - messageDate;
+        const diffMinutes = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMs / 3600000);
+        const diffDays = Math.floor(diffMs / 86400000);
+
+        if (diffMinutes < 60) {
+            if (diffMinutes === 0) {
+                return `방금`;
+            }
+            return `${diffMinutes}분 전`;
+        } else if (diffHours < 24) {
+            return `${diffHours}시간 전`;
+        } else if (diffDays < 2) {
+            return `${diffDays}일 전`;
+        } else {
+            return messageDate.toLocaleDateString().replaceAll(". ", "-").slice(0, -1); // YYYY-MM-DD 형식
         }
     };
 
@@ -33,13 +59,15 @@ export default function SystemAlert() {
             <button
                 ref={buttonRef}
                 onClick={togglePopover}
-                onKeyDown={handleKeyDown}
-                className="p-2 text-gray-600 hover:text-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-full"
+                className="p-2 text-gray-600 hover:text-blue-500 relative"
                 aria-haspopup="true"
                 aria-expanded={isOpen}
             >
                 <FaBell className="h-6 w-6" />
                 <span className="sr-only">알림 열기</span>
+                {newAlert && (
+                    <div className="absolute top-0 right-0 bg-blue-500 rounded-full w-2.5 h-2.5" /> // 새로운 알림 표시
+                )}
             </button>
             {isOpen && (
                 <div
@@ -53,27 +81,15 @@ export default function SystemAlert() {
                         <h3 className="text-lg font-semibold">알림</h3>
                     </div>
                     <ul className="divide-y divide-gray-200">
-                        <li className="p-4 flex items-start space-x-4">
-                            <div className="mt-1 bg-blue-500 rounded-full w-2 h-2 flex-shrink-0"></div>
-                            <div>
-                                <p className="text-sm font-medium">새로운 메시지가 도착했습니다.</p>
-                                <p className="text-xs text-gray-500">방금 전</p>
-                            </div>
-                        </li>
-                        <li className="p-4 flex items-start space-x-4">
-                            <div className="mt-1 bg-blue-500 rounded-full w-2 h-2 flex-shrink-0"></div>
-                            <div>
-                                <p className="text-sm font-medium">시스템 업데이트가 완료되었습니다.</p>
-                                <p className="text-xs text-gray-500">1시간 전</p>
-                            </div>
-                        </li>
-                        <li className="p-4 flex items-start space-x-4">
-                            <div className="mt-1 bg-gray-300 rounded-full w-2 h-2 flex-shrink-0"></div>
-                            <div>
-                                <p className="text-sm font-medium">주간 보고서가 준비되었습니다.</p>
-                                <p className="text-xs text-gray-500">어제</p>
-                            </div>
-                        </li>
+                        {alerts.map((alert, idx) => (
+                            <li className="p-4 flex items-start space-x-4" key={idx}>
+                                <div className="mt-1 bg-blue-500 rounded-full w-2 h-2 flex-shrink-0"></div>
+                                <div>
+                                    <p className="text-sm font-medium">{alert.alContent}</p>
+                                    <p className="text-xs text-gray-500">{formatTimeAgo(alert.alDate)}</p>
+                                </div>
+                            </li>
+                        ))}
                     </ul>
                 </div>
             )}
