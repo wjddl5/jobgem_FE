@@ -28,6 +28,10 @@ function HeaderNav() {
             const response = await fetch(`/api/alert?usIdx=${userId}`);
             const data = await response.json();
             setAlerts(data);
+            for(let i = 0; i < data.length; i++) {
+                if(data[i].alIsRead === 0)
+                    setNewAlert(true);
+            }
         } catch (error) {
             console.error('Error fetching alerts:', error);
         }
@@ -71,7 +75,7 @@ function HeaderNav() {
         <div className={styles.links}>
             {token ? (
                 <>
-                    <SystemAlert usIdx={userId} alerts={alerts} newAlert={newAlert} setNewAlert={setNewAlert} /> {/* newAlert 전달 */}
+                    <SystemAlert usIdx={userId} alerts={alerts} newAlert={newAlert} setNewAlert={setNewAlert} />
                     <Link href='/my'>마이페이지</Link>
                 </>
             ) : (
