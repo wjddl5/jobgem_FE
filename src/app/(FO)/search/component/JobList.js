@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function JobList({ jobList }) {
 
     const detailCompanyLink = "/company/";
-    const detailPostLink = "/company/posting/view/";
+    const detailPostLink = "/post/view/";
     
     const dDay = (deadline) => {
         const today = new Date("2024-01-01");
