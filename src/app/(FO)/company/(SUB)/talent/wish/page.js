@@ -5,29 +5,37 @@ import axios from 'axios';
 import Button from '@/components/button/Button';
 import InputPopup from '@/components/popup/InputPopup';
 import { useRouter } from 'next/navigation';
+import {getToken} from "@/app/util/token/token";
 
 function Page() {
+	const [userId, setUserId] = useState(0);
 	const router = useRouter();
 	const [jobseekers, setJobseekers] = useState([]);
 	const [loadPage, setLoadPage] = useState(0);
 	const [isLoading, setIsLoading] = useState(false);
 	const [hasMore, setHasMore] = useState(true);
 	const [isPopupOpen, setPopupOpen] = useState(false);
-	const [jobseekerId, setJobseekerId] = useState(null);
+	const [jobseekerId, setJobseekerId] = useState(0);
 
 	const inputs = [{ label: '메시지', name: 'ofContent', placeholder: '메시지를 입력하세요', type: 'textarea' }];
 
 	const getData = async () => {
 		setIsLoading(true);
-		const res = await axios(`/api/company/wish?id=${1}&loadPage=${loadPage}`);
+		const res = await axios(`/api/company/wish?id=${userId}&loadPage=${loadPage}`);
 		setJobseekers((prevJobseekers) => [...prevJobseekers, ...res.data.content]);
 		setHasMore(!res.data.last);
 		setIsLoading(false);
 	};
+	useEffect(() => {
+		getToken().then((res) => {
+			setUserId(res.IDX);
+		})
+	}, []);
 
 	useEffect(() => {
-		getData();
-	}, [loadPage]);
+		if (userId > 0)
+			getData();
+	}, [loadPage, userId]);
 
 	useEffect(() => {
 		const handleScroll = () => {
@@ -68,16 +76,15 @@ function Page() {
 	// 폼 확인 시 제출
 	const handleSubmit = async (formData) => {
 		axios
-			.post('/api/company/offer', null, {
-				params: {
-					coIdx: 1,
+			.post('/api/company/offer', {
+					coIdx: userId,
 					joIdx: jobseekerId,
 					ofContent: formData.ofContent,
-				},
-			})
+				})
 			.then((res) => {
-				alert('채팅방이 개설되었습니다.');
-				setPopupOpen(false);
+				if (confirm('채팅방으로 이동하시겠습니까?')) {
+					router.push('/company/chat');
+				}
 			});
 	};
 
@@ -137,8 +144,8 @@ function Page() {
 								</div>
 							</div>
 							<div className='flex gap-2 justify-center mt-4'>
-								<Button text='입사 제안' type='submit' onClick={() => offerHandler(item.id)} />
-								<Button text='찜 삭제' onClick={() => removeWishHandler(item.id)} />
+								<Button text='입사 제안' type='submit' onClick={() => offerHandler(item.jobseeker.id)} />
+								<Button text='찜 삭제' onClick={() => removeWishHandler(item.jobseeker.id)} />
 							</div>
 						</div>
 					))}
