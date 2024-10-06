@@ -73,11 +73,9 @@ function EnhancedTable() {
 		try {
 			let params = {
 			};
-			if (searchType) {
-				params.type = searchType;
-			}
-			if (searchValue) {
-				params.value = searchValue;
+			if (searchType && searchValue) {
+				params.searchType = searchType;
+				params.searchValue = searchValue;
 			}
 			if (state.blockStartDate) {
 				params.blockStartDate = dayjs(state.blockStartDate).format('YYYY-MM-DD');
@@ -97,7 +95,6 @@ function EnhancedTable() {
 			if (state.maxSales) {
 				params.maxSal = state.maxSales;
 			}
-
 			const queryString = new URLSearchParams(params).toString();
 			setApiUrl(`/api/admin/blocked-companies?size=10&page=${page}&${queryString}`);
 		} catch (error) {
@@ -141,6 +138,10 @@ function EnhancedTable() {
 	const handleDelete = async () => {
 		if (chkSet.size === 0) {
 			alert('삭제할 항목을 선택해주세요');
+			return;
+		}
+		const confirm = window.confirm('정말로 삭제하시겠습니까?');
+		if (!confirm) {
 			return;
 		}
 		try {
@@ -337,7 +338,7 @@ function EnhancedTable() {
 							</TableCell>
 							<TableCell sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }} align='center'>
 								사진
-								</TableCell>
+							</TableCell>
 							<TableCell sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }} align='center'>
 								썸네일
 							</TableCell>
@@ -349,7 +350,7 @@ function EnhancedTable() {
 							</TableCell>
 							<TableCell sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }} align='center'>
 								담당자 이름
-								</TableCell>
+							</TableCell>
 							<TableCell sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }} align='center'>
 								담당자 전화번호
 							</TableCell>
