@@ -76,11 +76,9 @@ function EnhancedTable() {
 	const handleSearch = async () => {
 		try {
 			let params = {};
-			if (searchType) {
-				params.type = searchType;
-			}
-			if (searchValue) {
-				params.value = searchValue;
+			if (searchType && searchValue) {
+				params.searchType = searchType;
+				params.searchValue = searchValue;
 			}
 			if (state.blockStartDate) {
 				params.blockStartDate = dayjs(state.blockStartDate).format('YYYY-MM-DD');
@@ -112,7 +110,7 @@ function EnhancedTable() {
 			if (state.maxSalary) {
 				params.maxSal = state.maxSalary;
 			}
-
+			console.log(params);
 			const queryString = new URLSearchParams(params).toString();
 			setApiUrl(`/api/admin/blocked-jobseekers?size=10&page=${page}&${queryString}`);
 		} catch (error) {
@@ -156,6 +154,10 @@ function EnhancedTable() {
 	const handleDelete = async () => {
 		if (chkSet.size === 0) {
 			alert('삭제할 항목을 선택해주세요');
+			return;
+		}
+		const confirm = window.confirm('정말로 삭제하시겠습니까?');
+		if (!confirm) {
 			return;
 		}
 		try {
@@ -398,16 +400,24 @@ function EnhancedTable() {
 								</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.blDate}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.blContent.length > 10 ? user.blContent.substring(0, 10) + '...' : user.blContent}</TableCell>
-								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.jobseeker.joName ? user.jobseeker.joName : '없음'}</TableCell>
-								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.jobseeker.joBirth ? user.jobseeker.joBirth : '없음'}</TableCell>
-								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.jobseeker.joTel ? user.jobseeker.joTel : '없음'}</TableCell>
-								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.jobseeker.joAddress ? user.jobseeker.joAddress : '없음'}</TableCell>
-								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.jobseeker.joEdu ? user.jobseeker.joEdu : '없음'}</TableCell>
-								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.jobseeker.joSal ? user.jobseeker.joSal : '없음'}</TableCell>
-								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.jobseeker.joGender ? user.jobseeker.joGender : '없음'}</TableCell>
-								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.jobseeker.joImgUrl == null ? '없음' : <img src={user.jobseeker.joImgUrl} alt="회원사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
-								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.jobseeker.user.usJoinDate ? user.jobseeker.user.usJoinDate : '없음'}</TableCell>
-								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.jobseeker.user.usLeaveDate == null ? '활동중' : user.jobseeker.user.usLeaveDate}</TableCell>
+								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.name ? user.name : '없음'}</TableCell>
+								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>
+									{user.joBirth ? (
+										<>
+											{user.joBirth}
+											<br />
+											현재 나이: {user.joAge}
+										</>
+									) : '없음'}
+								</TableCell>
+								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.joTel ? user.joTel : '없음'}</TableCell>
+								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.joAddress ? user.joAddress : '없음'}</TableCell>
+								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.joEdu ? user.joEdu : '없음'}</TableCell>
+								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.joSal ? user.joSal : '없음'}</TableCell>
+								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.joGender ? user.joGender : '없음'}</TableCell>
+								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.joImgUrl == null ? '없음' : <img src={user.joImgUrl} alt="회원사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
+								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.joinDate ? user.joinDate : '없음'}</TableCell>
+								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.leaveDate == null ? '활동중' : user.leaveDate}</TableCell>
 							</TableRow>
 						))}
 					</TableBody>

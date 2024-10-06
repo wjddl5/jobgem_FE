@@ -53,7 +53,7 @@ function EnhancedTable() {
             let params = {};
             if (searchType && searchValue) {
                 params.searchType = searchType;
-                params.search = searchValue;
+                params.searchValue = searchValue;
             }
             if (state.openStartDate) {
                 params.openStartDate = dayjs(state.openStartDate).format('YYYY-MM-DD');
@@ -67,6 +67,7 @@ function EnhancedTable() {
             if (state.maxSales) {
                 params.maxSales = state.maxSales;
             }
+            console.log(params);
             const queryString = new URLSearchParams(params).toString();
             setApiUrl(`/api/admin/companies?size=10&page=${page}&${queryString}`);
         } catch (error) {
