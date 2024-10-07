@@ -89,7 +89,7 @@ export default function page() {
 	function changeAddDoName(event) {
 		var n = event.target.value;
 		if (n.length > 10) {
-			alert('최대 5글자까지 입력할 수 있습니다.');
+			alert('최대 10글자까지 입력할 수 있습니다.');
 			event.target.value = n.substring(0, 9);
 		} else {
 			setAddDoName(n);
