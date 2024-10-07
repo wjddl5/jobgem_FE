@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import styles from '/public/css/board.css';
 import { Button } from '@mui/material';
+import { useRecoilState } from 'recoil';
+import { blacklistState } from '@/components/admin/alert/atom';
 
 // (관리자) 신고 게시글 상세보기
 export default function page(props) {
@@ -15,7 +17,7 @@ export default function page(props) {
 	const [searchValue, setSearchValue] = useState(props.searchParams.searchValue || '');
 	const [selectType, setselectType] = useState(props.searchParams.selectType || 'all');
 	const [vo, setVo] = useState({});
-
+	const [blacklist, setBlacklist] = useRecoilState(blacklistState);
 	useEffect(() => {
 		getData();
 	}, []);
@@ -25,6 +27,7 @@ export default function page(props) {
 			.get(API_URL)
 			.then((res) => {
 				setVo(res.data);
+				blacklistList();
 			})
 			.catch((e) => {
 				console.error('error:', e);
@@ -34,8 +37,10 @@ export default function page(props) {
 	function removeList() {
 		if (confirm('게시글을 삭제하시겠습니까?')) {
 			axios.delete(`/api/blackList/${props.params.id}`).then((res) => {
-				if (res.data == true) alert('삭제 완료 되었습니다.');
-				else alert('삭제 실패 !');
+				if (res.data == true){
+					alert('삭제 완료 되었습니다.');
+					blacklistList();
+				} else alert('삭제 실패 !');
 				router.push('/admin/blackList/list');
 			});
 		}
@@ -50,13 +55,20 @@ export default function page(props) {
 					},
 				})
 				.then((res) => {
-					if (res.data == true) alert('변경 완료 되었습니다.');
-					else alert('오류가 발생했습니다.\n 다시 시도해주세요.');
+					if (res.data == true){
+						alert('변경 완료 되었습니다.');
+						setBlacklist(res.data);
+						blacklistList();
+					} else alert('오류가 발생했습니다.\n 다시 시도해주세요.');
 					getData();
 				});
 		}
 	}
-
+	function blacklistList(){
+		axios.get('/api/admin/pending-blacklist').then((res) => {
+			setBlacklist(res.data);
+		});
+	}
 	return (
 		<div className='post_detail-container'>
 			<div className='post_header'>

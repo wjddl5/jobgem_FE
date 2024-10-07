@@ -26,6 +26,7 @@ export default function Posting() {
             console.log(res);
         });
     }, [])
+
     useEffect(() => {
         if(login !== null){
             init();
@@ -33,6 +34,7 @@ export default function Posting() {
         }
     }, [login, loadPage])
     useEffect(() => {
+        if(login != null){
         if(select === 0){
             getAllList()
         }else if(select === 1){
@@ -42,6 +44,7 @@ export default function Posting() {
         }else if(select === 3){
             getCloseList()
         }
+    }
     }, [sort, loadPage])
 
     function getinfo(){

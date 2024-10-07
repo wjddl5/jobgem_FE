@@ -5,6 +5,8 @@ import React, { useEffect, useState } from 'react';
 import styles from '/public/css/board.css';
 import { Button, TextField } from '@mui/material';
 import { getToken } from '@/app/util/token/token';
+import { useRecoilState } from 'recoil';
+import { qnaState } from '@/components/admin/alert/atom';
 
 // (관리자) 문의사항 게시글 상세보기
 export default function page(props) {
@@ -18,23 +20,22 @@ export default function page(props) {
 	const [commentContent, setCommentContent] = useState('');
 	const API_URL = `/api/bbs/${props.params.id}`;
 	const [token, setToken] = useState({});
-
+	const [qna, setQna] = useRecoilState(qnaState);
 	useEffect(() => {
 		getToken().then((res) => {
 			setToken(res);
 		});
 	}, []);
-
 	useEffect(() => {
 		getData();
 	}, [token]);
-
 	function getData() {
 		axios
 			.get(API_URL)
 			.then((res) => {
 				setVo(res.data.vo);
 				setCommentList(res.data.commentList);
+				qnaList();
 			})
 			.catch((e) => {
 				console.error('error:', e);
@@ -59,6 +60,7 @@ export default function page(props) {
 				if (res.data == true) {
 					alert('삭제 완료 되었습니다.');
 					updateAnswerStatus(false);
+					qnaList();
 				} else alert('삭제 실패 !');
 			});
 		}
@@ -78,11 +80,19 @@ export default function page(props) {
 						boIdx: props.params.id,
 					},
 				})
-				.then((res) => {
+				.then(() => {
 					document.getElementById('commentWrite').value = '';
 					updateAnswerStatus(true);
+					qnaList();
 				});
 		}
+	}
+
+	function qnaList() {
+		axios
+			.get('/api/admin/unanswered-questions')
+			.then((res) => setQna(res.data))
+			.catch((error) => console.error('Error fetching QnA:', error));
 	}
 
 	function changeComment(event) {
@@ -124,10 +134,12 @@ export default function page(props) {
 		if (a == true) {
 			axios.put(`/api/bbs/answer/${props.params.id}/yes`).then(() => {
 				getData();
+				qnaList();
 			});
 		} else {
 			axios.put(`/api/bbs/answer/${props.params.id}/no`).then(() => {
 				getData();
+				qnaList();
 			});
 		}
 	}

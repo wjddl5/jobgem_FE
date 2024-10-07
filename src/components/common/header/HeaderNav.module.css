@@ -70,7 +70,7 @@
     gap: 16px;
 }
 
-.links a {
+.links a, .links button {
     font-size: 14px;
     text-decoration: none;
     color: #888;

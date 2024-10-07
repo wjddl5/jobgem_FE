@@ -1,6 +1,7 @@
+import HeaderNav from "@/components/common/header/HeaderNav";
 import Link from "next/link";
 import styles from "./Header.module.css";
-import HeaderNav from "@/components/common/header/HeaderNav";
+import HeaderSearch from "./HeaderSearch";
 
 export default function Header() {
 	return (
@@ -12,10 +13,7 @@ export default function Header() {
 							JOB<span>GEM</span>
 						</Link>
 					</div>
-					<div className={styles.bar}>
-						<input type='text' className={styles.input} placeholder='검색어를 입력하세요' />
-						<i className={styles.icon}></i>
-					</div>
+					<HeaderSearch />
 				</div>
 				<HeaderNav />
 			</div>
