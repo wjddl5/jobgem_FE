@@ -5,10 +5,12 @@ import axios from 'axios';
 import {AiFillAlert} from "react-icons/ai";
 import Pagination from "@/components/pagination/Pagination";
 import InputPopup from "@/components/popup/InputPopup";
+import {getToken} from "@/app/util/token/token";
 
 function Page() {
-    const coId = 1;
-    const usId = 1;
+    const [coId, setCoId] = useState(0);
+    const [usId, setUsId] = useState(0);
+    const [company, setCompany] = useState({});
     const [loadPage, setLoadPage] = useState(0);
     const [reviews, setReviews] = useState([]);
     const [totalPage, setTotalPage] = useState(0);
@@ -49,6 +51,27 @@ function Page() {
         setPopupOpen(true);
     }
 
+    const fetchCompany = () => {
+        axios.get(`/api/company/${coId}`).then((res) => {
+            setCompany(res.data);
+            console.log(res);
+        })
+    }
+    useEffect(() => {
+        getToken().then(
+            (res) => {
+                setUsId(res?.USIDX);
+                setCoId(res?.IDX);
+            }
+        )
+    }, []);
+
+    useEffect(() => {
+        if(usId > 0){
+            fetchCompany();
+        }
+    }, [usId]);
+
     useEffect(() => {
         getData();
     }, [loadPage]);
@@ -69,27 +92,27 @@ function Page() {
                         <div className="space-y-2 md:space-y-3">
                             <div className="flex items-center">
                                 <span className="font-medium text-gray-600 w-24 md:w-32">회사명:</span>
-                                <span className="text-gray-900">ABC Corp</span>
+                                <span className="text-gray-900">{company?.coName}</span>
                             </div>
                             <div className="flex items-center">
                                 <span className="font-medium text-gray-600 w-24 md:w-32">설립 연도:</span>
-                                <span className="text-gray-900">2001</span>
+                                <span className="text-gray-900">{company?.coOpen}</span>
                             </div>
                             <div className="flex items-center">
                                 <span className="font-medium text-gray-600 w-24 md:w-32">위치:</span>
-                                <span className="text-gray-900">서울특별시 강남구 종혁이의 비밀기지</span>
+                                <span className="text-gray-900">{company?.coAddress}</span>
                             </div>
                             <div className="flex items-center">
                                 <span className="font-medium text-gray-600 w-24 md:w-32">연락처:</span>
-                                <span className="text-gray-900">(02) 1234-5678</span>
+                                <span className="text-gray-900">{company?.coTel}</span>
                             </div>
                             <div className="flex items-center">
                                 <span className="font-medium text-gray-600 w-24 md:w-32">매출액:</span>
-                                <span className="text-gray-900">1조</span>
+                                <span className="text-gray-900">{company?.coSales / 100000000} 억</span>
                             </div>
                             <div className="flex items-center">
                                 <span className="font-medium text-gray-600 w-24 md:w-32">기업형태:</span>
-                                <span className="text-gray-900">대기업</span>
+                                <span className="text-gray-900">{company?.coType}</span>
                             </div>
                         </div>
                     </div>
@@ -103,61 +126,70 @@ function Page() {
                     />
                 </div>
 
-                <div className="mb-8">
-                    <div className="flex items-center space-x-2">
-                        <span className="text-lg md:text-2xl font-bold text-gray-900">5.0</span>
-                        <div className="text-yellow-500 text-sm md:text-lg">★★★★☆</div>
-                        <span className="text-gray-500 text-xs md:text-sm">(50개 리뷰)</span>
-                    </div>
-                </div>
-
-                <div className="space-y-2 md:space-y-3">
-                    {['5', '4', '3', '2', '1'].map((rating, idx) => (
-                        <div key={idx} className="flex items-center space-x-2 md:space-x-3">
-                            <span className="text-xs md:text-sm font-medium text-gray-600">{rating}</span>
-                            <div className="w-full bg-gray-200 rounded-full h-2 md:h-3">
-                                <div
-                                    className="bg-yellow-400 h-2 md:h-3 rounded-full"
-                                    style={{ width: `${[60, 30, 5, 2, 3][idx]}%` }}
-                                ></div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {reviews.map((review) => (
-                    <div key={review.id} className="mt-8 md:mt-10 border-t pt-4 md:pt-6">
-
-                        <div className='flex justify-between'>
-                            <div className="text-yellow-500 text-sm md:text-lg">
-                                {Array(5)
+                {
+                    reviews.length > 0 ? <>
+                        <div className="mb-8">
+                            <div className="flex items-center space-x-2">
+                                <span className="text-lg md:text-2xl font-bold text-gray-900">{company?.coScore}</span>
+                                <div className="text-yellow-500 text-sm md:text-lg">
+                                    {Array(5)
                                     .fill(0)
                                     .map((_, index) => (
-                                    <span key={index}>{review.reScore >= index + 1 ? '★' : '☆'}</span>
-                                ))}
+                                        <span className={`text-sm md:text-lg ${company?.coScore >= index + 1 ? 'text-yellow-500' : 'text-gray-300'}`} key={index}>
+                                            ★
+                                        </span>
+                                    ))}</div>
+                                <span className="text-gray-500 text-xs md:text-sm">({reviews.length}개 리뷰)</span>
                             </div>
-                            <button className="flex items-center gap-1 top-2 right-2 text-red-600 text-xs md:text-sm hover:underline" onClick={() => handleBlack(review.joIdx)}>
-                                <AiFillAlert/>신고하기
-                            </button>
                         </div>
-
-
-                        <div className="text-lg md:text-xl font-semibold text-gray-800 mb-2">{review.reTitle}</div>
-
-                        <div className="text-gray-500 text-sm md:text-base mb-4">
-                            {review.company.coName} / {review.reWriteDate}
+                        <div className="space-y-2 md:space-y-3">
+                                {['5', '4', '3', '2', '1'].map((rating, idx) => (
+                                    <div key={idx} className="flex items-center space-x-2 md:space-x-3">
+                                <span className="text-xs md:text-sm font-medium text-gray-600">{rating}</span>
+                                <div className="w-full bg-gray-200 rounded-full h-2 md:h-3">
+                                    <div
+                                        className="bg-yellow-400 h-2 md:h-3 rounded-full"
+                                        style={{ width: `${[60, 30, 5, 2, 3][idx]}%` }}
+                                    ></div>
+                                </div>
+                            </div>
+                            ))}
                         </div>
-                        <div className="text-gray-700 space-y-2 md:space-y-4 text-xs md:text-sm">
-                            <p>{review.reContent}</p>
-                        </div>
+                        {reviews.map((review) => (
+                            <div key={review.id} className="mt-8 md:mt-10 border-t pt-4 md:pt-6">
 
-                    </div>
-                ))}
-                <Pagination
-                    totalPages={totalPage}
-                    currentPage={loadPage}
-                    setLoadPage={setLoadPage}
-                />
+                                <div className='flex justify-between'>
+                                    <div className="text-yellow-500 text-sm md:text-lg">
+                                        {Array(5)
+                                            .fill(0)
+                                            .map((_, index) => (
+                                                <span key={index}>{review.reScore >= index + 1 ? '★' : '☆'}</span>
+                                            ))}
+                                    </div>
+                                    <button className="flex items-center gap-1 top-2 right-2 text-red-600 text-xs md:text-sm hover:underline" onClick={() => handleBlack(review.joIdx)}>
+                                        <AiFillAlert/>신고하기
+                                    </button>
+                                </div>
+
+
+                                <div className="text-lg md:text-xl font-semibold text-gray-800 mb-2">{review.reTitle}</div>
+
+                                <div className="text-gray-500 text-sm md:text-base mb-4">
+                                    {review.company.coName} / {review.reWriteDate}
+                                </div>
+                                <div className="text-gray-700 space-y-2 md:space-y-4 text-xs md:text-sm">
+                                    <p>{review.reContent}</p>
+                                </div>
+
+                            </div>
+                        ))}
+                        <Pagination
+                            totalPages={totalPage}
+                            currentPage={loadPage}
+                            setLoadPage={setLoadPage}
+                        />
+                    </> : <p>리뷰가 없습니다</p>
+                }
             </div>
         </div>
     );
