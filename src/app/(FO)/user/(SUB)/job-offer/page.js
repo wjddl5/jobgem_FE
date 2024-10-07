@@ -55,9 +55,10 @@ export default function () {
 						<div key={offer.id} className='bg-gray-50 rounded-lg shadow-md mb-4 p-5 hover:shadow-xl transition-shadow duration-300'>
 							<div className='flex justify-between items-center'>
 								<div className='flex items-center space-x-4'>
-									<div className='w-16 h-16 rounded-full overflow-hidden'>
-										<Image src='/default-profile.jpg' alt='Profile Picture' width={64} height={64} className='object-cover' />
+									<div className='w-16 h-16 rounded-full '>
+										<img src={`/s3/${offer.company.coThumbimgUrl}`} alt='Profile Picture' width={64} height={64} className='object-cover' />
 									</div>
+									
 									<div>
 										<h3 className='text-lg font-semibold'>{offer.company.coName}</h3>
 										<p className='text-gray-500'>{offer.company.coType}</p>

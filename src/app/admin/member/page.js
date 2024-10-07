@@ -6,7 +6,6 @@ import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import dayjs from 'dayjs';
-
 const initialState = {
     isBlockDatePicker: false,
     isJoinDatePicker: false,
@@ -27,7 +26,7 @@ const initialState = {
 
 function EnhancedTable() {
     const [page, setPage] = useState(0);
-    const [api_url, setApiUrl] = useState("/api/admin/jobseekers");
+    const [api_url, setApiUrl] = useState("/api/admin/jobseekers?size=10");
     const [ar, setAr] = useState([]);
     const [totalPage, setTotalPage] = useState(0);
     const [searchType, setSearchType] = useState('name');
@@ -62,7 +61,7 @@ function EnhancedTable() {
             let params = {};
             if (searchType && searchValue) {
                 params.searchType = searchType;
-                params.search = searchValue;
+                params.searchValue = searchValue;
             }
             if (state.birthStartDate) {
                 params.birthStartDate = dayjs(state.birthStartDate).format('YYYY-MM-DD');
@@ -262,8 +261,16 @@ function EnhancedTable() {
                                 hover
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joName}</TableCell>
-                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joBirth ? user.joBirth : '없음'}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joName ? user.joName : '없음'} </TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>
+                                    {user.joBirth ? (
+                                        <>
+                                            {user.joBirth}
+                                            <br />
+                                            현재 나이: {user.joAge}
+                                        </>
+                                    ) : '없음'}
+                                </TableCell>
                                 <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joTel ? user.joTel : '없음'}</TableCell>
                                 <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joAddress ? user.joAddress : '없음'}</TableCell>
                                 <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joEdu ? user.joEdu : '없음'}</TableCell>
