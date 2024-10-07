@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import styles from '/public/css/board.css';
+import '@/app/style/css/board.css';
 import { Button, TextField } from '@mui/material';
 import { getToken } from '@/app/util/token/token';
 import { useRecoilState } from 'recoil';

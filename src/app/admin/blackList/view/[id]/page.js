@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import styles from '/public/css/board.css';
+import '@/app/style/css/board.css';
 import { Button } from '@mui/material';
 import { useRecoilState } from 'recoil';
 import { blacklistState } from '@/components/admin/alert/atom';
@@ -37,7 +37,7 @@ export default function page(props) {
 	function removeList() {
 		if (confirm('게시글을 삭제하시겠습니까?')) {
 			axios.delete(`/api/blackList/${props.params.id}`).then((res) => {
-				if (res.data == true){
+				if (res.data == true) {
 					alert('삭제 완료 되었습니다.');
 					blacklistList();
 				} else alert('삭제 실패 !');
@@ -55,7 +55,7 @@ export default function page(props) {
 					},
 				})
 				.then((res) => {
-					if (res.data == true){
+					if (res.data == true) {
 						alert('변경 완료 되었습니다.');
 						setBlacklist(res.data);
 						blacklistList();
@@ -64,7 +64,7 @@ export default function page(props) {
 				});
 		}
 	}
-	function blacklistList(){
+	function blacklistList() {
 		axios.get('/api/admin/pending-blacklist').then((res) => {
 			setBlacklist(res.data);
 		});
