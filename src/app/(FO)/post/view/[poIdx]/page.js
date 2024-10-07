@@ -38,11 +38,13 @@ export default function ViewPage(props) {
 
 	useEffect(() => {
 		if (posting && posting.poAddr) {
-			addressApi();
-			checkInterested();
+			addressApi()
+		}
+		if(posting&&login!==null){
+		checkInterested();
 			checkScrap();
 		}
-	}, [posting]);
+	}, [posting, login]);
 
 	function getPosting() {
 		axios
@@ -65,6 +67,7 @@ export default function ViewPage(props) {
 			},
 		})
 			.then((response) => {
+				console.log(isInterested)
 				setIsInterested(response.data);
 			})
 			.catch((error) => {
