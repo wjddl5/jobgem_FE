@@ -1,11 +1,13 @@
 'use client';
-import SystemAlert from "@/components/alert/SystemAlert";
-import Link from "next/link";
-import styles from "./HeaderNav.module.css";
-import { SlLogin } from "react-icons/sl";
-import { FaUserPlus } from "react-icons/fa";
-import { useEffect, useRef, useState } from "react";
 import { getToken } from "@/app/util/token/token";
+import SystemAlert from "@/components/alert/SystemAlert";
+import axios from "axios";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { FaUserPlus } from "react-icons/fa";
+import { SlLogin } from "react-icons/sl";
+import styles from "./HeaderNav.module.css";
 
 function HeaderNav() {
     const [token, setToken] = useState({});
@@ -14,6 +16,8 @@ function HeaderNav() {
     const [alerts, setAlerts] = useState([]);
     const [newAlert, setNewAlert] = useState(false);
 
+    const router = useRouter();
+
     useEffect(() => {
         getToken().then(
             (res) => {
@@ -21,7 +25,7 @@ function HeaderNav() {
                 setToken(res);
             }
         )
-    }, []);
+    }, [token]);
 
     const fetchAlerts = async () => {
         try {
@@ -71,25 +75,46 @@ function HeaderNav() {
         }
     }, [userId]);
 
+    const handleButtonClick = () => {
+        const URL = "/api/logout";
+
+        const logout = async () => {
+            try {
+                const result = await axios.get(URL);
+                if(result.status == 200) {
+                    router.push('/');
+                    setToken({});
+                }
+            } catch {
+
+            }
+        }
+
+
+        logout();
+    }
+
     return (
         <div className={styles.links}>
             {token ? (
-                <>
-                    <SystemAlert usIdx={userId} alerts={alerts} newAlert={newAlert} setNewAlert={setNewAlert} />
-                    <Link href='/my'>마이페이지</Link>
-                </>
-            ) : (
-                <>
-                    <Link href='/login'>로그인</Link>
-                    <Link href='/reg'>회원가입</Link>
-                    <Link href='/login' className={styles.iconLink}>
-                        <SlLogin />
-                    </Link>
-                    <Link href='/reg' className={styles.iconLink}>
-                        <FaUserPlus size={20} />
-                    </Link>
-                </>
-            )}
+                    <>
+                        <SystemAlert usIdx={userId} alerts={alerts} newAlert={newAlert} setNewAlert={setNewAlert} />
+                        <Link href='/user'>마이페이지</Link>
+                        <button onClick={handleButtonClick}>로그아웃</button>
+                    </>
+                ) : (
+                    <>
+                        <Link href='/login'>로그인</Link>
+                        <Link href='/reg'>회원가입</Link>
+                        <Link href='/login' className={styles.iconLink}>
+                            <SlLogin />
+                        </Link>
+                        <Link href='/reg' className={styles.iconLink}>
+                            <FaUserPlus size={20} />
+                        </Link>
+                    </>
+                )
+            }
         </div>
     );
 }
