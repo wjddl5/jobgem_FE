@@ -1,9 +1,14 @@
+import { Link, Building2 } from 'lucide-react';
 import React from 'react';
 
 const CompanyInfo = React.forwardRef(({ posting }, ref) => {
     return (
-        <div ref={ref} className='mt-8 bg-white shadow-md rounded-lg p-6'>
-            <h3 className='text-2xl font-semibold mb-4'>기업정보</h3>
+        <div ref={ref} className='mb-8'>
+            <h2 className='text-2xl font-bold mb-4'>기업정보</h2>
+            <div className='flex items-center mb-4'>
+                <Building2 className='w-6 h-6 mr-2' />
+                <h3 className='text-xl font-semibold'>{posting?.coName}</h3>
+            </div>
             <div className='flex items-start'>
                 <img src={`/s3/${posting && posting.company.coThumbimgUrl}`} alt='에어퍼스트 로고' className='w-24 h-24 object-contain mr-6' />
                 <div>
