@@ -9,12 +9,12 @@ import { Map, MapMarker, useKakaoLoader } from 'react-kakao-maps-sdk';
 import SunEditor from "suneditor-react";
 import 'suneditor/dist/css/suneditor.min.css';
 import SunEditorCore from "suneditor/src/lib/core";
-
+import { getToken } from '@/app/util/token/token';
 export default function PostingForm({ params }) {
     const kakaoRestKey = process.env.NEXT_PUBLIC_KAKOMAP_API_REST_KEY
     const kakaoJavascriptKey = process.env.NEXT_PUBLIC_KAKOMAP_API_JAVASCRIPT_KEY
     const isEditMode = params.mode === 'edit';
-    
+    const [login, setLogin] = useState(null); // 초기값을 null로 설정
     useKakaoLoader({
         appkey: kakaoJavascriptKey,
         libraries: ["services","clusterer"]
@@ -138,6 +138,10 @@ export default function PostingForm({ params }) {
         } else {
             initPeriod();
         }
+        getToken().then((res) => {
+            setLogin(res.IDX); // login 값 설정
+            console.log(res);
+        });
     }, []);
 
     useEffect(() => {
@@ -458,7 +462,7 @@ export default function PostingForm({ params }) {
         const processedContent = processEditorContent();
         let data = {
             id: isEditMode ? params.poIdx : undefined,
-            coIdx: 1,
+            coIdx: login,
             poTitle: title,
             poContent: processedContent,
             education: eduData,

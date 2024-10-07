@@ -9,6 +9,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import InputPopup from "@/components/popup/InputPopup";
 import Link from "next/link";
+import { getToken } from "@/app/util/token/token";
 export default function DetialPage(props) {
 	const [curPage, setCurPage] = useState(0);
 	const [applyment, setApplyment] = useState([]);
@@ -25,15 +26,24 @@ export default function DetialPage(props) {
 	const [expandedRow, setExpandedRow] = useState(null);
 	const [isPopupOpen, setPopupOpen] = useState(false);
 	const [selectRow, setSelectRow] = useState({});
-
+	const [login, setLogin] = useState(null); // 초기값을 null로 설정
 	const inputs = [
 		{ label: '메시지', name: 'blContent', placeholder: '메시지를 입력하세요', type: 'textarea' },
 	];
 
 	useEffect(() => {
-		getApplymentList();
-		getDetail();
+		getToken().then((res) => {
+			setLogin(res.IDX); // login 값 설정
+			console.log(res);
+		});
 	}, []);
+
+	useEffect(() => {
+		if (login !== null) {
+			getApplymentList();
+			getDetail();
+		}
+	}, [login, curPage]);
 
 	const router = useRouter();
 
@@ -133,7 +143,7 @@ export default function DetialPage(props) {
 			/>
 			<div className='flex-1 ml-4 p-6 '>
 				<div className='flex justify-between max-w-7xl mx-auto mb-8'>
-					<Link href={`/user/post/view/${props.params.poIdx}`}><h1 className='text-3xl font-bold text-gray-800 mb-4 flex items-center'>{title}</h1></Link>
+					<Link href={`/post/view/${props.params.poIdx}`}><h1 className='text-3xl font-bold text-gray-800 mb-4 flex items-center'>{title}</h1></Link>
 					<div className='flex gap-4'>
 						<button
 							className='h-10 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all'

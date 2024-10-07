@@ -162,18 +162,22 @@ export default function Page() {
 					<h2 className='text-lg font-semibold text-gray-700 mb-4'>회원정보 수정</h2>
 
 					<div className='col-span-1 flex flex-col items-center mb-5'>
-						<div className='relative'>
-							{/* 미리보기 이미지가 있으면 해당 이미지 사용, 없으면 서버에서 가져온 이미지 사용 */}
-							<img src={previewUrl || (jobseeker.joImgUrl ? `/s3/${jobseeker.joImgUrl}` : "/s3/default_image.jpg")} alt='Profile' />
-							<Input
-								id='profilePic'
-								type='file'
-								name='joImgUrl'
-								className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer'
-								accept='image/*'
-								onChange={handleFileChange} // 파일 선택 시 핸들러
-							/>
-						</div>
+					<div className='relative'>
+  {/* 미리보기 이미지가 있으면 해당 이미지 사용, 없으면 서버에서 가져온 이미지 사용 */}
+  <img
+    src={previewUrl || (jobseeker.joImgUrl ? `/s3/${jobseeker.joImgUrl}` : "/s3/default_image.jpg")}
+    alt='Profile'
+    style={{ maxWidth: '150px' }} // max-width 150px 설정
+  />
+  <Input
+    id='profilePic'
+    type='file'
+    name='joImgUrl'
+    className='absolute top-0 left-0 w-3 h-3 opacity-0 cursor-pointer'
+    accept='image/*'
+    onChange={handleFileChange} // 파일 선택 시 핸들러
+  />
+</div>
 					</div>
 					<div className='grid grid-cols-2 gap-4'>
 						<div>

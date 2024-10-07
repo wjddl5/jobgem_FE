@@ -6,30 +6,36 @@ import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import dayjs from 'dayjs';
+const initialState = {
+    isBlockDatePicker: false,
+    isJoinDatePicker: false,
+    isLeaveDatePicker: false,
+    isBirthDatePicker: false,
+    isSalaryRange: false,
+    blockStartDate: null,
+    blockEndDate: null,
+    joinStartDate: null,
+    joinEndDate: null,
+    leaveStartDate: null,
+    leaveEndDate: null,
+    birthStartDate: null,
+    birthEndDate: null,
+    minSalary: '',
+    maxSalary: '',
+};
 
 function EnhancedTable() {
     const [page, setPage] = useState(0);
-    const [api_url, setApiUrl] = useState("/api/admin/jobseekers");
+    const [api_url, setApiUrl] = useState("/api/admin/jobseekers?size=10");
     const [ar, setAr] = useState([]);
     const [totalPage, setTotalPage] = useState(0);
     const [searchType, setSearchType] = useState('name');
     const [searchValue, setSearchValue] = useState('');
-    const [birthDatePicker, setBirthDatePicker] = useState(false);
-    const [isSalaryRange, setIsSalaryRange] = useState(false);
-    const [isJoinDatePicker, setIsJoinDatePicker] = useState(false);
-    const [isLeaveDatePicker, setIsLeaveDatePicker] = useState(false);
-    const [birthStartDate, setBirthStartDate] = useState(null);
-    const [birthEndDate, setBirthEndDate] = useState(null);
-    const [joinStartDate, setJoinStartDate] = useState(null);
-    const [joinEndDate, setJoinEndDate] = useState(null);
-    const [leaveStartDate, setLeaveStartDate] = useState(null);
-    const [leaveEndDate, setLeaveEndDate] = useState(null);
-    const [minSalary, setMinSalary] = useState('');
-    const [maxSalary, setMaxSalary] = useState('');
+    const [state, setState] = useState(initialState);
 
     useEffect(() => {
         getMemberList();
-    }, [page]);
+    }, [page, api_url]);
 
     function getMemberList() {
         axios.get(api_url).then((response) => {
@@ -40,8 +46,8 @@ function EnhancedTable() {
     }
 
     const changePage = (event, value) => {
-        setPage(value - 1); // 페이지 번호는 0부터 시작하므로 1을 빼줍니다.
-        setApiUrl("/api/admin/jobseekers?size=10&page=" + (value - 1));
+        setPage(value - 1);
+        setApiUrl(`/api/admin/jobseekers?size=10&page=${value - 1}`);
     };
 
     const handleKeyDown = (e) => {
@@ -50,73 +56,39 @@ function EnhancedTable() {
         }
     }
 
-    const handleBirthStartDateChange = (date) => {
-        setBirthStartDate(date); 
-    };
-
-    const handleBirthEndDateChange = (date) => {
-        setBirthEndDate(date); 
-    };
-
-    const handleJoinStartDateChange = (date) => {
-        setJoinStartDate(date); 
-    };
-
-    const handleJoinEndDateChange = (date) => {
-        setJoinEndDate(date); 
-    };
-
-    const handleLeaveStartDateChange = (date) => {
-        setLeaveStartDate(date); 
-    };
-
-    const handleLeaveEndDateChange = (date) => {
-        setLeaveEndDate(date); 
-    };
-    
-    const handleSearch = async (e) => {
+    const handleSearch = async () => {
         try {
             let params = {};
             if (searchType && searchValue) {
                 params.searchType = searchType;
-                params.search = searchValue;
-            };
-            if (birthStartDate) {
-                params.birthStartDate = dayjs(birthStartDate).format('YYYY-MM-DD');
+                params.searchValue = searchValue;
             }
-            if (birthEndDate) {
-                params.birthEndDate = dayjs(birthEndDate).format('YYYY-MM-DD');
+            if (state.birthStartDate) {
+                params.birthStartDate = dayjs(state.birthStartDate).format('YYYY-MM-DD');
             }
-            if (joinStartDate) {
-                params.joinStartDate = dayjs(joinStartDate).format('YYYY-MM-DD');
+            if (state.birthEndDate) {
+                params.birthEndDate = dayjs(state.birthEndDate).format('YYYY-MM-DD');
             }
-            if (joinEndDate) {
-                params.joinEndDate = dayjs(joinEndDate).format('YYYY-MM-DD');
+            if (state.joinStartDate) {
+                params.joinStartDate = dayjs(state.joinStartDate).format('YYYY-MM-DD');
             }
-            if (leaveStartDate) {
-                params.leaveStartDate = dayjs(leaveStartDate).format('YYYY-MM-DD');
+            if (state.joinEndDate) {
+                params.joinEndDate = dayjs(state.joinEndDate).format('YYYY-MM-DD');
             }
-            if (leaveEndDate) {
-                params.leaveEndDate = dayjs(leaveEndDate).format('YYYY-MM-DD');
+            if (state.leaveStartDate) {
+                params.leaveStartDate = dayjs(state.leaveStartDate).format('YYYY-MM-DD');
             }
-            if (minSalary) {
-                params.minSal = minSalary;
+            if (state.leaveEndDate) {
+                params.leaveEndDate = dayjs(state.leaveEndDate).format('YYYY-MM-DD');
             }
-            if (maxSalary) {
-                params.maxSal = maxSalary;
+            if (state.minSalary) {
+                params.minSal = state.minSalary;
             }
-            console.log(params);
-            const response = await axios.get(api_url, {
-                params: params
-            });
-            if (response.status === 200) {
-                console.log(response.data);
-                setAr(response.data.content);
-                setTotalPage(response.data.pageable.totalPages);
-                setPage(response.data.pageable.pageNumber);
-            } else {
-                alert("검색 실패");
+            if (state.maxSalary) {
+                params.maxSal = state.maxSalary;
             }
+            const queryString = new URLSearchParams(params).toString();
+            setApiUrl(`/api/admin/jobseekers?size=10&page=${page}&${queryString}`);
         } catch (error) {
             console.error('검색 중 오류 발생:', error);
             alert("검색 중 오류 발생");
@@ -126,59 +98,28 @@ function EnhancedTable() {
     const handleSearchTypeChange = (e) => {
         const value = e.target.value;
         setSearchType(value);
-        if (value === 'birth') {
-            setBirthDatePicker(true);
-            setIsSalaryRange(false);
-            setMinSalary('');
-            setMaxSalary('');
-            setSearchValue('');
-            setJoinStartDate(null);
-            setJoinEndDate(null);
-            setLeaveStartDate(null);
-            setLeaveEndDate(null);
-        } else if (value === 'joinDate') {
-            setBirthDatePicker(false);
-            setIsJoinDatePicker(true);
-            setIsSalaryRange(false);
-            setBirthStartDate(null);
-            setBirthEndDate(null);
-            setMinSalary('');
-            setMaxSalary('');
-            setSearchValue('');
-        } else if (value === 'leaveDate') {
-            setBirthDatePicker(false);
-            setIsLeaveDatePicker(true);
-            setIsSalaryRange(false);
-            setBirthStartDate(null);
-            setBirthEndDate(null);
-            setMinSalary('');
-            setMaxSalary('');
-            setSearchValue('');
-        } else if (value === 'sal') {
-            setIsSalaryRange(true);
-            setBirthDatePicker(false);
-            setIsJoinDatePicker(false);
-            setIsLeaveDatePicker(false);
-            setSearchValue('');
-            setBirthStartDate(null);
-            setBirthEndDate(null);
-            setJoinStartDate(null);
-            setJoinEndDate(null);
-            setLeaveStartDate(null);
-            setLeaveEndDate(null);
-        } else {
-            setBirthDatePicker(false);
-            setIsJoinDatePicker(false);
-            setIsLeaveDatePicker(false);
-            setIsSalaryRange(false);
-            setSearchValue('');
-            setBirthStartDate(null);
-            setBirthEndDate(null);
-            setJoinStartDate(null);
-            setJoinEndDate(null);
-            setLeaveStartDate(null);
-            setLeaveEndDate(null);
+        setSearchValue('');
+
+        const newState = { ...initialState };
+
+        switch (value) {
+            case 'birth':
+                newState.isBirthDatePicker = true;
+                break;
+            case 'joinDate':
+                newState.isJoinDatePicker = true;
+                break;
+            case 'leaveDate':
+                newState.isLeaveDatePicker = true;
+                break;
+            case 'sal':
+                newState.isSalaryRange = true;
+                break;
+            default:
+                break;
         }
+
+        setState(newState);
     };
 
     return (
@@ -209,60 +150,59 @@ function EnhancedTable() {
                             <MenuItem value="leaveDate" sx={{ fontFamily: 'pl,sans-serif' }}>탈퇴일자</MenuItem>
                         </Select>
                     </FormControl>
-                    {birthDatePicker ? (
+                    {state.isBirthDatePicker ? (
                         <>
                             <DatePicker
-                                selected={birthStartDate}
-                                onChange={handleBirthStartDateChange}
+                                selected={state.birthStartDate}
+                                onChange={(date) => setState({ ...state, birthStartDate: date })}
                                 dateFormat="yyyy-MM-dd"
                                 customInput={<TextField label="시작 날짜" variant="outlined" size="small" sx={{ width: '12ch' }} />}
                             />
                             <DatePicker
-                                selected={birthEndDate}
-                                onChange={handleBirthEndDateChange}
+                                selected={state.birthEndDate}
+                                onChange={(date) => setState({ ...state, birthEndDate: date })}
                                 dateFormat="yyyy-MM-dd"
                                 customInput={<TextField label="끝 날짜" variant="outlined" size="small" sx={{ width: '12ch' }} />}
                             />
                         </>
-                    ) : isJoinDatePicker ? (
+                    ) : state.isJoinDatePicker ? (
                         <>
                             <DatePicker
-                                selected={joinStartDate}
-                                onChange={handleJoinStartDateChange}
+                                selected={state.joinStartDate}
+                                onChange={(date) => setState({ ...state, joinStartDate: date })}
                                 dateFormat="yyyy-MM-dd"
                                 customInput={<TextField label="시작 날짜" variant="outlined" size="small" sx={{ width: '12ch' }} />}
                             />
                             <DatePicker
-                                selected={joinEndDate}
-                                onChange={handleJoinEndDateChange}
+                                selected={state.joinEndDate}
+                                onChange={(date) => setState({ ...state, joinEndDate: date })}
                                 dateFormat="yyyy-MM-dd"
                                 customInput={<TextField label="끝 날짜" variant="outlined" size="small" sx={{ width: '12ch' }} />}
                             />
-
                         </>
-                    ): isLeaveDatePicker ? (
+                    ) : state.isLeaveDatePicker ? (
                         <>
                             <DatePicker
-                                selected={leaveStartDate}
-                                onChange={handleLeaveStartDateChange}
+                                selected={state.leaveStartDate}
+                                onChange={(date) => setState({ ...state, leaveStartDate: date })}
                                 dateFormat="yyyy-MM-dd"
                                 customInput={<TextField label="시작 날짜" variant="outlined" size="small" sx={{ width: '12ch' }} />}
                             />
                             <DatePicker
-                                selected={leaveEndDate}
-                                onChange={handleLeaveEndDateChange}
+                                selected={state.leaveEndDate}
+                                onChange={(date) => setState({ ...state, leaveEndDate: date })}
                                 dateFormat="yyyy-MM-dd"
                                 customInput={<TextField label="끝 날짜" variant="outlined" size="small" sx={{ width: '12ch' }} />}
                             />
                         </>
-                    ) : isSalaryRange ? (
+                    ) : state.isSalaryRange ? (
                         <>
                             <TextField
                                 label="최소 월급"
                                 variant="outlined"
                                 size="small"
-                                value={minSalary}
-                                onChange={(e) => setMinSalary(e.target.value)}
+                                value={state.minSalary}
+                                onChange={(e) => setState({ ...state, minSalary: e.target.value })}
                                 InputProps={{
                                     startAdornment: <InputAdornment position="start">₩</InputAdornment>,
                                 }}
@@ -273,8 +213,8 @@ function EnhancedTable() {
                                 label="최대 월급"
                                 variant="outlined"
                                 size="small"
-                                value={maxSalary}
-                                onChange={(e) => setMaxSalary(e.target.value)}
+                                value={state.maxSalary}
+                                onChange={(e) => setState({ ...state, maxSalary: e.target.value })}
                                 InputProps={{
                                     startAdornment: <InputAdornment position="start">₩</InputAdornment>,
                                 }}
@@ -321,16 +261,24 @@ function EnhancedTable() {
                                 hover
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif' }}>{user.joName}</TableCell>
-                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif' }}>{user.joBirth}</TableCell>
-                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif' }}>{user.joTel}</TableCell>
-                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif' }}>{user.joAddress.length > 10 ? user.joAddress.substring(0, 10) + '...' : user.joAddress}</TableCell>
-                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif' }}>{user.joEdu.length > 10 ? user.joEdu.substring(0, 10) + '...' : user.joEdu}</TableCell>
-                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif' }}>{user.joSal}</TableCell>
-                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif' }}>{user.joGender}</TableCell>
-                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif' }}>{user.joImgUrl == null ? '없음' : <img src={user.joImgUrl} alt="회원사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
-                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif' }}>{user.user.usJoinDate}</TableCell>
-                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif' }}>{user.user.usState == 1 ? '활동중' : '탈퇴한 회원'}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joName ? user.joName : '없음'} </TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>
+                                    {user.joBirth ? (
+                                        <>
+                                            {user.joBirth}
+                                            <br />
+                                            현재 나이: {user.joAge}
+                                        </>
+                                    ) : '없음'}
+                                </TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joTel ? user.joTel : '없음'}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joAddress ? user.joAddress : '없음'}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joEdu ? user.joEdu : '없음'}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joSal ? user.joSal : '없음'}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joGender ? user.joGender : '없음'}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joImgUrl == null ? '없음' : <img src={user.joImgUrl} alt="회원사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.user.usJoinDate ? user.user.usJoinDate : '없음'}</TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.user.usState == 1 ? '활동중' : '탈퇴한 회원'}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

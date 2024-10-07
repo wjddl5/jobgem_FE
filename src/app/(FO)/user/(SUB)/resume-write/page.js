@@ -7,7 +7,7 @@ import axios from "axios"; // axios 추가
 import { getToken } from "@/app/util/token/token";
 
 export default function Page() {
-	const [login, setLogin] = useState("0");
+	const [login, setLogin] = useState(null);
 	useEffect(() => {
 		getToken().then((res) => {
 			setLogin(res.IDX);
@@ -88,7 +88,7 @@ export default function Page() {
 		<div className='flex-1 ml-2'>
 			<div className='bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto'>
 				<div className='flex justify-between items-center mb-6'>
-					<h1 className='text-3xl font-bold text-gray-800'>이력서 목록</h1>
+					<h1 className='text-3xl font-bold text-gray-800'>이력서 작성</h1>
 				</div>
 
 				{/* 제목 입력 부분 */}

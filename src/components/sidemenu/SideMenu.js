@@ -69,13 +69,13 @@ export default function Sidebar() {
 						<ul className='space-y-1 text-gray-600'>
 							<li>
 								{/* 스크랩 공고 */}
-								<span onClick={() => router.push(`/user/scrap`)} className='hover:text-blue-600 cursor-pointer'>
+								<span onClick={() => router.push(`/user/scrap/post`)} className='hover:text-blue-600 cursor-pointer'>
 									스크랩 공고
 								</span>
 							</li>
 							<li>
 								{/* 관심기업 */}
-								<span onClick={() => router.push(`/user/favorite-companies`)} className='hover:text-blue-600 cursor-pointer'>
+								<span onClick={() => router.push(`/user/scrap/company`)} className='hover:text-blue-600 cursor-pointer'>
 									관심기업
 								</span>
 							</li>

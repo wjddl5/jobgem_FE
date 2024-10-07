@@ -6,9 +6,11 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Pagination from '@/components/pagination/Pagination';
+import { getToken } from '@/app/util/token/token';
 
 export default function Posting() {
     const router = useRouter();
+    const [login, setLogin] = useState(null); // 초기값을 null로 설정
     const [list, setList] = useState([])
     const [search, setSearch] = useState('')
     const [searchType, setSearchType] = useState('title')
@@ -19,9 +21,17 @@ export default function Posting() {
     const [totalPages, setTotalPages] = useState(1);
     const [totalElements, setTotalElements] = useState(0);
     useEffect(() => {
-        init();
-        getinfo();
+        getToken().then((res) => {
+            setLogin(res.IDX); // login 값 설정
+            console.log(res);
+        });
     }, [])
+    useEffect(() => {
+        if(login !== null){
+            init();
+            getinfo();
+        }
+    }, [login, loadPage])
     useEffect(() => {
         if(select === 0){
             getAllList()
@@ -37,7 +47,7 @@ export default function Posting() {
     function getinfo(){
         axios.get('/api/posts/info',{
             params: {
-                coIdx: 1
+                coIdx: login
             }
         })
         .then(res => {
@@ -48,8 +58,10 @@ export default function Posting() {
     function init(){
         axios.get('/api/posts',{
             params: {
+                coIdx: login,
                 sort: sort,
-                curPage: loadPage
+                curPage: loadPage,
+                size: 10
             }
         })
         .then(res => {
@@ -60,6 +72,7 @@ export default function Posting() {
     function getAllList(){
         axios.get('/api/posts',{
             params: {
+                coIdx: login,
                 sort: sort,
                 curPage: loadPage,
                 size: 10
@@ -72,6 +85,7 @@ export default function Posting() {
     function getProgressList(){
         axios.get('/api/posts',{
             params: {
+                coIdx: login,
                 state: 1,
                 sort: sort,
                 curPage: loadPage,
@@ -85,6 +99,7 @@ export default function Posting() {
     function getDeadlineList(){
         axios.get('/api/posts',{
             params: {
+                coIdx: login,
                 deadline: 'today',
                 sort: sort,
                 curPage: loadPage,
@@ -98,6 +113,7 @@ export default function Posting() {
     function getCloseList(){
         axios.get('/api/posts',{
             params: {
+                coIdx: login,
                 state: 2,
                 sort: sort,
                 curPage: loadPage,
@@ -116,6 +132,7 @@ export default function Posting() {
         }
         axios.get('/api/posts',{
             params: {
+                coIdx: login,
                 search: search,
                 searchType: searchType,
                 sort: sort,
@@ -231,7 +248,7 @@ export default function Posting() {
         {list.length === 0 && (
         <div className="text-center py-16">
             <p className="text-gray-600 mb-4">진행중인 공고가 없습니다.</p>
-            <Link href="/(FO)/company/(SUB)/posting/write"><button className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">공고등록하기</button></Link>
+            <Link href="/company/posting/write"><button className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">공고등록하기</button></Link>
         </div>
         )}
         
