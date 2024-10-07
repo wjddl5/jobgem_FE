@@ -251,7 +251,6 @@ export default function ViewPage(props) {
 				<JobDetails ref={detailsRef} posting={posting} />
 				<ApplicationPeriodMethod ref={applicationRef} posting={posting} timeLeft={timeLeft} send={send} location={location} center={center} />
 				<CompanyInfo ref={companyInfoRef} posting={posting} />
-				<RecommendedJobs ref={recommendedRef} />
 			</div>
 			<div className='hidden lg:block lg:w-1/5 p-4 rounded-md '>
 				<div className='text-center'>
