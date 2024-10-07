@@ -19,10 +19,12 @@ export default function page(props) {
 	const [disabled, setDisabled] = useState(true);
 	const API_URL = `/api/bbs/${props.params.id}`;
 	const [token, setToken] = useState(null);
+	const [USIDX, setUSIDX] = useState();
 
 	useEffect(() => {
 		getToken().then((res) => {
 			setToken(res);
+			setUSIDX(res.USIDX);
 		});
 	}, []);
 
@@ -170,10 +172,10 @@ export default function page(props) {
 								</>
 							) : (
 								<>
-									<Button className='edit-button' variant='text' size='small' hidden={comment.usIdx != token.USIDX} onClick={() => EditClick(comment)}>
+									<Button className='edit-button' variant='text' size='small' hidden={comment.usIdx != USIDX} onClick={() => EditClick(comment)}>
 										수정
 									</Button>
-									<Button className='delete-button' variant='text' color='error' size='small' hidden={comment.usIdx != 1} onClick={() => removeComment(comment.id)}>
+									<Button className='delete-button' variant='text' color='error' size='small' hidden={comment.usIdx != USIDX} onClick={() => removeComment(comment.id)}>
 										삭제
 									</Button>
 									<p className='comment_content'>{comment.commContent}</p>
