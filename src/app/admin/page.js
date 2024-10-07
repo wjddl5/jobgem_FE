@@ -48,9 +48,8 @@ export default function Home() {
 			.catch((error) => console.error('Error fetching data:', error));
 
 		axios
-			.get('/api/posts')
+			.get('/api/admin/posts')
 			.then((response) => {
-				console.log(response);
 				const monthlyPostCount = response.data.reduce((acc, post) => {
 					const month = post.poDate.split('-')[1];
 					acc[month] = (acc[month] || 0) + 1;
