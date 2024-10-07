@@ -43,7 +43,7 @@ function HeaderNav() {
 
     useEffect(() => {
         if (userId > 0) {
-            eventSource.current = new EventSource(`http://localhost:8080/api/alert/subscribe/${userId}`, { withCredentials: true });
+            eventSource.current = new EventSource(`${process.env.NEXT_PUBLIC_SPRINGBOOT_URL}/api/alert/subscribe/${userId}`, { withCredentials: true });
 
             eventSource.current.onopen = (event) => {
                 console.log("SSE OPEN", event);
