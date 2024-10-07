@@ -25,7 +25,7 @@ function HeaderNav() {
                 setToken(res);
             }
         )
-    }, [token]);
+    }, []);
 
     const fetchAlerts = async () => {
         try {
