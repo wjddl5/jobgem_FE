@@ -26,9 +26,9 @@ export default function JobList({ jobList }) {
                                 <Link href={detailPostLink + job.id} className="text-blue-600 mb-2 text-lg">{job.poTitle}</Link>
                                 {/* 공고 마감일 */}
                                 <div className="text-sm text-gray-600 space-x-2">
-                                    <span>{job.education[0].edName}</span>
+                                    {/* <span>{job.education[0].edName}</span> */}
                                     <span>{job.company.coType}</span>
-                                    <span>{job.locationGuSi[0].locationDo.ldName}</span>
+                                    {/* <span>{job.locationGuSi[0].locationDo.ldName}</span> */}
                                     <span className="text-red-500">D-{dDay(job.poDeadline)}</span>
                                 </div>
                                 {job.skill && (
