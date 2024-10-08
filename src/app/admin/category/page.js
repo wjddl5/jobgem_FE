@@ -1,6 +1,5 @@
 'use client';
 import React, { useState } from 'react';
-import '@/app/style/css/category.css';
 import { Button, Divider, Tab, Tabs, Box } from '@mui/material';
 import Ski_category from '@/components/category/Ski_category';
 import Car_category from '@/components/category/Car_category';
