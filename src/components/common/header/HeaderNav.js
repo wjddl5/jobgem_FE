@@ -10,22 +10,23 @@ import { SlLogin } from "react-icons/sl";
 import styles from "./HeaderNav.module.css";
 
 function HeaderNav() {
-    const [token, setToken] = useState({});
     const [userId, setUserId] = useState(0);
+    const [userRole, setUserRole] = useState(0);
     const eventSource = useRef(null);
     const [alerts, setAlerts] = useState([]);
     const [newAlert, setNewAlert] = useState(false);
-
+    const [isToken, setIsToken] = useState(false);
     const router = useRouter();
 
     useEffect(() => {
         getToken().then(
             (res) => {
                 setUserId(res?.USIDX);
-                setToken(res);
+                setUserRole(res?.ROLE);
             }
         )
     }, []);
+
 
     const fetchAlerts = async () => {
         try {
@@ -66,6 +67,7 @@ function HeaderNav() {
                 eventSource.current.close();
             };
             fetchAlerts();
+            setIsToken(true);
 
             return () => {
                 if (eventSource.current) {
@@ -83,7 +85,7 @@ function HeaderNav() {
                 const result = await axios.get(URL);
                 if(result.status == 200) {
                     router.push('/');
-                    setToken({});
+                    setIsToken(false);
                 }
             } catch {
 
@@ -96,10 +98,14 @@ function HeaderNav() {
 
     return (
         <div className={styles.links}>
-            {token ? (
+            {isToken ? (
                     <>
                         <SystemAlert usIdx={userId} alerts={alerts} newAlert={newAlert} setNewAlert={setNewAlert} />
-                        <Link href='/user'>마이페이지</Link>
+                        {
+                            userRole === 1 ? (
+                                <Link href='/user'>마이페이지</Link>
+                            ) : <Link href='/company'>마이페이지</Link>
+                        }
                         <button onClick={handleButtonClick}>로그아웃</button>
                     </>
                 ) : (
