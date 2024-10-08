@@ -44,15 +44,6 @@ export default function SideMenuCom() {
 					</div>
 
 					<div>
-						<h3 className='font-semibold text-gray-700 mb-2'>입사지원 관리</h3>
-						<ul className='space-y-3 text-gray-600'>
-							<li>
-								<span className='hover:text-blue-600 cursor-pointer'>입사지원 현황</span>
-							</li>
-						</ul>
-					</div>
-
-					<div>
 						<h3 className='font-semibold text-gray-700 mb-2'>인재추천/찜한인재</h3>
 						<ul className='space-y-3 text-gray-600'>
 							<li>
