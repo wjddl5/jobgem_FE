@@ -134,7 +134,7 @@ export default function Page() {
                             </div>
                             <div className="text-center p-4">
                                 <p className="mb-2">설립</p>
-                                <p className="text-2xl font-bold">{companyData.company.coOpen.slice(0,4)}년</p>
+                                <p className="text-2xl font-bold">{companyData.company.coOpen?.slice(0,4)}년</p>
                             </div>
                             <div className="text-center p-4">
                                 <p className="mb-2">기업형태</p>
