@@ -1,9 +1,9 @@
 'use client'
-import React, { useEffect, useState } from 'react';
+import { getToken } from '@/app/util/token/token';
+import { Rating } from '@mui/material';
 import axios from 'axios';
 import Link from "next/link";
-import { Rating } from '@mui/material';
-import { getToken } from '@/app/util/token/token';
+import { useEffect, useState } from 'react';
 
 function ScrapCompanyPage() {
 
@@ -44,7 +44,7 @@ function ScrapCompanyPage() {
                                 interestCo.map((interestCo) => (
                                     <tr key={interestCo.id}>
                                         <td className="px-4 py-4 border-b">
-                                            <Link href={`/company-info/${interestCo.companyDto.id}`} className="text-lg font-bold">
+                                            <Link href={`/com-info/${interestCo.companyDto.id}`} className="text-lg font-bold">
                                                 <p className="text-lg font-bold">{interestCo.companyDto.coName}</p>
                                             </Link>
                                         </td>
