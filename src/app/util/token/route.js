@@ -7,7 +7,7 @@ export async function GET() {
     const token = cookie.get('accessToken')?.value;
 
     if (!token) {
-        return NextResponse.json({ error: "No token found" }, { status: 401 });
+        return NextResponse.json(null);
     }
 
     const payload = token.split('.')[1];
