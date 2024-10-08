@@ -2,7 +2,7 @@
 import { Button, Checkbox, FormControlLabel, Link, MenuItem, Pagination, Paper, Radio, RadioGroup, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import '@/app/style/css/board.css';
+import styles from '@/app/style/css/board.css';
 import axios from 'axios';
 
 // (관리자) 신고 게시판 리스트

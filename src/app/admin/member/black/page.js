@@ -249,7 +249,7 @@ function EnhancedTable() {
 		<Paper sx={{ width: '100%', overflow: 'hidden', mt: 3, boxShadow: 3, padding: 5 }}>
 			<Toolbar sx={{ pl: { sm: 2 }, pr: { xs: 1, sm: 1 } }}>
 				<Typography sx={{ flex: '1 1 100%', fontWeight: 'bold', fontFamily: 'pl,sans-serif', fontSize: 30 }} variant="h6" id="tableTitle" component="div" >
-					블랙 리스트
+					회원 블랙 리스트
 				</Typography>
 				<Box sx={{ display: 'flex', gap: 1, bgcolor: 'common.white', p: 0.5, borderRadius: 1 }}>
 					<FormControl size='small' sx={{ width: '15ch' }}>
@@ -354,6 +354,9 @@ function EnhancedTable() {
 							<TableCell sx={{ color: 'common.white', fontWeight: 'medium' }} align='center'>
 								<Checkbox checked={chkAll} onChange={allCheckChange} color='primary' style={{ color: 'white' }} />
 							</TableCell>
+							<TableCell sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif', width: '100px' }} align='center'>
+								사진
+							</TableCell>
 							<TableCell sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }} align='center'>
 								차단일
 							</TableCell>
@@ -382,9 +385,6 @@ function EnhancedTable() {
 								성별
 							</TableCell>
 							<TableCell sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }} align='center'>
-								사진
-							</TableCell>
-							<TableCell sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }} align='center'>
 								가입일자
 							</TableCell>
 							<TableCell sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }} align='center'>
@@ -398,6 +398,7 @@ function EnhancedTable() {
 								<TableCell align='center'>
 									<Checkbox checked={chkSet.has(user.id)} onChange={(e) => checkChange(e, user.id)} />
 								</TableCell>
+								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.joImgUrl == null ? <img src='/img/profile.png'/> : <img src={user.joImgUrl} alt="회원사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto', borderRadius: '50%' }} />}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.blDate}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.blContent.length > 10 ? user.blContent.substring(0, 10) + '...' : user.blContent}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.name ? user.name : '없음'}</TableCell>
@@ -415,7 +416,6 @@ function EnhancedTable() {
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.joEdu ? user.joEdu : '없음'}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.joSal ? user.joSal : '없음'}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.joGender ? user.joGender : '없음'}</TableCell>
-								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.joImgUrl == null ? '없음' : <img src={user.joImgUrl} alt="회원사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.joinDate ? user.joinDate : '없음'}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.leaveDate == null ? '활동중' : user.leaveDate}</TableCell>
 							</TableRow>

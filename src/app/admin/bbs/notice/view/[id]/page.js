@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import '@/app/style/css/board.css';
+import styles from '@/app/style/css/board.css';
 import { Button, TextField } from '@mui/material';
 import { getToken } from '@/app/util/token/token';
 
@@ -165,18 +165,12 @@ export default function page(props) {
 						</li>
 					))}
 				</ul>
-				<TextField id='commentWrite' label='댓글작성' variant='outlined' style={{ width: '1270px' }} onChange={changeComment} />
-
-				<Button
-					className='commentSaveBtn'
-					variant='outlined'
-					size='small'
-					onClick={() => {
-						saveComment();
-					}}
-				>
-					저장
-				</Button>
+				<div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+					<TextField id='commentWrite' label='댓글작성' variant='outlined' style={{ flexGrow: 1 }} onChange={changeComment} />
+					<Button className='commentSaveBtn' variant='outlined' size='small' onClick={saveComment}>
+						저장
+					</Button>
+				</div>
 			</div>
 			<div className='btn_group'>
 				<Button variant='outlined' size='small' onClick={() => router.push(`/admin/bbs/notice/list?cPage=${cPage}&searchType=${searchType}&searchValue=${searchValue}`)}>

@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import '@/app/style/css/board.css';
+import styles from '@/app/style/css/board.css';
 import { Button, TextField } from '@mui/material';
 import { getToken } from '@/app/util/token/token';
 import { useRecoilState } from 'recoil';
@@ -48,6 +48,7 @@ export default function page(props) {
 				if (res.data == true) {
 					alert('삭제 완료 되었습니다.');
 					router.push('/admin/bbs/qna/list');
+					qnaList();
 				} else alert('삭제 실패 !');
 			});
 		}
@@ -192,19 +193,12 @@ export default function page(props) {
 					))}
 				</ul>
 				{commentList.length < 1 ? (
-					<>
-						<TextField id='commentWrite' label='댓글작성' variant='outlined' style={{ width: '1270px' }} onChange={changeComment} />
-						<Button
-							className='commentSaveBtn'
-							variant='outlined'
-							size='small'
-							onClick={() => {
-								saveComment();
-							}}
-						>
+					<div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+						<TextField id='commentWrite' label='댓글작성' variant='outlined' style={{ flexGrow: 1 }} onChange={changeComment} />
+						<Button className='commentSaveBtn' variant='outlined' size='small' onClick={saveComment}>
 							저장
 						</Button>
-					</>
+					</div>
 				) : (
 					''
 				)}

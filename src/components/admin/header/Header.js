@@ -32,6 +32,7 @@ export default function Header() {
 		setDropdownOpen(false);
 		setDropdownOpen2((prev) => !prev);
 	};
+	console.log(blacklist)
 	return (
 		<nav className='navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow '>
 			<div className='d-flex position-absolute right-0'>
@@ -48,7 +49,7 @@ export default function Header() {
 								미답변: {qna.length} &nbsp;신고대기: {blacklist.length}
 							</div>
 							<div className='dropdown-divider'></div>
-							{qna.map((q) => (
+							{qna.slice(0, 3).map((q) => (
 								<a className='dropdown-item d-flex align-items-center' onClick={() => { router.push(`/admin/bbs/qna/view/${q.id}`); }}>
 									<div className='mr-3'>
 										<div className='icon-circle bg-primary'>
@@ -61,7 +62,7 @@ export default function Header() {
 									</div>
 								</a>
 							))}
-							{blacklist.map((b) => (
+							{blacklist.slice(0, 3).map((b) => (
 								<a className='dropdown-item d-flex align-items-center' onClick={() => { router.push(`/admin/blackList/view/${b.id}`); }}>
 									<div className='mr-3'>
 										<div className='icon-circle bg-warning'>
