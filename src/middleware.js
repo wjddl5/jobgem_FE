@@ -4,7 +4,9 @@ import { decode } from 'js-base64';
 
 const AUTH_PAGES = ['/', '/login'];
 const LOGIN_PAGE = '/login';
+const ADMIN_LOGIN_PAGE = '/admin/login';
 const MAIN_PAGE = '/';
+const ADMIN_MAIN_PAGE = '/admin';
 
 export async function middleware(req) {
 	const { pathname } = req.nextUrl;
@@ -55,13 +57,16 @@ export async function middleware(req) {
 	}
 
 	// /admin 경로로 시작하는 경우
-	if (pathname.startsWith('/admin')) {
+	if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
 		if (!accessToken) {
-			return NextResponse.redirect(new URL(LOGIN_PAGE, req.url));
+			return NextResponse.redirect(new URL(ADMIN_LOGIN_PAGE, req.url));
 		}
 		if (payloadObject.ROLE != 0) {
 			return NextResponse.redirect(new URL(MAIN_PAGE, req.url));
 		}
+	}
+	if (accessToken && pathname.startsWith('/admin/login')) {
+		return NextResponse.redirect(new URL(ADMIN_MAIN_PAGE, req.url));
 	}
 
 	// 그 외 모든 경우 요청을 정상적으로 진행

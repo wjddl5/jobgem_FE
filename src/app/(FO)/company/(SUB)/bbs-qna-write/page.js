@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 import SunEditor from 'suneditor-react';
 import sunEditorStyle from 'suneditor/dist/css/suneditor.min.css';
-import '/public/css/board.css';
+import '@/app/style/css/board.css';
 import axios from 'axios';
 import { data } from 'autoprefixer';
 import { getToken } from '@/app/util/token/token';
