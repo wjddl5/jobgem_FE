@@ -2,7 +2,7 @@
 import { Button, Checkbox, MenuItem, Pagination, Paper, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import styles from '/public/css/board.css';
+import '@/app/style/css/board.css';
 import axios from 'axios';
 import { getToken } from '@/app/util/token/token';
 
