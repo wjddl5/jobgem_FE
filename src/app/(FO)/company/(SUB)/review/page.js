@@ -54,7 +54,6 @@ function Page() {
     const fetchCompany = () => {
         axios.get(`/api/company/${coId}`).then((res) => {
             setCompany(res.data);
-            console.log(res);
         })
     }
     useEffect(() => {
@@ -69,6 +68,7 @@ function Page() {
     useEffect(() => {
         if(usId > 0){
             fetchCompany();
+            getData();
         }
     }, [usId]);
 
