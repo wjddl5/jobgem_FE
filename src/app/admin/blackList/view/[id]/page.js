@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import '@/app/style/css/board.css';
+import styles from '@/app/style/css/board.css';
 import { Button } from '@mui/material';
 import { useRecoilState } from 'recoil';
 import { blacklistState } from '@/components/admin/alert/atom';
