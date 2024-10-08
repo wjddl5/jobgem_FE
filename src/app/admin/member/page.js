@@ -242,6 +242,7 @@ function EnhancedTable() {
                 <Table sx={{ minWidth: 750, border: '1px solid #e0e0e0', fontFamily: 'pl,sans-serif' }} aria-labelledby="tableTitle" size="medium">
                     <TableHead>
                         <TableRow sx={{ bgcolor: 'primary.main' }}>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif', width: '100px' }}>사진</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>이름</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>생년월일</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>전화번호</TableCell>
@@ -249,7 +250,6 @@ function EnhancedTable() {
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>학력</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>월급</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>성별</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>사진</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>가입일자</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>탈퇴여부</TableCell>
                         </TableRow>
@@ -261,6 +261,9 @@ function EnhancedTable() {
                                 hover
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
+                                    <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>
+                                        {user.joImgUrl == null ? <img src='/img/profile.png'/> : <img src={user.joImgUrl} alt="회원사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto', borderRadius: '50%' }} />}
+                                    </TableCell>
                                 <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joName ? user.joName : '없음'} </TableCell>
                                 <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>
                                     {user.joBirth ? (
@@ -276,7 +279,6 @@ function EnhancedTable() {
                                 <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joEdu ? user.joEdu : '없음'}</TableCell>
                                 <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joSal ? user.joSal : '없음'}</TableCell>
                                 <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joGender ? user.joGender : '없음'}</TableCell>
-                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joImgUrl == null ? '없음' : <img src={user.joImgUrl} alt="회원사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
                                 <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.user.usJoinDate ? user.user.usJoinDate : '없음'}</TableCell>
                                 <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.user.usState == 1 ? '활동중' : '탈퇴한 회원'}</TableCell>
                             </TableRow>
