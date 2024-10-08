@@ -57,7 +57,6 @@ export default function page(props) {
 				.then((res) => {
 					if (res.data == true){
 						alert('변경 완료 되었습니다.');
-						setBlacklist(res.data);
 						blacklistList();
 					} else alert('오류가 발생했습니다.\n 다시 시도해주세요.');
 					getData();

@@ -48,6 +48,7 @@ export default function page(props) {
 				if (res.data == true) {
 					alert('삭제 완료 되었습니다.');
 					router.push('/admin/bbs/qna/list');
+					qnaList();
 				} else alert('삭제 실패 !');
 			});
 		}
