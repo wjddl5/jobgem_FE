@@ -131,6 +131,16 @@ export default function DetialPage(props) {
 		}
 	}
 
+	function readResume(id){
+		axios.put(`/api/posts/${id}/read`)
+			.then(response => {
+				router.push(`/company/resume/${id}`)
+			})
+			.catch(error => {
+
+			});
+	}
+
 	return (
 		<div className='flex gap-4'>
 			<InputPopup
@@ -217,7 +227,7 @@ export default function DetialPage(props) {
 											</td>
 											<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>{item.apDate}</td>
 											<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>
-												<button className='text-blue-500 hover:text-blue-600' onClick={readResume}>
+												<button className='text-blue-500 hover:text-blue-600' onClick={() => readResume(item.id)}>
 													| 이력서보기 |
 												</button>
 											</td>
