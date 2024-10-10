@@ -38,10 +38,10 @@ export default function CompanyMyPage() {
     daumPostcode();
   }, []);
   useEffect(() => {
-    if (!isLoading && login !== null) {
+    if (login !== null) {
         getCompanyData();
     }
-}, [login, isLoading]);
+}, [login]);
   function daumPostcode() {
     const script = document.createElement('script');
     script.src = '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
@@ -60,7 +60,7 @@ export default function CompanyMyPage() {
         document.getElementById('coType').innerText = res.data.coType;
       })
   }
-  const handleImageClick = () => {
+  const handleImageClick = () => { 
     fileInputRef.current.click();
     console.log(imagePreview);
   };
