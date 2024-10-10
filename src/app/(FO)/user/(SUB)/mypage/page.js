@@ -37,8 +37,14 @@ export default function Page() {
 			<main className='flex-1 rounded-lg bg-white p-8 shadow-lg'>
 				{/* 프로필 섹션 */}
 				<div className='flex items-center gap-5 mb-8'>
-					<div className='flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full'>
-						<img src={`/s3/${jobseeker.joImgUrl}`} />
+					<div className='w-20 h-20 bg-blue-100 rounded-full overflow-hidden flex items-center justify-center'>
+						<img
+							src={`/s3/${jobseeker.joImgUrl ? jobseeker.joImgUrl : "1.jpg"}`}
+							alt='Profile'
+							width='100'
+							height='100'
+							className='w-12 h-12 rounded-full object-cover border border-gray-300'
+						/>
 					</div>
 					<div>
 						<h1 className='text-3xl font-extrabold text-gray-900 mb-2'>안녕하세요, {jobseeker.joName}입니다!</h1>

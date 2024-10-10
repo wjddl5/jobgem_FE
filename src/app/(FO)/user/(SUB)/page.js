@@ -12,7 +12,6 @@ export default function Page() {
 	useEffect(() => {
 		getToken().then((res) => {
 			setLogin(res.IDX); // login 값 설정
-			console.log(res);
 		});
 	}, []);
 
@@ -44,8 +43,8 @@ export default function Page() {
 			<main className='flex-1 rounded-lg bg-white p-8 shadow-lg'>
 				{/* 프로필 섹션 */}
 				<div className='flex items-center gap-5 mb-8'>
-					<div className='flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full'>
-						<img src={`/s3/${jobseeker.joImgUrl}`} />
+					<div className='flex items-center justify-center  bg-blue-100 rounded-full'>
+						<img src={`/s3/${jobseeker.joImgUrl ? jobseeker.joImgUrl : "profile.png"}`} alt='프로필 사진' className='w-28 h-28 rounded-full object-cover border border-gray-300' />
 					</div>
 					<div>
 						<h1 className='text-3xl font-extrabold text-gray-900 mb-2'>안녕하세요, {jobseeker.joName}입니다!</h1>
