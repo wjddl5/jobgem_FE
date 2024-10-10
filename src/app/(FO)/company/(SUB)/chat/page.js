@@ -2,14 +2,21 @@
 import axios from "axios";
 import React, { useEffect, useState, useRef } from "react";
 import { Stomp } from "@stomp/stompjs";
+import {getToken} from "@/app/util/token/token";
 
 function Page() {
-    const userId = 82;
+    const [userId, setUserId] = useState(0);
     const stompClient = useRef(null); // 웹소켓 채팅
     const [chatRooms, setChatRooms] = useState([]);
     const [inputValue, setInputValue] = useState('');
     const [selectedChat, setSelectedChat] = useState(null);
     const [chatList, setChatList] = useState([]);
+
+    useEffect(() => {
+        getToken().then((res)=> {
+            setUserId(res.USIDX);
+        })
+    }, [])
 
     // 채팅방 목록
     const fetchChatRooms =  () => {
@@ -75,8 +82,8 @@ function Page() {
 
     // 컴포넌트 로드 시 채팅방 목록 불러오기
     useEffect(() => {
-        fetchChatRooms();
-    }, []);
+        if(userId > 0) fetchChatRooms();
+    }, [userId]);
 
     // 선택된 채팅방이 변경될 때마다 메시지와 웹소켓 연결 설정
     useEffect(() => {
