@@ -133,13 +133,12 @@ function Page() {
                             </div>
                         </div>
                     </div>
-                    <Image
-                        src={`/s3/1.jpg`}
+                    <img
+                        src={`/s3/${company?.coThumbimgUrl}`}
                         alt="img"
                         width={80}
                         height={80}
                         className="rounded-lg shadow-md border border-gray-200 md:w-100 md:h-100"
-                        priority={true}
                     />
                 </div>
 
