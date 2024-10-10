@@ -13,9 +13,11 @@ import { getToken } from "@/app/util/token/token";
 
 export default function ViewPage(props) {
 	const [login, setLogin] = useState("0");
+	const [role, setRole] = useState();
 	useEffect(() => {
 		getToken().then((res) => {
 			setLogin(res.IDX);
+			setRole(res.ROLE);
 			console.log(res);
 		});
 	}, []);
@@ -38,13 +40,13 @@ export default function ViewPage(props) {
 
 	useEffect(() => {
 		if (posting && posting.poAddr) {
-			addressApi()
+			addressApi();
 		}
-		if(posting&&login!==null){
-		checkInterested();
+		if (posting && login !== null) {
+			checkInterested();
 			checkScrap();
 		}
-	}, [posting, login]);
+	}, [posting, login, role]);
 
 	function getPosting() {
 		axios
@@ -67,7 +69,7 @@ export default function ViewPage(props) {
 			},
 		})
 			.then((response) => {
-				console.log(isInterested)
+				console.log(isInterested);
 				setIsInterested(response.data);
 			})
 			.catch((error) => {
@@ -92,6 +94,17 @@ export default function ViewPage(props) {
 	}
 
 	function send() {
+		if (!login || login === "0") {
+			alert("로그인이 필요합니다.");
+			router.push("/login"); // 로그인 페이지 경로로 변경
+			return;
+		}
+
+		if (!role || role !== "1") {
+			alert("지원할 수 없는 회원입니다.");
+			return;
+		}
+
 		axios({
 			url: "/api/jobseeker/applyment",
 			method: "post",
@@ -113,7 +126,7 @@ export default function ViewPage(props) {
 					if (errorMessage === "이미 지원한 공고입니다.") {
 						alert("이미 지원한 공고입니다.");
 					} else if (errorMessage === "대표 이력서가 없습니다.") {
-						alert("대표 이력서를 설정하세요."); // 대표 이력서가 없을 때 알림
+						alert("대표 이력서를 설정하세요.");
 					} else {
 						alert("지원 중 오류가 발생했습니다.");
 					}
