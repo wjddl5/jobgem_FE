@@ -1,20 +1,20 @@
-'use client';
-import { Button, Checkbox, MenuItem, Pagination, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField } from '@mui/material';
-import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
-import styles from '@/app/style/css/board.css';
-import axios from 'axios';
-import SideMenu from '@/components/sidemenu/SideMenu';
+"use client";
+import { Button, Checkbox, MenuItem, Pagination, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField } from "@mui/material";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import styles from "@/app/style/css/board.css";
+import axios from "axios";
+import SideMenu from "@/components/sidemenu/SideMenu";
 
 // 공지사항 게시판 리스트
 export default function page(props) {
 	// 초기화
 	const router = useRouter();
-	const [searchType, setSearchType] = useState(props.searchParams.searchType || 'title');
-	const [searchValue, setSearchValue] = useState(props.searchParams.searchValue || '');
+	const [searchType, setSearchType] = useState(props.searchParams.searchType || "title");
+	const [searchValue, setSearchValue] = useState(props.searchParams.searchValue || "");
 	const [ar, setAr] = useState([]);
 	const [arLength, setArLength] = useState(0);
-	const API_URL = '/api/bbs/notice';
+	const API_URL = "/api/bbs/notice";
 
 	// 페이징
 	const [cPage, setCPage] = useState(Number(props.searchParams.cPage));
@@ -53,7 +53,7 @@ export default function page(props) {
 					setTotalPage(res.data.totalPages);
 				})
 				.catch((e) => {
-					console.error('error:', e);
+					console.error("error:", e);
 				});
 		} else {
 			axios
@@ -71,7 +71,7 @@ export default function page(props) {
 					setTotalPage(res.data.totalPages);
 				})
 				.catch((e) => {
-					console.error('error:', e);
+					console.error("error:", e);
 				});
 		}
 	}
@@ -90,9 +90,9 @@ export default function page(props) {
 					<h1 className='text-3xl font-bold text-gray-800'>공지사항</h1>
 					<div className='bbs_search'>
 						<Select className='selectBox' value={searchType} onChange={(event) => setSearchType(event.target.value)}>
-							<MenuItem value={'title'}>제목</MenuItem>
-							<MenuItem value={'writer'}>작성자</MenuItem>
-							<MenuItem value={'content'}>내용</MenuItem>
+							<MenuItem value={"title"}>제목</MenuItem>
+							<MenuItem value={"writer"}>작성자</MenuItem>
+							<MenuItem value={"content"}>내용</MenuItem>
 						</Select>
 						<TextField className='textfield' variant='outlined' onChange={(event) => setSearchValue(event.target.value)} defaultValue={searchValue} />
 						<Button className='search_btn' variant='contained' onClick={search}>
@@ -103,39 +103,44 @@ export default function page(props) {
 				<Table className='bbs_table'>
 					<TableHead>
 						<TableRow>
-							<TableCell sx={{ width: '80px' }} align='center'>
+							<TableCell sx={{ width: "80px" }} align='center'>
 								번호
 							</TableCell>
-							<TableCell sx={{ width: '*' }} align='center'>
+							<TableCell sx={{ width: "*" }} align='center'>
 								제목
 							</TableCell>
-							<TableCell sx={{ width: '150px' }} align='left'>
+							<TableCell sx={{ width: "150px" }} align='left'>
 								작성자
 							</TableCell>
-							<TableCell sx={{ width: '80px' }} align='center'>
+							<TableCell sx={{ width: "80px" }} align='center'>
 								댓글
 							</TableCell>
-							<TableCell sx={{ width: '80px' }} align='center'>
+							<TableCell sx={{ width: "80px" }} align='center'>
 								조회
 							</TableCell>
-							<TableCell sx={{ width: '80px' }} align='center'>
+							<TableCell sx={{ width: "80px" }} align='center'>
 								추천
 							</TableCell>
-							<TableCell sx={{ width: '150px' }} align='center'>
+							<TableCell sx={{ width: "150px" }} align='center'>
 								작성일
 							</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{ar.length < 1 ? (
-							<TableRow style={{ borderLeft: '1px solid #cccccc', borderRight: '1px solid #cccccc' }}>
+						{ar?.length < 1 ? (
+							<TableRow style={{ borderLeft: "1px solid #cccccc", borderRight: "1px solid #cccccc" }}>
 								<TableCell align='center' colSpan={7}>
 									게시글이 없습니다.
 								</TableCell>
 							</TableRow>
 						) : (
 							ar.map((row) => (
-								<TableRow key={row.id} className={styles.tableRow} onClick={() => router.push(`bbs-notice-view/${row.id}?cPage=${page}&searchType=${searchType}&searchValue=${searchValue}`)} hover>
+								<TableRow
+									key={row.id}
+									className={styles.tableRow}
+									onClick={() => router.push(`bbs-notice-view/${row.id}?cPage=${page}&searchType=${searchType}&searchValue=${searchValue}`)}
+									hover
+								>
 									<TableCell align='center'>{row.id}</TableCell>
 									<TableCell className={styles.tableRow}>{row.boTitle}</TableCell>
 									<TableCell align='left'>{row.usId}</TableCell>
