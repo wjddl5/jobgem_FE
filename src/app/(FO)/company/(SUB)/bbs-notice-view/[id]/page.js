@@ -199,7 +199,7 @@ export default function page(props) {
 				</Button>
 			</div>
 			<div className='btn_group'>
-				<Button variant='outlined' size='small' onClick={() => router.push(`/user/bbs-notice-list?cPage=${cPage}&searchType=${searchType}&searchValue=${searchValue}`)}>
+				<Button variant='outlined' size='small' onClick={() => router.push(`bbs-notice-list?cPage=${cPage}&searchType=${searchType}&searchValue=${searchValue}`)}>
 					목록
 				</Button>
 			</div>

@@ -32,7 +32,22 @@ export default function Header() {
 		setDropdownOpen(false);
 		setDropdownOpen2((prev) => !prev);
 	};
-	console.log(blacklist)
+
+	const handleButtonClick = () => {
+		const URL = '/api/logout';
+
+		const logout = async () => {
+			try {
+				const result = await axios.get(URL);
+				if (result.status == 200) {
+					router.push('/');
+					setIsToken(false);
+				}
+			} catch {}
+		};
+
+		logout();
+	};
 	return (
 		<nav className='navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow '>
 			<div className='d-flex position-absolute right-0'>
@@ -50,7 +65,12 @@ export default function Header() {
 							</div>
 							<div className='dropdown-divider'></div>
 							{qna.slice(0, 3).map((q) => (
-								<a className='dropdown-item d-flex align-items-center' onClick={() => { router.push(`/admin/bbs/qna/view/${q.id}`); }}>
+								<a
+									className='dropdown-item d-flex align-items-center'
+									onClick={() => {
+										router.push(`/admin/bbs/qna/view/${q.id}`);
+									}}
+								>
 									<div className='mr-3'>
 										<div className='icon-circle bg-primary'>
 											<i className='fas fa-question text-white'></i>
@@ -58,12 +78,19 @@ export default function Header() {
 									</div>
 									<div>
 										<div className='small text-gray-500'>{q.boWritedate}</div>
-										<span className='font-weight-bold'>{q.boTitle} <span className='badge badge-info'>미답변</span></span>
+										<span className='font-weight-bold'>
+											{q.boTitle} <span className='badge badge-info'>미답변</span>
+										</span>
 									</div>
 								</a>
 							))}
 							{blacklist.slice(0, 3).map((b) => (
-								<a className='dropdown-item d-flex align-items-center' onClick={() => { router.push(`/admin/blackList/view/${b.id}`); }}>
+								<a
+									className='dropdown-item d-flex align-items-center'
+									onClick={() => {
+										router.push(`/admin/blackList/view/${b.id}`);
+									}}
+								>
 									<div className='mr-3'>
 										<div className='icon-circle bg-warning'>
 											<i className='fas fa-exclamation-triangle text-white'></i>
@@ -71,7 +98,9 @@ export default function Header() {
 									</div>
 									<div>
 										<div className='small text-gray-500'>{b.blDate}</div>
-										<span className='font-weight-bold'>{b.blTitle} <span className='badge badge-warning'>신고대기</span></span>
+										<span className='font-weight-bold'>
+											{b.blTitle} <span className='badge badge-warning'>신고대기</span>
+										</span>
 									</div>
 								</a>
 							))}
@@ -86,14 +115,12 @@ export default function Header() {
 						<a className='dropdown-item' href='/admin/myPage'>
 							관리자 설정
 						</a>
-						<a className='dropdown-item' href='#'>
+						<a className='dropdown-item' onClick={handleButtonClick}>
 							로그아웃
 						</a>
 					</div>
 				</div>
 			</div>
 		</nav>
-
-
 	);
 }
