@@ -32,7 +32,7 @@ export default function Sidebar() {
 					<i className='fas fa-laugh-wink'></i>
 				</div>
 				<div className='sidebar-brand-text mx-3'>
-					JobGam <sup>admin</sup>
+					JobGem <sup>admin</sup>
 				</div>
 			</a>
 
