@@ -61,7 +61,7 @@ export default function JobPostingHeader({ posting, send ,isInterested, handleIn
 				</div>
 				<div className='grid grid-cols-2'>
 					<p className='text-gray-600'>급여</p>
-					<p className='font-medium'>{posting && posting.poSal ? posting.poSal : "면접후 결정"}</p>
+					<p className='font-medium'>{posting && posting.poSal ? `${posting.poSal}만원` : "면접후 결정"}</p>
 				</div>
 			</div>
 		</div>
