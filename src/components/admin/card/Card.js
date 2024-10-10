@@ -11,7 +11,7 @@ function Card({ item}) {
 	const deadlineDate = new Date(item.poDeadline);
 	const timeDiff = deadlineDate - nowDate;
 	const dayDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)); 
-	const imgUrl = item.poImg ? item.poImg : "1.jpg";
+	const imgUrl = item.company.coThumbImgUrl ? item.company.coThumbImgUrl : "/img/1.jpg";
 	const deadlineDisplay = dayDiff > 0 ? `D-${dayDiff}` : dayDiff === 0 ? "D-Day" : `D+${Math.abs(dayDiff)}`;
 
 	const handleDelete = async () => {
@@ -37,7 +37,7 @@ function Card({ item}) {
 			<div className='relative mb-4 rounded-2xl'>
 				<Image
 					className='max-h-80 rounded-2xl w-full object-cover transition-transform duration-300 transform group-hover:scale-105'
-					src={`/img/${imgUrl}`}
+					src={imgUrl}
 					width={"100"}
 					height={"100"}
 					alt='썸네일이미지'
