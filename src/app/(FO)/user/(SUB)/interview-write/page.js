@@ -11,7 +11,7 @@ export default function Page() {
 	const [coIdx, setCoIdx] = useState("");
 	const [company, setCompany] = useState([]);
 	const [inContent, setInContent] = useState("");
-	const [inLevel, setInLevel] = useState(0);
+	const [inLevel, setInLevel] = useState(1);
 
 	// login 값이 있을 때 토큰을 가져오는 비동기 함수
 	useEffect(() => {

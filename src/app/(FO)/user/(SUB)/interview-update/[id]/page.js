@@ -16,7 +16,7 @@ export default function Page(props) {
 	const [coIdx, setCoIdx] = useState("");
 	const [company, setCompany] = useState([]);
 	const [inContent, setInContent] = useState("");
-	const [inLevel, setInLevel] = useState(0);
+	const [inLevel, setInLevel] = useState(1);
 
 	function getCompany() {
 		axios.get("/api/jobseeker/companies").then((res) => {
