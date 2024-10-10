@@ -159,7 +159,7 @@ export default function page(props) {
 					<Button
 						variant='outlined'
 						onClick={() => {
-							confirm('작성한 내용은 저장되지 않습니다. \n이동하시겠습니까?') ? router.push('/user/bbs-qna-list') : '';
+							confirm('작성한 내용은 저장되지 않습니다. \n이동하시겠습니까?') ? router.push('/bbs-qna-list') : '';
 						}}
 					>
 						목록
