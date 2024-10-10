@@ -20,8 +20,9 @@ export default function LoginPage() {
 	const onSubmit = async (formdata) => {
 		const login_msg = await loginAction(formdata);
 		if (login_msg == '로그인 성공') {
-			router.push('/admin');
-			reset();
+			//router.push('/admin');
+			//reset();
+			router.refresh();
 		} else {
 			alert(login_msg);
 		}
