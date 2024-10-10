@@ -25,7 +25,6 @@ export default function page() {
 	useEffect(() => {
 		getToken().then((res) => {
 			setLogin(res.IDX); // login 값 설정
-			console.log(res);
 		});
 	}, []);
 
@@ -40,7 +39,6 @@ export default function page() {
 	// 데이터 가져오기
 	function getData() {
 		const API_URL = `/api/jobseeker/applyments/${login}?curPage=${curPage}`;
-		console.log(API_URL);
 		axios.get(API_URL).then((res) => {
 			setApplyment(res.data.content); // 데이터를 상태에 저장
 			setTotalPages(res.data.totalPages);

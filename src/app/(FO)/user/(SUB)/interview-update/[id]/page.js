@@ -9,14 +9,13 @@ export default function Page(props) {
 	useEffect(() => {
 		getToken().then((res) => {
 			setLogin(res.IDX);
-			console.log(res);
 		});
 	}, []);
 	const router = useRouter();
 	const [coIdx, setCoIdx] = useState("");
 	const [company, setCompany] = useState([]);
 	const [inContent, setInContent] = useState("");
-	const [inLevel, setInLevel] = useState(0);
+	const [inLevel, setInLevel] = useState(1);
 
 	function getCompany() {
 		axios.get("/api/jobseeker/companies").then((res) => {
@@ -56,7 +55,6 @@ export default function Page(props) {
 				inLevel: inLevel, // 난이도 추가
 			},
 		}).then((res) => {
-			console.log(res);
 			if (res.status === 200) {
 				alert("수정 완료");
 				router.push(`/user/interview-list`);

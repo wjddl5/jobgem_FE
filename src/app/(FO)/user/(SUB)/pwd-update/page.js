@@ -50,7 +50,6 @@ export default function page() {
 	useEffect(() => {
 		getToken().then((res) => {
 			setLogin(res.IDX); // login 값 설정
-			console.log(res);
 		});
 	}, []);
 
