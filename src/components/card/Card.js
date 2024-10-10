@@ -19,17 +19,11 @@ function Card({ item }) {
 			<div className='relative mb-4 rounded-2xl'>
 				<img
 					className='max-h-32 object-cover rounded-2xl w-full transition-transform duration-300 transform group-hover:scale-105'
-					src={`/s3/${item.company.coThumbimgUrl ? item.company.coThumbimgUrl : "1.jpg"}`}
+					src={`/s3/${item.company.coImgUrl ? item.company.coImgUrl : "1.jpg"}`}
 					width={"100"}
 					height={"100"}
 					alt='썸네일이미지'
 				/>
-				<button className='absolute bottom-3 left-3 inline-flex items-center rounded-lg bg-white p-2 shadow-md z-20'>
-					<svg xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 24 24' stroke='currentColor' className='h-5 w-5 text-red-700'>
-						<path d='M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z' />
-					</svg>
-					<span className='ml-1 text-sm text-slate-400'>2</span>
-				</button>
 
 				<a
 					className='flex justify-center items-center bg-cyan-200 bg-opacity-80 z-10 absolute top-0 left-0 w-full h-full text-gray-700 rounded-2xl opacity-0 transition-all duration-300 transform group-hover:scale-105 text-xl group-hover:opacity-100'

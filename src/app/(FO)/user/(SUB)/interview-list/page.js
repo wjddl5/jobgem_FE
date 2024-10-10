@@ -19,7 +19,6 @@ export default function Page() {
 	useEffect(() => {
 		getToken().then((res) => {
 			setLogin(res.IDX); // login 값 설정
-			console.log(res);
 		});
 	}, []);
 
@@ -36,14 +35,12 @@ export default function Page() {
 		axios.get(API_URL).then((res) => {
 			setInterview(res.data.content);
 			setTotalPages(res.data.totalPages);
-			console.log(res);
 		});
 	}
 
 	// 인터뷰 삭제하기
 	function remove(interviewId) {
 		axios.delete(`/api/jobseeker/interview/${interviewId}`).then((res) => {
-			console.log(res);
 			if (res.status === 200) {
 				alert("삭제 완료");
 				getData();

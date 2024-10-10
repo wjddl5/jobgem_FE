@@ -16,11 +16,22 @@ function Page() {
     const [totalPage, setTotalPage] = useState(0);
     const [isPopupOpen, setPopupOpen] = useState(false);
     const [black, setBlack] = useState(null);
+    const [ratingPercentages, setRatingPercentages] = useState([0, 0, 0, 0, 0]);
 
     const inputs = [
         { label: '제목', name: 'blTitle', placeholder: '제목을 입력하세요', type: 'input' },
         { label: '내용', name: 'blContent', placeholder: '내용를 입력하세요', type: 'textarea' }
     ];
+    const calculator = (reviews) => {
+        const total = reviews.length;
+        const ratingsCount = [0, 0, 0, 0, 0]; // 1~5점 개수
+
+        reviews.forEach(review => {
+            ratingsCount[review.reScore - 1]++; // reScore에 맞춰 각 점수 개수 카운트
+        });
+
+        return ratingsCount.map(count => (count / total) * 100); // 각 점수의 비율을 퍼센트로 반환
+    }
 
     const getData = () => {
         axios.get('/api/company/review', { params: { coIdx: coId, loadPage } }).then((res) => {
@@ -73,6 +84,12 @@ function Page() {
     }, [usId]);
 
     useEffect(() => {
+        if (reviews.length > 0) {
+            setRatingPercentages(calculator(reviews)); // 비율 계산 후 상태 업데이트
+        }
+    }, [reviews]);
+
+    useEffect(() => {
         getData();
     }, [loadPage]);
 
@@ -116,13 +133,12 @@ function Page() {
                             </div>
                         </div>
                     </div>
-                    <Image
-                        src={`/s3/1.jpg`}
+                    <img
+                        src={`/s3/${company?.coThumbimgUrl}`}
                         alt="img"
                         width={80}
                         height={80}
                         className="rounded-lg shadow-md border border-gray-200 md:w-100 md:h-100"
-                        priority={true}
                     />
                 </div>
 
@@ -143,16 +159,16 @@ function Page() {
                             </div>
                         </div>
                         <div className="space-y-2 md:space-y-3">
-                                {['5', '4', '3', '2', '1'].map((rating, idx) => (
-                                    <div key={idx} className="flex items-center space-x-2 md:space-x-3">
-                                <span className="text-xs md:text-sm font-medium text-gray-600">{rating}</span>
-                                <div className="w-full bg-gray-200 rounded-full h-2 md:h-3">
-                                    <div
-                                        className="bg-yellow-400 h-2 md:h-3 rounded-full"
-                                        style={{ width: `${[60, 30, 5, 2, 3][idx]}%` }}
-                                    ></div>
+                            {['5', '4', '3', '2', '1'].map((rating, idx) => (
+                                <div key={idx} className="flex items-center space-x-2 md:space-x-3">
+                                    <span className="text-xs md:text-sm font-medium text-gray-600">{rating}</span>
+                                    <div className="w-full bg-gray-200 rounded-full h-2 md:h-3">
+                                        <div
+                                            className="bg-yellow-400 h-2 md:h-3 rounded-full"
+                                            style={{ width: `${ratingPercentages[5 - idx - 1]}%` }} // 비율을 반영
+                                        ></div>
+                                    </div>
                                 </div>
-                            </div>
                             ))}
                         </div>
                         {reviews.map((review) => (

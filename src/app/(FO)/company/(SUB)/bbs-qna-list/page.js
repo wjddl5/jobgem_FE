@@ -29,7 +29,7 @@ export default function page(props) {
 
 	function changePage(event, value) {
 		setPage(value - 1);
-		router.replace(`/company/bbs/bbs-qna-list?cPage=${value - 1}`, { shallow: true }); // 뒤로가기에도 원래 페이지로 갈 수 있게 URL수정
+		router.replace(`/company/bbs-qna-list?cPage=${value - 1}`, { shallow: true }); // 뒤로가기에도 원래 페이지로 갈 수 있게 URL수정
 	}
 
 	useEffect(() => {

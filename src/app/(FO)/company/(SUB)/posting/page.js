@@ -233,16 +233,8 @@ export default function Posting() {
                     <option value="applyCountDesc">지원자순</option>
                     <option value="poDateAsc">오래된순</option>
                 </select>
-                <select className="border p-2 rounded">
-                    <option>10개씩 보기</option>
-                    <option>20개씩 보기</option>
-                    <option>30개씩 보기</option>
-                </select>
             </div>
             <div className="flex">
-                <select className="border p-2 rounded mr-3" onChange={(e) => setSearchType(e.target.value)}>
-                    <option value="poTitle">공고명</option>
-                </select>
                 <input type="text" placeholder="검색어 입력" className="border p-2 rounded" onChange={(e) => setSearch(e.target.value)}/>
                 <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onClick={searchList}>검색</button>
             </div>

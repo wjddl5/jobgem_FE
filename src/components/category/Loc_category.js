@@ -362,8 +362,15 @@ export default function page() {
 				</Toolbar>
 
 				{/* 탭과 테이블을 가로로 정렬하기 위한 컨테이너 */}
-				<Box sx={{ display: 'flex', flex: 1 }}>
-					<Tabs orientation='vertical' variant='scrollable' value={value} onChange={handleChange} aria-label='Vertical tabs example' sx={{ borderRight: 1, borderColor: 'divider', width: 300 }}>
+				<Box sx={{ display: 'flex', flex: 1, height: '500px', overflow: 'hidden' }}>
+					<Tabs
+						orientation='vertical'
+						variant='scrollable'
+						value={value}
+						onChange={handleChange}
+						aria-label='Vertical tabs example'
+						sx={{ borderRight: 1, borderColor: 'divider', width: 300, overflow: 'auto', maxHeight: '100%' }}
+					>
 						{loc_do.map((row) => (
 							<Tab
 								label={
@@ -439,7 +446,7 @@ export default function page() {
 					</Tabs>
 
 					{/* 지역(구,시) 테이블 컴포넌트 */}
-					<TableContainer sx={{ flex: 1 }}>
+					<TableContainer sx={{ flex: 1, overflow: 'auto', maxHeight: '100%' }}>
 						<Table sx={{ width: '100%' }} aria-labelledby='tableTitle' size={'medium'}>
 							<TableHead>
 								<TableRow>

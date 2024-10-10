@@ -4,7 +4,6 @@ import {useState, useEffect} from "react";
 import Button from "@/components/button/Button";
 import { DiAptana } from "react-icons/di";
 import IconButton from "@/components/button/IconButton";
-import Image from "next/image";
 import Table from "@/components/table/Table";
 import Link from "next/link";
 import axios from "axios";
@@ -99,10 +98,10 @@ export default function Page() {
             <div className="bg-gray-100">
                 <div className="flex items-center justify-between p-4 bg-white rounded-md shadow-md">
                     <div className="flex gap-6">
-                        <Image src={`/s3/${logo ? logo : '1.jpg'}`} width='100' height='100' alt="등록된 로고"
+                        <img src={`/s3/${logo ? logo : '1.jpg'}`} width='100' height='100' alt="등록된 로고"
                                className="w-12 h-12 rounded-full object-cover border border-gray-300"/>
                         {preview &&
-                            <Image src={preview} width='100' height='100' className="w-12 h-12 rounded-full object-cover border border-gray-300" alt="수정로고 미리보기" />
+                            <img src={preview} width='100' height='100' className="w-12 h-12 rounded-full object-cover border border-gray-300" alt="수정로고 미리보기" />
                         }
                         <div
                             className="flex items-center border border-dashed border-gray-300 px-4 py-2 rounded-md hover:bg-gray-50">

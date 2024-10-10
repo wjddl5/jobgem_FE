@@ -10,7 +10,6 @@ export default function Page() {
 	useEffect(() => {
 		getToken().then((res) => {
 			setLogin(res.IDX);
-			console.log(res);
 		});
 	}, []);
 	const router = useRouter();
@@ -18,7 +17,7 @@ export default function Page() {
 	const [company, setCompany] = useState([]);
 	const [reTitle, setReTitle] = useState("");
 	const [reContent, setReContent] = useState("");
-	const [selectedStars, setSelectedStars] = useState(0);
+	const [selectedStars, setSelectedStars] = useState(1);
 
 	function getCompany() {
 		axios.get("/api/jobseeker/companies").then((res) => {

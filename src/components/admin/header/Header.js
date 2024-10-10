@@ -32,6 +32,22 @@ export default function Header() {
 		setDropdownOpen(false);
 		setDropdownOpen2((prev) => !prev);
 	};
+
+	const handleButtonClick = () => {
+		const URL = '/api/logout';
+
+		const logout = async () => {
+			try {
+				const result = await axios.get(URL);
+				if (result.status == 200) {
+					router.push('/');
+					setIsToken(false);
+				}
+			} catch {}
+		};
+
+		logout();
+	};
 	return (
 		<nav className='navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow '>
 			<div className='d-flex position-absolute right-0'>
@@ -57,7 +73,9 @@ export default function Header() {
 									</div>
 									<div>
 										<div className='small text-gray-500'>{q.boWritedate}</div>
-										<span className='font-weight-bold'>{q.boTitle} <span className='badge badge-info'>미답변</span></span>
+										<span className='font-weight-bold'>
+											{q.boTitle} <span className='badge badge-info'>미답변</span>
+										</span>
 									</div>
 								</a>
 							))}
@@ -70,7 +88,9 @@ export default function Header() {
 									</div>
 									<div>
 										<div className='small text-gray-500'>{b.blDate}</div>
-										<span className='font-weight-bold'>{b.blTitle} <span className='badge badge-warning'>신고대기</span></span>
+										<span className='font-weight-bold'>
+											{b.blTitle} <span className='badge badge-warning'>신고대기</span>
+										</span>
 									</div>
 								</a>
 							))}
@@ -85,14 +105,12 @@ export default function Header() {
 						<a className='dropdown-item' href='/admin/myPage'>
 							관리자 설정
 						</a>
-						<a className='dropdown-item' href='#'>
+						<a className='dropdown-item' onClick={handleButtonClick}>
 							로그아웃
 						</a>
 					</div>
 				</div>
 			</div>
 		</nav>
-
-
 	);
 }

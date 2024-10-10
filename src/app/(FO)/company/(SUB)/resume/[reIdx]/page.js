@@ -20,9 +20,12 @@ const ResumePreview = ({params}) => {
 			console.log(res.data);
 			setResume(res.data.resume);
 			setJobSeeker(res.data.jobseeker);
+		}).catch(error => {
+			console.error("Error fetching resume:", error);
 		});
 	}
-	if (!resume) {
+
+	if (!resume || !jobSeeker) {
 		return <div>Loading...</div>;
 	}
 
@@ -36,34 +39,38 @@ const ResumePreview = ({params}) => {
 				<ArrowBackIcon />
 			</IconButton>
 			
-			<h1 className="text-3xl font-bold text-center mb-8 text-gray-800">{resume.reTitle}</h1>
+			<h1 className="text-3xl font-bold text-center mb-8 text-gray-800">{resume.reTitle || '제목 없음'}</h1>
 			<div className="mb-6">
 				<h2 className="text-xl font-semibold mb-2 text-gray-700">이름</h2>
-				<p className="text-gray-600">{jobSeeker.joName}</p>
+				<p className="text-gray-600">{jobSeeker.joName || '정보 없음'}</p>
 			</div>
 			<div className="mb-6">
 				<h2 className="text-xl font-semibold mb-2 text-gray-700">연락처</h2>
-				<p className="text-gray-600">{jobSeeker.joTel}</p>
+				<p className="text-gray-600">{jobSeeker.joTel || '정보 없음'}</p>
 			</div>
 			
 			<div className="mb-6">
 				<h2 className="text-xl font-semibold mb-2 text-gray-700">학력</h2>
-				<p className="text-gray-600">{jobSeeker.joEdu}</p>
+				<p className="text-gray-600">{jobSeeker.joEdu || '정보 없음'}</p>
 			</div>
 
 			<div className="mb-6">	
 				<h2 className="text-xl font-semibold mb-2 text-gray-700">내용</h2>
-				<p className="text-gray-600">{resume.reContent}</p>
+				<p className="text-gray-600">{resume.reContent || '내용 없음'}</p>
 			</div>
 			
 			<div>
 				<h2 className="text-xl font-semibold mb-2 text-gray-700">기술 스택</h2>
 				<div className="flex flex-wrap gap-2">
-				{jobSeeker.skills.map((skill, index) => (
-					<span key={index} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-						{skill}
-					</span>
-				))}
+				{jobSeeker.skills && jobSeeker.skills.length > 0 ? (
+					jobSeeker.skills.map((skill, index) => (
+						<span key={index} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+							{skill}
+						</span>
+					))
+				) : (
+					<p className="text-gray-600">기술 스택 정보 없음</p>
+				)}
 				</div>
 			</div>
 		</div>
