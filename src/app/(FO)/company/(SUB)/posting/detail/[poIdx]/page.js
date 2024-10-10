@@ -33,7 +33,7 @@ export default function DetialPage(props) {
 
 	useEffect(() => {
 		getToken().then((res) => {
-			setLogin(res.IDX); // login 값 설정
+			setLogin(res?.IDX || null); // login 값 설정
 			console.log(res);
 		});
 	}, []);
@@ -51,12 +51,11 @@ export default function DetialPage(props) {
     function getApplymentList(){
         axios.get(`/api/posts/${props.params.poIdx}/applyments?curPage=${curPage}`).then((res)=>{
 			console.log(res);
-			setApplyment(res.data.content);
-			setTotalPages(res.data.totalPages);
-			setTotalElements(res.data.totalElements);
+			setApplyment(res.data?.content || []);
+			setTotalPages(res.data?.totalPages || 1);
+			setTotalElements(res.data?.totalElements || 0);
 		});
 	}
-
 	useEffect(() => {
 		getApplymentList();
 	}, [curPage]);
@@ -79,10 +78,10 @@ export default function DetialPage(props) {
 	function getDetail(){
 		axios.get(`/api/posts/${props.params.poIdx}/detail`).then((res)=>{
 			console.log("getDetail",res);
-			setTitle(res.data.title);
-			setApplymentCount(res.data.applyCount);
-			setViewCount(res.data.viewCount);
-			setUnviewCount(res.data.unviewCount);
+			setTitle(res.data?.title || "");
+			setApplymentCount(res.data?.applyCount || 0);
+			setViewCount(res.data?.viewCount || 0);
+			setUnviewCount(res.data?.unviewCount || 0);
 		});
 	}
 
@@ -98,9 +97,9 @@ export default function DetialPage(props) {
 			}
 		}).then((res)=>{
 			console.log(res);
-            setApplyment(res.data.content);
-            setTotalPages(res.data.totalPages);
-            setTotalElements(res.data.totalElements);
+            setApplyment(res.data?.content || []);
+            setTotalPages(res.data?.totalPages || 1);
+            setTotalElements(res.data?.totalElements || 0);
         })
 	}
 	function onChangeSearch(e) {
@@ -121,7 +120,7 @@ export default function DetialPage(props) {
 		if(confirm("차단 추가하시겠습니까?")){
 			axios.post('/api/company/block', null, {
 				params: {
-					coIdx: selectRow.post.coIdx,
+					coIdx: selectRow.post?.coIdx,
 					joIdx: selectRow.joIdx,
 					blContent: formData.blContent
 				}
@@ -130,6 +129,16 @@ export default function DetialPage(props) {
 					alert("차단 추가완료");
 			})
 		}
+	}
+
+	function readResume(id){
+		axios.put(`/api/posts/${id}/read`)
+			.then(response => {
+				router.push(`/company/resume/${id}`)
+			})
+			.catch(error => {
+
+			});
 	}
 
 	return (
@@ -209,16 +218,16 @@ export default function DetialPage(props) {
 							{/* 데이터가 있을 때 테이블을 렌더링 */}
 							{applyment.length > 0 ? (
 								applyment.map((item, index) => (
-									<React.Fragment key={item.id || index}>
+									<React.Fragment key={item?.id || index}>
 										<tr className='hover:bg-gray-50 transition-all cursor-pointer' onClick={() => setExpandedRow(expandedRow === index ? null : index)}>
 											<td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>{index + 1}</td>
-											<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>{item.jobseeker && item.jobseeker.joName}</td>
+											<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>{item.jobseeker?.joName}</td>
 											<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>
 												<span className={item.apRead === 1 ? "text-green-600" : "text-red-600"}>{item.apRead === 1 ? "열람" : "미열람"}</span>
 											</td>
 											<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>{item.apDate}</td>
 											<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>
-												<button className='text-blue-500 hover:text-blue-600' onClick={() => router.push(`/company/resume/${item.reIdx}`)}>
+												<button className='text-blue-500 hover:text-blue-600' onClick={() => readResume(item.id)}>
 													| 이력서보기 |
 												</button>
 											</td>
@@ -229,18 +238,18 @@ export default function DetialPage(props) {
 													<div className='bg-gray-100 p-6 rounded-lg shadow-md'>
 														<div className='flex justify-between items-center'>
 															<div className='w-1/3 flex justify-center'>
-																<img src='/S3/${item.jobseeker.joImgUrl}' alt='프로필' className='w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg' />
+																<img src={`/S3/${item.jobseeker?.joImgUrl}`} alt='프로필' className='w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg' />
 															</div>
 															<div className='flex flex-col w-2/3 space-y-2'>
-																<p className='text-lg font-semibold text-gray-800'>이름: {item.jobseeker.joName}</p>
-																<p className='text-md text-gray-600'>학력: {item.jobseeker.joEdu}</p>
-																<p className='text-md text-gray-600'>나이: {new Date().getFullYear() - new Date(item.jobseeker.joBirth).getFullYear()}</p>
-																<p className='text-md text-gray-600'>전화번호: {item.jobseeker.joTel}</p>
-																<p className='text-md text-gray-600'>성별: {item.jobseeker.joGender === "M" ? "남자" : "여자"}</p>
+																<p className='text-lg font-semibold text-gray-800'>이름: {item.jobseeker?.joName}</p>
+																<p className='text-md text-gray-600'>학력: {item.jobseeker?.joEdu}</p>
+																<p className='text-md text-gray-600'>나이: {item.jobseeker?.joBirth ? new Date().getFullYear() - new Date(item.jobseeker.joBirth).getFullYear() : 'N/A'}</p>
+																<p className='text-md text-gray-600'>전화번호: {item.jobseeker?.joTel}</p>
+																<p className='text-md text-gray-600'>성별: {item.jobseeker?.joGender === "M" ? "남자" : item.jobseeker?.joGender === "F" ? "여자" : "N/A"}</p>
 															</div>
 														</div>
 														<div className='mt-4 pt-4 border-t border-gray-200'>
-															{item.jobseeker.skills.length > 0 ? (
+															{item.jobseeker?.skills && item.jobseeker.skills?.length > 0 ? (
 																<p className='text-md text-gray-700'>
 																	<span className='font-semibold'>보유스킬:</span> {item.jobseeker.skills.map((skill) => skill.skName).join(", ")}
 																</p>

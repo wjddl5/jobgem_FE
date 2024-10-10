@@ -689,7 +689,7 @@ export default function PostingForm({ params }) {
                         <label className="block text-sm font-medium text-gray-700 mb-1 mt-2">상세주소</label>
                         <input type="text" value={detailAddress} onChange={(e)=>setDetailAddress(e.target.value)} className="w-[500px] border rounded px-3 py-2" />
                         <Map id="map" center={center} 
-                                className="w-[500px] h-[400px] mr-3 mt-6" level={3}
+                                className="w-[500px] h-[400px] mr-3 mt-6 z-10" level={3}
                                 onClick={(_, mouseEvent) => {
                                     const latlng = mouseEvent.latLng
                                     setLocation({
@@ -734,7 +734,7 @@ export default function PostingForm({ params }) {
             </button>
 
             {showConfirmPopup && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white p-6 rounded-lg">
                         <h2 className="text-xl font-bold mb-4">{isEditMode ? '수정 완료' : '작성 완료'}</h2>
                         <p className="mb-4">정말로 채용공고를 {isEditMode ? '수정' : '작성'}하시겠습니까?</p>
