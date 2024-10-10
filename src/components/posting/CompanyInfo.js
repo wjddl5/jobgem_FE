@@ -3,7 +3,7 @@ import React from 'react';
 
 const CompanyInfo = React.forwardRef(({ posting }, ref) => {
     return (
-        <div ref={ref} className='mb-8'>
+        <div ref={ref} className='mb-8 bg-white shadow-md rounded-lg p-6'>
             <h2 className='text-2xl font-bold mb-4'>기업정보</h2>
             <div className='flex items-center mb-4'>
                 <Building2 className='w-6 h-6 mr-2' />
