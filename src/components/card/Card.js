@@ -19,7 +19,7 @@ function Card({ item }) {
 			<div className='relative mb-4 rounded-2xl'>
 				<img
 					className='max-h-32 object-cover rounded-2xl w-full transition-transform duration-300 transform group-hover:scale-105'
-					src={`/s3/${item.company.coThumbimgUrl ? item.company.coThumbimgUrl : "1.jpg"}`}
+					src={`/s3/${item.company.coImgUrl ? item.company.coImgUrl : "1.jpg"}`}
 					width={"100"}
 					height={"100"}
 					alt='썸네일이미지'
