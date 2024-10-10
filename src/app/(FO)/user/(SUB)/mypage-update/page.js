@@ -161,15 +161,16 @@ export default function Page() {
 						<div className='relative'>
 							{/* 미리보기 이미지가 있으면 해당 이미지 사용, 없으면 서버에서 가져온 이미지 사용 */}
 							<img
-								src={previewUrl || (jobseeker.joImgUrl ? `/s3/${jobseeker.joImgUrl}` : "/s3/default_image.jpg")}
-								alt='Profile'
-								style={{ maxWidth: "150px" }} // max-width 150px 설정
+								src={previewUrl || (jobseeker.joImgUrl ? `/s3/${jobseeker.joImgUrl}` : "/s3/profile.png")}
+								alt='프로필 사진'
+								className='w-28 h-28 rounded-full object-cover border border-gray-300'
+								style={{ maxWidth: "150px" }}
 							/>
-							<Input
+							<input
 								id='profilePic'
 								type='file'
 								name='joImgUrl'
-								className='absolute top-0 left-0 w-3 h-3 opacity-0 cursor-pointer'
+								className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer'
 								accept='image/*'
 								onChange={handleFileChange} // 파일 선택 시 핸들러
 							/>

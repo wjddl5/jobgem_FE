@@ -41,7 +41,16 @@ export default function () {
 
 	// 채팅방 퇴장 이벤트
 	function clickNo(offerId) {
-		alert(`채팅방 퇴장: Offer ID ${offerId}`);
+		const API_URL = `/api/jobseeker/offers/${login}/${offerId}`; // API URL에 offerId 포함
+		axios
+			.put(API_URL)
+			.then(() => {
+				alert(`채팅방 퇴장: Offer ID ${offerId}`);
+				getData(); // 데이터 업데이트 후 다시 로드
+			})
+			.catch((error) => {
+				console.error("Error during offer rejection:", error);
+			});
 	}
 
 	return (
