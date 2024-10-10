@@ -1,12 +1,19 @@
 "use client";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import {getToken} from "@/app/util/token/token";
 
 export default function Page() {
-    const usId = 1;
+    const [usId, setUsId] = useState(0);
     const router = useRouter();
     const API_URL = `/api/company/leave`;
+
+    useEffect(() => {
+        getToken().then((res) => {
+            setUsId(res.USIDX);
+        })
+    }, []);
 
     const handlesubmit = () => {
         if (confirm("정말 탈퇴하시겠습니까? 탈퇴 후에는 모든 정보가 삭제됩니다.")) {
