@@ -20,7 +20,6 @@ export default function page() {
 			const API_URL = `/api/jobseeker/${login}`;
 			axios.get(API_URL).then((res) => {
 				setUser(res.data);
-				console.log(res);
 			});
 		}
 	}

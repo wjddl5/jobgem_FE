@@ -9,7 +9,6 @@ export default function Page(props) {
 	useEffect(() => {
 		getToken().then((res) => {
 			setLogin(res.IDX);
-			console.log(res);
 		});
 	}, []);
 	const router = useRouter();
@@ -56,7 +55,6 @@ export default function Page(props) {
 				inLevel: inLevel, // 난이도 추가
 			},
 		}).then((res) => {
-			console.log(res);
 			if (res.status === 200) {
 				alert("수정 완료");
 				router.push(`/user/interview-list`);
