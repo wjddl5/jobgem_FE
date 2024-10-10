@@ -20,7 +20,6 @@ export default function () {
 	useEffect(() => {
 		getToken().then((res) => {
 			setLogin(res.IDX); // login 값 설정
-			console.log(res);
 		});
 	}, []);
 
@@ -35,7 +34,6 @@ export default function () {
 	function getData() {
 		const API_URL = `/api/jobseeker/offers/${login}?curPage=${curPage}`;
 		axios.get(API_URL).then((res) => {
-			console.log(res);
 			setOffers(res.data.content);
 			setTotalPages(res.data.totalPages);
 		});
@@ -58,7 +56,7 @@ export default function () {
 									<div className='w-16 h-16 rounded-full '>
 										<img src={`/s3/${offer.company.coThumbimgUrl}`} alt='Profile Picture' width={64} height={64} className='object-cover' />
 									</div>
-									
+
 									<div>
 										<h3 className='text-lg font-semibold'>{offer.company.coName}</h3>
 										<p className='text-gray-500'>{offer.company.coType}</p>

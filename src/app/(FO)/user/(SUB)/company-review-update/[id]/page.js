@@ -10,7 +10,6 @@ export default function Page(props) {
 	useEffect(() => {
 		getToken().then((res) => {
 			setLogin(res.IDX);
-			console.log(res);
 		});
 	}, []);
 	const router = useRouter();
@@ -59,7 +58,6 @@ export default function Page(props) {
 				reScore: selectedStars, // 선택된 별점 값을 보냄
 			},
 		}).then((res) => {
-			console.log(res);
 			if (res.status === 200) {
 				alert("수정 완료");
 				router.push(`/user/company-review-list`);

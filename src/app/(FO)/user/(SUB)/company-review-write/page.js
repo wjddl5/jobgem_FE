@@ -10,7 +10,6 @@ export default function Page() {
 	useEffect(() => {
 		getToken().then((res) => {
 			setLogin(res.IDX);
-			console.log(res);
 		});
 	}, []);
 	const router = useRouter();

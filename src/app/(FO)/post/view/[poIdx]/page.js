@@ -18,7 +18,6 @@ export default function ViewPage(props) {
 		getToken().then((res) => {
 			setLogin(res.IDX);
 			setRole(res.ROLE);
-			console.log(res);
 		});
 	}, []);
 	const [location, setLocation] = useState({ lat: 37.566826, lng: 126.9786567 });
@@ -69,7 +68,6 @@ export default function ViewPage(props) {
 			},
 		})
 			.then((response) => {
-				console.log(isInterested);
 				setIsInterested(response.data);
 			})
 			.catch((error) => {
