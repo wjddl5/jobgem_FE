@@ -175,7 +175,6 @@ export default function PostingForm({ params }) {
     function initData() {
         axios.get(`/api/posts/${params.poIdx}`)
         .then(response => {
-            console.log(response.data);
             setTitle(response.data.poTitle || '');
             setContent(response.data.poContent || '');
             setSelectedEdu(response.data.education?.map(edu => edu.id) || []);
@@ -195,12 +194,20 @@ export default function PostingForm({ params }) {
             setSelectedWorkDay(response.data.workDays.map(workDay => workDay.id));
             setWorkStartTime({hour:parseInt(response.data.wsStartTime.split(':')[0]),minute:response.data.wsStartTime.split(':')[1]});
             setWorkEndTime({hour:parseInt(response.data.wsEndTime.split(':')[0]),minute:response.data.wsEndTime.split(':')[1]});
-            setEmail(response.data.poEmail.split('@')[0]);
-            setEmailDomain(response.data.poEmail.split('@')[1]);
-            setFax1(response.data.poFax.split('-')[0]);
-            setFax2(response.data.poFax.split('-')[1]);
-            setFax3(response.data.poFax.split('-')[2]);
-            setAddress(response.data.poAddr);
+            if(response.data.poEmail){
+                setEmail(response.data.poEmail.split('@')[0]);
+                setEmailDomain(response.data.poEmail.split('@')[1]);
+            }
+            
+            if (response.data.poFax) {
+                const faxParts = response.data.poFax.split('-');
+                setFax1(faxParts[0] || '');
+                setFax2(faxParts[1] || '');
+                setFax3(faxParts[2] || '');
+            }
+            if (response.data.poAddr) {
+                setAddress(response.data.poAddr);
+            }
         })
         .catch(error => {
             console.error('Error fetching post:', error);

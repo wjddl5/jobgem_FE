@@ -137,7 +137,7 @@ export default function page() {
 					</thead>
 					<tbody className='bg-white divide-y divide-gray-200'>
 						{/* 데이터가 있을 때 테이블을 렌더링 */}
-						{applyment.length > 0 ? (
+						{applyment?.length > 0 ? (
 							applyment.map((item, index) => (
 								<tr key={index} className='hover:bg-gray-50 transition-all'>
 									<td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>{index + 1}</td>

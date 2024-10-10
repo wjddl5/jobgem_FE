@@ -41,14 +41,23 @@ export default function () {
 
 	// 채팅방 퇴장 이벤트
 	function clickNo(offerId) {
-		alert(`채팅방 퇴장: Offer ID ${offerId}`);
+		const API_URL = `/api/jobseeker/offers/${login}/${offerId}`; // API URL에 offerId 포함
+		axios
+			.put(API_URL)
+			.then(() => {
+				alert(`채팅방 퇴장: Offer ID ${offerId}`);
+				getData(); // 데이터 업데이트 후 다시 로드
+			})
+			.catch((error) => {
+				console.error("Error during offer rejection:", error);
+			});
 	}
 
 	return (
 		<div className='flex-grow pl-5'>
 			<div className='max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8'>
 				<h2 className='text-2xl font-bold text-center mb-8'>입사제안</h2> {/* h2를 배경 컨테이너 안으로 이동 */}
-				{offers.length > 0 ? (
+				{offers?.length > 0 ? (
 					offers.map((offer) => (
 						<div key={offer.id} className='bg-gray-50 rounded-lg shadow-md mb-4 p-5 hover:shadow-xl transition-shadow duration-300'>
 							<div className='flex justify-between items-center'>

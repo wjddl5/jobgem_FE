@@ -98,7 +98,7 @@ export default function ViewPage(props) {
 			return;
 		}
 
-		if (!role || role !== "1") {
+		if (!role || role === "2" || role === "0") {
 			alert("지원할 수 없는 회원입니다.");
 			return;
 		}

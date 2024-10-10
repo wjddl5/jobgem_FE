@@ -73,7 +73,7 @@ export default function Page() {
 					<div style={{ width: "81px" }}></div>
 				</div>
 
-				{interview.length > 0 ? (
+				{interview?.length > 0 ? (
 					interview.map((interview, index) => (
 						<div key={index} className='flex justify-between items-center mb-6 mt-5 px-5 py-1'>
 							<p className='flex-1 text-center'>{interview.coName}</p>
