@@ -60,7 +60,7 @@ export default function CompanyMyPage() {
         document.getElementById('coType').innerText = res.data.coType;
       })
   }
-  const handleImageClick = () => {
+  const handleImageClick = () => { 
     fileInputRef.current.click();
     console.log(imagePreview);
   };
