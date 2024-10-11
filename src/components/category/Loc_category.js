@@ -105,7 +105,7 @@ export default function page() {
 			axios
 				.post('/api/category/loc', null, {
 					params: {
-						itemName: addDoName,
+						itemName: addDoName.trim(),
 					},
 				})
 				.then((res) => {
@@ -116,6 +116,9 @@ export default function page() {
 						setValue(0);
 						document.getElementById('AddDoNameField').value = '';
 						getData();
+					} else if (res.data == false) {
+						alert('중복된 이름이 존재합니다.');
+						document.getElementById('AddDoNameField').focus();
 					} else {
 						alert('오류가 발생했습니다.\n 다시 시도해주세요.');
 					}
@@ -143,7 +146,7 @@ export default function page() {
 			axios
 				.put(`/api/category/loc/${id}`, null, {
 					params: {
-						editDoName: editDoName,
+						editDoName: editDoName.trim(),
 					},
 				})
 				.then((res) => {
@@ -152,6 +155,9 @@ export default function page() {
 						setEditDoRow('');
 						setEditDoName('');
 						getData(ldIdx);
+					} else if (res.data == false) {
+						alert('중복된 이름이 존재합니다.');
+						document.getElementById('editDoNameFeild').focus();
 					} else {
 						alert('오류가 발생했습니다.\n 다시 시도해주세요.');
 					}
@@ -216,7 +222,7 @@ export default function page() {
 			axios
 				.post(`/api/category/locGuSi/${ldIdx}`, null, {
 					params: {
-						itemName: itemName,
+						itemName: itemName.trim(),
 					},
 				})
 				.then((res) => {
@@ -225,6 +231,9 @@ export default function page() {
 						setItemName('');
 						document.getElementById('itemNameField').value = '';
 						getData(ldIdx);
+					} else if (res.data == false) {
+						alert('중복된 이름이 존재합니다.');
+						document.getElementById('itemNameField').focus();
 					} else {
 						alert('오류가 발생했습니다.\n 다시 시도해주세요.');
 					}
@@ -257,7 +266,7 @@ export default function page() {
 			axios
 				.put(`/api/category/locGuSi/${id}`, null, {
 					params: {
-						editItemName: editItemName,
+						editItemName: editItemName.trim(),
 					},
 				})
 				.then((res) => {
@@ -267,6 +276,9 @@ export default function page() {
 						setChkSet(new Set());
 						setChkAll(false);
 						getData(ldIdx);
+					} else if (res.data == false) {
+						alert('중복된 이름이 존재합니다.');
+						document.getElementById('editField').focus();
 					} else {
 						alert('오류가 발생했습니다.\n 다시 시도해주세요.');
 					}
@@ -379,6 +391,7 @@ export default function page() {
 									) : (
 										<div style={{ display: 'flex', alignItems: 'center' }}>
 											<TextField
+												id='editDoNameFeild'
 												style={{
 													width: '70%',
 													marginRight: 'auto',

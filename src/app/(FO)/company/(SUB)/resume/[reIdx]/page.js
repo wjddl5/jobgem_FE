@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Link } from 'lucide-react';
 
 const ResumePreview = ({params}) => {
 	const [resume, setResume] = useState(null);
@@ -29,6 +30,9 @@ const ResumePreview = ({params}) => {
 		return <div>Loading...</div>;
 	}
 
+	function filedownload(){
+		axios.get(`/api/files/download/${resume.reFileUrl}`)
+	}
 	return (
 		<div className="max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-lg">
 			<IconButton
@@ -72,6 +76,24 @@ const ResumePreview = ({params}) => {
 					<p className="text-gray-600">기술 스택 정보 없음</p>
 				)}
 				</div>
+			</div>
+			<div>
+			<div className="mt-8">
+				<h2 className="text-xl font-semibold mb-2 text-gray-700">포트폴리오</h2>
+				{resume.reFileUrl ? (
+					<button
+						onClick={() => window.open(`/api/files/download/${resume.reFileUrl}`, '_blank', 'noopener,noreferrer')}
+						className="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
+					>
+						<svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+						</svg>
+						파일 다운로드
+					</button>
+				) : (
+					<p className="text-gray-600">첨부된 파일이 없습니다.</p>
+				)}
+			</div>
 			</div>
 		</div>
 	);
