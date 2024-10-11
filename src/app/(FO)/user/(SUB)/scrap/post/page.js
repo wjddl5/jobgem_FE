@@ -25,19 +25,22 @@ export default function ScrapPage({ query }) {
     return (
         <div className="w-full h-full p-8">
             <h1 className="text-3xl font-bold mb-4">스크랩 공고</h1>
-            <div className="flex items-center mb-4 border-t mt-1 border-gray-300"/>
+            <div className="flex items-center border-t mt-1 border-gray-300" />
             <div>
-                {   scraps.length > 0 ?
+                {scraps.length > 0 ?
                     scraps.map((scrap) => (
                         <div key={scrap.id} className="flex items-center pb-4 gap-4 border-b mt-1 border-gray-300">
                             <div className="flex flex-col w-10/12">
                                 <h2 className="text-lg font-bold">{scrap.postDto.company.coName}</h2>
-                                <Link href={`/post/view/${scrap.poIdx}`} className="text-lg font-bold">{scrap.postDto.poTitle}</Link>
-                                <p className="text-sm text-gray-500" dangerouslySetInnerHTML={{ __html: scrap.postDto.poContent }}></p>
+                                <h2 className="text-lg font-bold">{scrap.postDto.poTitle}</h2>
                             </div>
-                            <div className="flex flex-col w-2/12 items-center justify-center gap-2">
-                                <button className="bg-blue-500 text-white w-full p-2 rounded-md">즉시지원</button>
-                                <h4 className="text-sm text-gray-500">{scrap.postDto.poDeadline}까지</h4>
+                            <div className="flex flex-col w-2/12 items-center justify-center gap-2 mt-4">
+                                <Link href={`/post/view/${scrap.poIdx}`} className="bg-blue-500 text-white p-2 rounded-md w-full text-center">
+                                    공고 보기
+                                </Link>
+                                <h4 className="text-sm text-gray-500 text-center">
+                                    {scrap.postDto.poDeadline}까지
+                                </h4>
                             </div>
                         </div>
                     )) :
@@ -47,13 +50,12 @@ export default function ScrapPage({ query }) {
                         <div>
                             <p className="flex items-center justify-center">스크랩 한 공고가 없습니다.</p>
                             <div className="flex justify-center mt-4">
-                                <Link href="/recruit"  className="bg-blue-500 text-white py-2 px-4 rounded-md">
+                                <Link href="/recruit" className="bg-blue-500 text-white py-2 px-4 rounded-md">
                                     공고 확인하기
                                 </Link>
                             </div>
                         </div>
                     )
-
                 }
 
             </div>
