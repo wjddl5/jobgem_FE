@@ -29,7 +29,7 @@ export default function page() {
 				.then((res) => {
 					if (res.data == 'pwd match') {
 						router.push(`/admin/myPage/pwd-update`);
-					} else if (res.data == '0') {
+					} else if (res.data == 'pwd mismatch') {
 						alert('비밀번호가 일치하지 않습니다.');
 					}
 				})
