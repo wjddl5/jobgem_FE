@@ -157,7 +157,7 @@ export default function page() {
 			axios
 				.put(`/api/category/ski/${id}`, null, {
 					params: {
-						editItemName: editItemName,
+						editItemName: editItemName.trim(),
 					},
 				})
 				.then((res) => {
@@ -167,6 +167,9 @@ export default function page() {
 						setEditItemName('');
 						setEditRow('');
 						getData();
+					} else if (res.data == false) {
+						alert('중복된 이름이 존재합니다.');
+						document.getElementById('editField').focus();
 					} else {
 						alert('오류가 발생했습니다.\n 다시 시도해주세요.');
 					}
@@ -205,7 +208,7 @@ export default function page() {
 			axios
 				.post('/api/category/ski', null, {
 					params: {
-						itemName: itemName,
+						itemName: itemName.trim(),
 					},
 				})
 				.then((res) => {
@@ -220,6 +223,9 @@ export default function page() {
 							const lastPage = Math.ceil(totalItems / rowsPerPage) - 1;
 							setPage(lastPage);
 						});
+					} else if (res.data == false) {
+						alert('중복된 이름이 존재합니다.');
+						document.getElementById('itemNameField').focus();
 					} else {
 						alert('오류가 발생했습니다.\n 다시 시도해주세요.');
 					}
