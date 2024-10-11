@@ -398,7 +398,7 @@ function EnhancedTable() {
 								<TableCell align='center'>
 									<Checkbox checked={chkSet.has(user.id)} onChange={(e) => checkChange(e, user.id)} />
 								</TableCell>
-								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.joImgUrl == null ? <img src='/img/profile.png'/> : <img src={user.joImgUrl} alt="회원사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto', borderRadius: '50%' }} />}</TableCell>
+								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.joImgUrl == null ? <img src='/img/profile.png'/> : <img src={`/s3/${user.joImgUrl}`} alt="회원사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto', borderRadius: '50%' }} />}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.blDate}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.blContent.length > 10 ? user.blContent.substring(0, 10) + '...' : user.blContent}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.name ? user.name : '없음'}</TableCell>

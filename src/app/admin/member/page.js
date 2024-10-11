@@ -262,7 +262,7 @@ function EnhancedTable() {
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                                     <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>
-                                        {user.joImgUrl == null ? <img src='/img/profile.png'/> : <img src={user.joImgUrl} alt="회원사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto', borderRadius: '50%' }} />}
+                                        {user.joImgUrl == null ? <img src='/img/profile.png'/> : <img src={`/s3/${user.joImgUrl}`} alt="회원사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto', borderRadius: '50%' }} />}
                                     </TableCell>
                                 <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joName ? user.joName : '없음'} </TableCell>
                                 <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>
