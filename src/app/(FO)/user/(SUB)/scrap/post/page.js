@@ -31,13 +31,13 @@ export default function ScrapPage({ query }) {
                     scraps.map((scrap) => (
                         <div key={scrap.id} className="flex items-center pb-4 gap-4 border-b mt-1 border-gray-300">
                             <div className="flex flex-col w-10/12">
-                                <h2 className="text-lg font-bold">{scrap.post.company.coName}</h2>
-                                <Link href={`/post/view/${scrap.poIdx}`} className="text-lg font-bold">{scrap.post.poTitle}</Link>
-                                <p className="text-sm text-gray-500">{scrap.post.poContent}</p>
+                                <h2 className="text-lg font-bold">{scrap.postDto.company.coName}</h2>
+                                <Link href={`/post/view/${scrap.poIdx}`} className="text-lg font-bold">{scrap.postDto.poTitle}</Link>
+                                <p className="text-sm text-gray-500">{scrap.postDto.poContent}</p>
                             </div>
                             <div className="flex flex-col w-2/12 items-center justify-center gap-2">
                                 <button className="bg-blue-500 text-white w-full p-2 rounded-md">즉시지원</button>
-                                <h4 className="text-sm text-gray-500">{scrap.post.poDeadline}까지</h4>
+                                <h4 className="text-sm text-gray-500">{scrap.postDto.poDeadline}까지</h4>
                             </div>
                         </div>
                     )) :
