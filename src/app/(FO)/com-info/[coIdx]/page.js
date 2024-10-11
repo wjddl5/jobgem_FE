@@ -1,59 +1,172 @@
-'use client'
-import React, { useState, useEffect } from 'react';
+'use client';
+import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import axios from 'axios';
+import {AiFillAlert} from "react-icons/ai";
+import Pagination from "@/components/pagination/Pagination";
+import InputPopup from "@/components/popup/InputPopup";
+import {getToken} from "@/app/util/token/token";
+function Page(props) {
+    const coIdx = props.params.coIdx;
+    const [company, setCompany] = useState({});
+    const [loadPage, setLoadPage] = useState(0);
+    const [reviews, setReviews] = useState([]);
+    const [totalPage, setTotalPage] = useState(0);
+    const [isPopupOpen, setPopupOpen] = useState(false);
+    const [black, setBlack] = useState(null);
+    const [ratingPercentages, setRatingPercentages] = useState([0, 0, 0, 0, 0]);
 
-const CompanyInfo = ({params}) => {
-  const [companyInfo, setCompanyInfo] = useState(null);
-  useEffect(() => {
-    getCompanyInfo();
-  }, []);
-  function getCompanyInfo() {
-    axios.get(`/api/company/${params.coIdx}`).then((res) => {
-      console.log(res.data);
-      setCompanyInfo(res.data);
-    });
-  }
-  if (!companyInfo) {
-    return <div>Loading...</div>;
-  }
-  return (
-    <div className="container mx-auto p-4">
-      <div className="bg-white rounded-lg shadow-md p-4 mb-4 flex justify-between items-center">
-        <div>{companyInfo.coName}</div>
-        <div>
-          {[...Array(5)].map((_, index) => (
-            <span key={index} className="text-yellow-400 text-2xl">
-              {index < Math.round(companyInfo.coScore) ? '★' : '☆'}
-            </span>
-          ))}
-        </div>
-      </div>
+    const inputs = [
+        { label: '제목', name: 'blTitle', placeholder: '제목을 입력하세요', type: 'input' },
+        { label: '내용', name: 'blContent', placeholder: '내용를 입력하세요', type: 'textarea' }
+    ];
+    const calculator = (reviews) => {
+        const total = reviews.length;
+        const ratingsCount = [0, 0, 0, 0, 0]; // 1~5점 개수
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <div className="bg-white rounded-lg shadow-md p-4">
-          <h2 className="text-xl font-bold mb-4">기업정보</h2>
-          <div>주소: {companyInfo.coAddr}</div>
-          <div>전화번호: {companyInfo.coTel}</div>
-          <div>직원수: {companyInfo.coEmployee}</div>
-          <div>매출: {companyInfo.coSales ? `${Math.floor(companyInfo.coSales / 100000000) > 0 ? `${Math.floor(companyInfo.coSales / 100000000)}억 ` : ''}${Math.floor((companyInfo.coSales % 100000000) / 10000) > 0 ? `${Math.floor((companyInfo.coSales % 100000000) / 10000)}만원` : ''}`.trim() || '정보 없음' : '정보 없음'}</div>
-          <div>설립일: {companyInfo.coOpen}</div>
-        </div>
+        reviews.forEach(review => {
+            ratingsCount[review.reScore - 1]++; // reScore에 맞춰 각 점수 개수 카운트
+        });
 
-        <div className="bg-white rounded-lg shadow-md p-4">
-          <h2 className="text-xl font-bold mb-4">Manager Information</h2>
-          <div>Name: {companyInfo.coManagerName}</div>
-          <div>Phone: {companyInfo.coManagerTel}</div>
-        </div>
-      </div>
+        return ratingsCount.map(count => (count / total) * 100); // 각 점수의 비율을 퍼센트로 반환
+    }
 
-      <div className="bg-white rounded-lg shadow-md p-4">
-        <h2 className="text-xl font-bold mb-4">Company Image</h2>
-        <div className="bg-gray-200 aspect-square w-full">
-          <img src={`s3/${companyInfo.coImgUrl}`} alt={companyInfo.coName} className="w-full h-full object-cover" />
-        </div>
-      </div>
-    </div>
-  );
-};
+    const getData = () => {
+        axios.get('/api/company/review', { params: { coIdx: coIdx, loadPage } }).then((res) => {
+            setReviews(res.data.content);
+            setTotalPage(res.data.totalPages);
+        });
+    };
 
-export default CompanyInfo;
+    const handleBlack = (id) => {
+        setBlack(id);
+        setPopupOpen(true);
+    }
+
+    const fetchCompany = () => {
+        axios.get(`/api/company/${coIdx}`).then((res) => {
+            setCompany(res.data);
+        })
+    }
+    useEffect(() => {
+          fetchCompany();
+          getData();
+    }, []);
+
+    useEffect(() => {
+        if (reviews.length > 0) {
+            setRatingPercentages(calculator(reviews)); // 비율 계산 후 상태 업데이트
+        }
+    }, [reviews]);
+
+    useEffect(() => {
+        getData();
+    }, [loadPage]);
+
+    return (
+            <div className="bg-white w-full max-w-3xl md:max-w-5xl p-4 md:p-8 rounded-lg shadow-lg">
+                <div className="md:flex justify-between items-start mb-8 border-b pb-6">
+                    <div className="mb-4 md:mb-0">
+                        <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-4">회사 정보</h2>
+                        <div className="space-y-2 md:space-y-3">
+                            <div className="flex items-center">
+                                <span className="font-medium text-gray-600 w-24 md:w-32">회사명:</span>
+                                <span className="text-gray-900">{company?.coName}</span>
+                            </div>
+                            <div className="flex items-center">
+                                <span className="font-medium text-gray-600 w-24 md:w-32">설립 연도:</span>
+                                <span className="text-gray-900">{company?.coOpen}</span>
+                            </div>
+                            <div className="flex items-center">
+                                <span className="font-medium text-gray-600 w-24 md:w-32">위치:</span>
+                                <span className="text-gray-900">{company?.coAddress}</span>
+                            </div>
+                            <div className="flex items-center">
+                                <span className="font-medium text-gray-600 w-24 md:w-32">연락처:</span>
+                                <span className="text-gray-900">{company?.coTel}</span>
+                            </div>
+                            <div className="flex items-center">
+                                <span className="font-medium text-gray-600 w-24 md:w-32">매출액:</span>
+                                <span className="text-gray-900">{company?.coSales / 100000000} 억</span>
+                            </div>
+                            <div className="flex items-center">
+                                <span className="font-medium text-gray-600 w-24 md:w-32">기업형태:</span>
+                                <span className="text-gray-900">{company?.coType}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <img
+                        src={`/s3/${company?.coThumbimgUrl}`}
+                        alt="img"
+                        width={80}
+                        height={80}
+                        className="rounded-lg shadow-md border border-gray-200 md:w-100 md:h-100"
+                    />
+                </div>
+
+                {
+                    reviews.length > 0 ? <>
+                        <div className="mb-8">
+                            <div className="flex items-center space-x-2">
+                                <span className="text-lg md:text-2xl font-bold text-gray-900">{company?.coScore}</span>
+                                <div className="text-yellow-500 text-sm md:text-lg">
+                                    {Array(5)
+                                    .fill(0)
+                                    .map((_, index) => (
+                                        <span className={`text-sm md:text-lg ${company?.coScore >= index + 1 ? 'text-yellow-500' : 'text-gray-300'}`} key={index}>
+                                            ★
+                                        </span>
+                                    ))}</div>
+                                <span className="text-gray-500 text-xs md:text-sm">({reviews.length}개 리뷰)</span>
+                            </div>
+                        </div>
+                        <div className="space-y-2 md:space-y-3">
+                            {['5', '4', '3', '2', '1'].map((rating, idx) => (
+                                <div key={idx} className="flex items-center space-x-2 md:space-x-3">
+                                    <span className="text-xs md:text-sm font-medium text-gray-600">{rating}</span>
+                                    <div className="w-full bg-gray-200 rounded-full h-2 md:h-3">
+                                        <div
+                                            className="bg-yellow-400 h-2 md:h-3 rounded-full"
+                                            style={{ width: `${ratingPercentages[5 - idx - 1]}%` }} // 비율을 반영
+                                        ></div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        {reviews.map((review) => (
+                            <div key={review.id} className="mt-8 md:mt-10 border-t pt-4 md:pt-6">
+
+                                <div className='flex justify-between'>
+                                    <div className="text-yellow-500 text-sm md:text-lg">
+                                        {Array(5)
+                                            .fill(0)
+                                            .map((_, index) => (
+                                                <span key={index}>{review.reScore >= index + 1 ? '★' : '☆'}</span>
+                                            ))}
+                                    </div>
+                                </div>
+
+
+                                <div className="text-lg md:text-xl font-semibold text-gray-800 mb-2">{review.reTitle}</div>
+
+                                <div className="text-gray-500 text-sm md:text-base mb-4">
+                                    {review.company.coName} / {review.reWriteDate}
+                                </div>
+                                <div className="text-gray-700 space-y-2 md:space-y-4 text-xs md:text-sm">
+                                    <p>{review.reContent}</p>
+                                </div>
+
+                            </div>
+                        ))}
+                        <Pagination
+                            totalPages={totalPage}
+                            currentPage={loadPage}
+                            setLoadPage={setLoadPage}
+                        />
+                    </> : <p>리뷰가 없습니다</p>
+                }
+            </div>
+    );
+}
+
+export default Page;
