@@ -43,14 +43,13 @@ function Page() {
     // 폼 확인 시 제출
     const handleSubmit = async (formData) => {
         if(confirm("신고 접수 하시겠습니까?")){
-            axios.post("/api/company/blacklist",null,{
-                params: {
+            axios.post("/api/company/blacklist",{
                     usIdx: usId,
                     joIdx: black,
                     blTitle: formData.blTitle,
                     blContent: formData.blContent
                 }
-            }).then((res) => {
+            ).then((res) => {
                 if(res.status === 200)
                     alert("신고 완료되었습니다.")
             })
