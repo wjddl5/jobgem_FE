@@ -42,6 +42,7 @@ function Page() {
         stompClient.current.connect({}, () => {
             stompClient.current.subscribe(`/sub/chatroom/${chatRoomId}`, (message) => {
                 const newMessage = JSON.parse(message.body);
+                console.log(newMessage.chDate = new Date());
 
                 setChatRooms((prevChatRooms) =>
                     prevChatRooms.map((chatRoom) =>
@@ -55,6 +56,9 @@ function Page() {
                 );
                 setChatList((prevMessages) => [...prevMessages, newMessage]);
             });
+
+            stompClient.current.heartbeat.outgoing = 30000; // 클라이언트에서 서버로의 heartbeat (30초)
+            stompClient.current.heartbeat.incoming = 30000; // 서버에서 클라이언트로의 heartbeat (30초)
         }, (error) => {
             console.error('STOMP connection error:', error);
         });
