@@ -44,7 +44,7 @@ export default function page(props) {
 				params: {
 					page: page,
 					size: pageSize,
-					usIdx: token.USIDX,
+					usIdx: token?.USIDX,
 				},
 			})
 			.then((res) => {
@@ -55,7 +55,7 @@ export default function page(props) {
 
 	useEffect(() => {
 		getData();
-	}, [page]);
+	}, [page, token]);
 	//=========================
 
 	// 페이지
