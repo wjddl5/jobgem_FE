@@ -30,7 +30,7 @@ export default function page(props) {
 			axios.delete(`/api/bbs/${id}`).then((res) => {
 				if (res.data == true) {
 					alert('삭제 완료 되었습니다.');
-					router.push('/user/bbs-qna-list');
+					router.push('/company/bbs-qna-list');
 				} else alert('삭제 실패 !');
 			});
 		}

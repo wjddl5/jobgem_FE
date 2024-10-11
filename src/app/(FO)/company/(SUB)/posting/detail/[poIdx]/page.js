@@ -256,7 +256,6 @@ export default function DetialPage(props) {
 															) : (
 																<p className='text-md text-gray-500 italic'>보유스킬 없음</p>
 															)}
-
 														</div>
 														<div className='text-right'>
 															<Button text={"차단"} onClick={(e) => handleaddBlock(e, item)}/>

@@ -65,7 +65,7 @@ const ResumePreview = ({params}) => {
 				{jobSeeker.skills && jobSeeker.skills.length > 0 ? (
 					jobSeeker.skills.map((skill, index) => (
 						<span key={index} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-							{skill}
+							{skill.skName}
 						</span>
 					))
 				) : (
