@@ -227,7 +227,7 @@ export default function DetialPage(props) {
 											</td>
 											<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>{item.apDate}</td>
 											<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>
-												<button className='text-blue-500 hover:text-blue-600' onClick={() => readResume(item.reIdx)}>
+												<button className='text-blue-500 hover:text-blue-600' onClick={() => readResume(item.id)}>
 													| 이력서보기 |
 												</button>
 											</td>
@@ -256,7 +256,6 @@ export default function DetialPage(props) {
 															) : (
 																<p className='text-md text-gray-500 italic'>보유스킬 없음</p>
 															)}
-
 														</div>
 														<div className='text-right'>
 															<Button text={"차단"} onClick={(e) => handleaddBlock(e, item)}/>

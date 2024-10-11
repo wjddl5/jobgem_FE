@@ -77,6 +77,7 @@ const ApplicationPeriodMethod = React.forwardRef(({ posting, timeLeft, send, loc
                                     height: "350px",
                                     }}
                                     level={3}
+                                    draggable = {false}
                                 >
                                 <MapMarker position={location} />
                                 </Map>

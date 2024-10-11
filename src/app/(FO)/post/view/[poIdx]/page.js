@@ -212,6 +212,16 @@ export default function ViewPage(props) {
 	};
 
 	const handleInterested = () => {
+		if (!login || login === "0") {
+			alert("로그인이 필요합니다.");
+			router.push("/login"); // 로그인 페이지 경로로 변경
+			return;
+		}
+
+		if (!role || role === "2" || role === "0") {
+			alert("지원할 수 없는 회원입니다.");
+			return;
+		}
 		setIsInterested(!isInterested);
 		axios({
 			url: `/api/interest/${posting.coIdx}`,
@@ -225,6 +235,16 @@ export default function ViewPage(props) {
 	};
 
 	const handleScrap = () => {
+		if (!login || login === "0") {
+			alert("로그인이 필요합니다.");
+			router.push("/login"); // 로그인 페이지 경로로 변경
+			return;
+		}
+
+		if (!role || role === "2" || role === "0") {
+			alert("지원할 수 없는 회원입니다.");
+			return;
+		}
 		setIsScrap(!isScrap);
 		axios({
 			url: `/api/scrap/${posting.id}`,
