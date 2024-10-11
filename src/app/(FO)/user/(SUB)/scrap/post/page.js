@@ -33,7 +33,7 @@ export default function ScrapPage({ query }) {
                             <div className="flex flex-col w-10/12">
                                 <h2 className="text-lg font-bold">{scrap.postDto.company.coName}</h2>
                                 <Link href={`/post/view/${scrap.poIdx}`} className="text-lg font-bold">{scrap.postDto.poTitle}</Link>
-                                <p className="text-sm text-gray-500">{scrap.postDto.poContent}</p>
+                                <p className="text-sm text-gray-500" dangerouslySetInnerHTML={{ __html: scrap.postDto.poContent }}></p>
                             </div>
                             <div className="flex flex-col w-2/12 items-center justify-center gap-2">
                                 <button className="bg-blue-500 text-white w-full p-2 rounded-md">즉시지원</button>
