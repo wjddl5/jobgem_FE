@@ -41,7 +41,7 @@ export default function () {
 
 	// 채팅방 퇴장 이벤트
 	function clickNo(offerId) {
-		const API_URL = `/api/jobseeker/offers/${login}/${offerId}`; // API URL에 offerId 포함
+		const API_URL = `/api/jobseeker/offers/${offerId}/reject`; // API URL에 offerId 포함
 		axios
 			.put(API_URL)
 			.then(() => {

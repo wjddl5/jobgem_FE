@@ -1,18 +1,18 @@
-"use client";
-import { Button, Checkbox, MenuItem, Pagination, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField } from "@mui/material";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import styles from "@/app/style/css/board.css";
-import axios from "axios";
-import SideMenu from "@/components/sidemenu/SideMenu";
-import { getToken } from "@/app/util/token/token";
+'use client';
+import { Button, Checkbox, MenuItem, Pagination, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField } from '@mui/material';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import styles from '@/app/style/css/board.css';
+import axios from 'axios';
+import SideMenu from '@/components/sidemenu/SideMenu';
+import { getToken } from '@/app/util/token/token';
 
 // QnA 게시판 리스트
 export default function page(props) {
 	// 초기화
 	const router = useRouter();
 	const [ar, setAr] = useState([]);
-	const API_URL = "/api/bbs/qna/my";
+	const API_URL = '/api/bbs/qna/my';
 	const [token, setToken] = useState(null);
 
 	useEffect(() => {
@@ -45,7 +45,7 @@ export default function page(props) {
 					params: {
 						page: page,
 						size: pageSize,
-						usIdx: token.USIDX,
+						usIdx: token?.USIDX,
 					},
 				})
 				.then((res) => {
@@ -53,7 +53,7 @@ export default function page(props) {
 					setTotalPage(res.data.totalPages);
 				})
 				.catch((e) => {
-					console.error("error:", e);
+					console.error('error:', e);
 				});
 		}
 	}
@@ -74,7 +74,7 @@ export default function page(props) {
 							className='search_btn'
 							variant='contained'
 							onClick={() => {
-								router.push("bbs-qna-write");
+								router.push('bbs-qna-write');
 							}}
 						>
 							1:1 문의
@@ -83,7 +83,7 @@ export default function page(props) {
 							className='search_btn'
 							variant='outlined'
 							onClick={() => {
-								router.push("clovaChat");
+								router.push('clovaChat');
 							}}
 						>
 							Ai 상담
@@ -93,20 +93,20 @@ export default function page(props) {
 				<Table className='bbs_table'>
 					<TableHead>
 						<TableRow>
-							<TableCell sx={{ width: "80px" }} align='center'>
+							<TableCell sx={{ width: '80px' }} align='center'>
 								번호
 							</TableCell>
-							<TableCell sx={{ width: "*" }} align='center'>
+							<TableCell sx={{ width: '*' }} align='center'>
 								제목
 							</TableCell>
-							<TableCell sx={{ width: "150px" }} align='center'>
+							<TableCell sx={{ width: '150px' }} align='center'>
 								작성일
 							</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
 						{ar?.length < 1 ? (
-							<TableRow style={{ borderLeft: "1px solid #cccccc", borderRight: "1px solid #cccccc" }}>
+							<TableRow style={{ borderLeft: '1px solid #cccccc', borderRight: '1px solid #cccccc' }}>
 								<TableCell align='center' colSpan={3}>
 									게시글이 없습니다.
 								</TableCell>
@@ -116,7 +116,7 @@ export default function page(props) {
 								<TableRow key={row.id} className={styles.tableRow} onClick={() => router.push(`bbs-qna-view/${row.id}?cPage=${page}`)} hover>
 									<TableCell align='center'>{row.id}</TableCell>
 									<TableCell>
-										{row.boTitle} &nbsp;&nbsp;| <strong> {row.boAnswer != 1 ? "답변대기" : "답변완료"}</strong>
+										{row.boTitle} &nbsp;&nbsp;| <strong> {row.boAnswer != 1 ? '답변대기' : '답변완료'}</strong>
 									</TableCell>
 									<TableCell align='center'>{row.boWritedate}</TableCell>
 								</TableRow>
