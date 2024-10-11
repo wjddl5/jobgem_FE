@@ -55,7 +55,7 @@ export default function Page() {
 	}
 
 	function handleStarClick(index) {
-		setSelectedStars(index === selectedStars ? 0 : index);
+		setSelectedStars(index);
 	}
 
 	return (

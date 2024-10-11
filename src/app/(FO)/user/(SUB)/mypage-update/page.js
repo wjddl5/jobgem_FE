@@ -217,7 +217,7 @@ export default function Page() {
 						</div>
 						<div>
 							<label className='block text-sm font-medium text-gray-700' htmlFor='phone'>
-								희망연봉
+								희망연봉 (만원)
 							</label>
 							<Input name='joSal' className='mt-1 block w-full border border-gray-300 rounded p-2' value={jobseeker.joSal || ""} onChange={handleInputChange} />
 						</div>
