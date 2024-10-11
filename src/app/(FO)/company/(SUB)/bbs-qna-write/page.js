@@ -56,7 +56,7 @@ export default function page(props) {
 			.then((res) => {
 				if (res.data == true) {
 					alert('저장완료');
-					router.push('/user/bbs-qna-list');
+					router.push('/company/bbs-qna-list');
 				}
 			});
 	}
