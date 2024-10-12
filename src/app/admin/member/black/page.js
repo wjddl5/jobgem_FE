@@ -33,7 +33,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 
 function EnhancedTable() {
 	const router = useRouter();
-	const [api_url, setApiUrl] = useState('/api/admin/blocked-jobseekers?size=10');
+	const [api_url, setApiUrl] = useState('/api/admin/blocked-jobseekers?size=6');
 	const [ar, setAr] = useState([]);
 	const [page, setPage] = useState(0);
 	const [totalPage, setTotalPage] = useState(0);
@@ -42,6 +42,7 @@ function EnhancedTable() {
 	const [chkSet, setChkSet] = useState(new Set());
 	const [chkAll, setChkAll] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [params, setParams] = useState({});
 	const initialState = {
 		isBlockDatePicker: false,
 		isJoinDatePicker: false,
@@ -110,9 +111,8 @@ function EnhancedTable() {
 			if (state.maxSalary) {
 				params.maxSal = state.maxSalary;
 			}
-			console.log(params);
-			const queryString = new URLSearchParams(params).toString();
-			setApiUrl(`/api/admin/blocked-jobseekers?size=10&page=${page}&${queryString}`);
+			setParams(params);
+			setApiUrl(`/api/admin/blocked-jobseekers?size=6&page=${page}&${new URLSearchParams(params).toString()}`);
 		} catch (error) {
 			console.error('검색 중 오류 발생:', error);
 			alert("검색 중 오류 발생");
@@ -121,7 +121,7 @@ function EnhancedTable() {
 
 	const changePage = (event, value) => {
 		setPage(value - 1);
-		setApiUrl(`/api/admin/blocked-jobseekers?size=10&page=${value - 1}`);
+		setApiUrl(`/api/admin/blocked-jobseekers?size=6&page=${value - 1}&${new URLSearchParams(params).toString()}`);
 		setChkSet(new Set());
 		setChkAll(false);
 	};
@@ -262,7 +262,7 @@ function EnhancedTable() {
 							<MenuItem value='tel' sx={{ fontFamily: 'pl,sans-serif' }}>전화번호</MenuItem>
 							<MenuItem value='address' sx={{ fontFamily: 'pl,sans-serif' }}>주소</MenuItem>
 							<MenuItem value='edu' sx={{ fontFamily: 'pl,sans-serif' }}>학력</MenuItem>
-							<MenuItem value='sal' sx={{ fontFamily: 'pl,sans-serif' }}>월급</MenuItem>
+							<MenuItem value='sal' sx={{ fontFamily: 'pl,sans-serif' }}>연봉</MenuItem>
 							<MenuItem value='gender' sx={{ fontFamily: 'pl,sans-serif' }}>성별</MenuItem>
 							<MenuItem value='joinDate' sx={{ fontFamily: 'pl,sans-serif' }}>가입일자</MenuItem>
 							<MenuItem value='leaveDate' sx={{ fontFamily: 'pl,sans-serif' }}>탈퇴일자</MenuItem>
@@ -330,8 +330,8 @@ function EnhancedTable() {
 						</>
 					) : state.isSalaryRange ? (
 						<>
-							<TextField label='최소 월급' variant='outlined' size='small' value={state.minSalary} onKeyDown={handleKeyDown} onChange={(e) => setState({ ...state, minSalary: e.target.value })} sx={{ width: '12ch' }} />
-							<TextField label='최대 월급' variant='outlined' size='small' value={state.maxSalary} onKeyDown={handleKeyDown} onChange={(e) => setState({ ...state, maxSalary: e.target.value })} sx={{ width: '12ch' }} />
+							<TextField label='최소 연봉' variant='outlined' size='small' value={state.minSalary} onKeyDown={handleKeyDown} onChange={(e) => setState({ ...state, minSalary: e.target.value })} sx={{ width: '12ch' }} />
+							<TextField label='최대 연봉' variant='outlined' size='small' value={state.maxSalary} onKeyDown={handleKeyDown} onChange={(e) => setState({ ...state, maxSalary: e.target.value })} sx={{ width: '12ch' }} />
 						</>
 					) : (
 						<TextField label='검색' variant='outlined' size='small' value={searchValue} onKeyDown={handleKeyDown} onChange={(e) => setSearchValue(e.target.value)} sx={{ width: '25ch' }} />
@@ -379,7 +379,7 @@ function EnhancedTable() {
 								학력
 							</TableCell>
 							<TableCell sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }} align='center'>
-								월급
+								연봉
 							</TableCell>
 							<TableCell sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }} align='center'>
 								성별
@@ -398,7 +398,7 @@ function EnhancedTable() {
 								<TableCell align='center'>
 									<Checkbox checked={chkSet.has(user.id)} onChange={(e) => checkChange(e, user.id)} />
 								</TableCell>
-								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.joImgUrl == null ? <img src='/img/profile.png'/> : <img src={`/s3/${user.joImgUrl}`} alt="회원사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto', borderRadius: '50%' }} />}</TableCell>
+								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.joImgUrl == null ? <img src='/img/profile.png' /> : <img src={`/s3/${user.joImgUrl}`} alt="회원사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto', borderRadius: '50%' }} />}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.blDate}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.blContent.length > 10 ? user.blContent.substring(0, 10) + '...' : user.blContent}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.name ? user.name : '없음'}</TableCell>
