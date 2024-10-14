@@ -302,10 +302,10 @@ export default function Page() {
 									<tr key={chat.id} className='bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0'>
 										<td className='w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static'>{chat.joinUser.usId}</td>
 										<td className='w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static'>
-											{chat?.chatList[chat.chatList.length - 1].chContent}
+											{chat.chatList[chat.chatList.length - 1]?.chContent}
 										</td>
 										<td className='w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static'>
-											{formatTimeAgo(chat?.chatList[chat.chatList.length - 1].chDate)}
+											{formatTimeAgo(chat.chatList[chat.chatList.length - 1]?.chDate)}
 										</td>
 									</tr>
 								))}
