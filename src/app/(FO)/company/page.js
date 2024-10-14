@@ -110,6 +110,29 @@ export default function Page() {
 			</div>
 		);
 
+	// 채팅 시간 관련 함수
+	const formatTimeAgo = (dateString) => {
+		const messageDate = new Date(dateString);
+		const now = new Date();
+		const diffMs = now - messageDate;
+		const diffMinutes = Math.floor(diffMs / 60000);
+		const diffHours = Math.floor(diffMs / 3600000);
+		const diffDays = Math.floor(diffMs / 86400000);
+
+		if (diffMinutes < 60) {
+			if (diffMinutes === 0) {
+				return `방금`;
+			}
+			return `${diffMinutes}분 전`;
+		} else if (diffHours < 24) {
+			return `${diffHours}시간 전`;
+		} else if (diffDays < 2) {
+			return `${diffDays}일 전`;
+		} else {
+			return messageDate.toLocaleDateString().replaceAll(". ", "-").slice(0, -1); // YYYY-MM-DD 형식
+		}
+	};
+
 	return (
 		<>
 			<div className='bg-gray-100'>
@@ -282,7 +305,7 @@ export default function Page() {
 											{chat?.chatList[chat.chatList.length - 1].chContent}
 										</td>
 										<td className='w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static'>
-											{chat?.chatList[chat.chatList.length - 1].chDate}
+											{formatTimeAgo(chat?.chatList[chat.chatList.length - 1].chDate)}
 										</td>
 									</tr>
 								))}
