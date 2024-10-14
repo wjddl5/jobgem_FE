@@ -56,6 +56,7 @@ export default function CompanyMyPage() {
       .then((res) => {
         console.log(res);
         setCompanyData(res.data);
+        setAddress(res.data.coAddress)
         document.getElementById('coName').innerText = res.data.coName;
         document.getElementById('coType').innerText = res.data.coType;
       })
@@ -194,7 +195,7 @@ export default function CompanyMyPage() {
                 type="text"
                 id="coAddress"
                 name="coAddress"
-                value={companyData.coAddress}
+                value={address}
                 onChange={handleChange}
                 onClick={handleAddressClick}
                 className="w-full p-2 border border-gray-300 rounded cursor-pointer"
