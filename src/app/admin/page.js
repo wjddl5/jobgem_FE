@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import axios from 'axios';
+import { TextField } from '@mui/material';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, ArcElement);
 
@@ -21,19 +22,34 @@ export default function Home() {
 	const [blackCompany, setBlackCompany] = useState([]);
 	const [noblackUser, setNoblackUser] = useState([]);
 	const [noblackCompany, setNoblackCompany] = useState([]);
-	const [countAnswer, setCountAnswer] = useState([]);
+	const [qna, setQna] = useState([]);
+	const [countNoAnswer, setCountNoAnswer] = useState([]);
+	const [blackList, setBlackList] = useState([]);
 	const [noPro, setNoPro] = useState([]);
-
+	const [answerPercentage, setAnswerPercentage] = useState(0);
+	const [blackPercentage, setBlackPercentage] = useState(0);
+	const [inputUserCount, setInputUserCount] = useState(countUser.length); // 입력된 회원 수
+	const [inputCompanyCount, setInputCompanyCount] = useState(countCompany.length); // 입력된 기업 수
+	const [inputPostCount, setInputPostCount] = useState(countPost.length); // 입력된 공고 수
+	const [userPercent, setUserPercent] = useState(0);
+	const [companyPercent, setCompanyPercent] = useState(0);
+	const [postPercent, setPostPercent] = useState(0);
 	useEffect(() => {
 		axios
 			.get(api_url + '/users')
 			.then((response) => {
+				const currentDate = new Date();
+				const lastYear = currentDate.getFullYear() - 1;
 				const monthlyUserCount = response.data.reduce((acc, user) => {
-					const month = user.usJoinDate.split('-')[1];
-					acc[month] = (acc[month] || 0) + 1;
+					const userJoinDate = new Date(user.usJoinDate);
+					if (userJoinDate.getFullYear() >= lastYear) {
+						const month = userJoinDate.getMonth() + 1;
+						acc[month] = (acc[month] || 0) + 1;
+					}
 					return acc;
 				}, {});
-				setUserData(Object.values(monthlyUserCount));
+				const completeMonthlyUserCount = Array.from({ length: 12 }, (_, index) => monthlyUserCount[index + 1] || 0);
+				setUserData(completeMonthlyUserCount);
 				setCountUser(response.data.filter((item) => item.usState === 1));
 				setCountUserout(response.data.filter((item) => item.usState === 0));
 			})
@@ -50,14 +66,19 @@ export default function Home() {
 		axios
 			.get('/api/admin/posts')
 			.then((response) => {
+				const currentDate = new Date();
+				const lastYear = currentDate.getFullYear() - 1;
 				const monthlyPostCount = response.data.reduce((acc, post) => {
-					const month = post.poDate.split('-')[1];
-					acc[month] = (acc[month] || 0) + 1;
+					const postDate = new Date(post.poDate);
+					if (postDate.getFullYear() >= lastYear) {
+						const month = postDate.getMonth() + 1;
+						acc[month] = (acc[month] || 0) + 1;
+					}
 					return acc;
 				}, {});
-				setPostData(Object.values(monthlyPostCount));
+				const completeMonthlyPostCount = Array.from({ length: 12 }, (_, index) => monthlyPostCount[index + 1] || 0);
+				setPostData(completeMonthlyPostCount);
 				setCountPost(response.data.filter((item) => item.poState === 1));
-
 				setCountPostout(response.data.filter((item) => item.poState === 0));
 			})
 			.catch((error) => console.error('Error fetching data:', error));
@@ -93,25 +114,26 @@ export default function Home() {
 		axios
 			.get(api_url + '/unanswered-questions')
 			.then((response) => {
-				setCountAnswer(response.data);
+				setQna(response.data);
+				setCountNoAnswer(response.data.filter((item) => item.boAnswer === 0));
 			})
 			.catch((error) => console.error('Error fetching data:', error));
 
 		axios
 			.get(api_url + '/pending-blacklist')
 			.then((response) => {
-				setNoPro(response.data);
+				setBlackList(response.data);
+				setNoPro(response.data.filter((item) => item.blProcess === 0));
 			})
 			.catch((error) => console.error('Error fetching data:', error));
 	}, []);
-
 	useEffect(() => {
 		setAreaChartData((prevData) => ({
 			...prevData,
 			datasets: [
 				{
 					...prevData.datasets[0],
-					data: userData, // userData가 업데이트될 때마다 차트 데이터도 업데이트
+					data: userData,
 				},
 			],
 		}));
@@ -266,7 +288,42 @@ export default function Home() {
 		},
 		cutout: '80%',
 	};
-
+	useEffect(() => {
+		if (qna.length === 0) {
+			setAnswerPercentage(100);
+		} else {
+			setAnswerPercentage(((qna.length - countNoAnswer.length) / qna.length) * 100);
+		}
+	}, [countNoAnswer.length, qna.length]);
+	useEffect(() => {
+		if (blackList.length === 0) {
+			setBlackPercentage(100);
+		} else {
+			setBlackPercentage(((blackList.length - noPro.length) / blackList.length) * 100);
+		}
+	}, [noPro.length, blackList.length]);
+	useEffect(() => {
+		setUserPercent(((countUser.length / inputUserCount) * 100).toFixed(0));
+		setCompanyPercent(((countCompany.length / inputCompanyCount) * 100).toFixed(0));
+		setPostPercent(((countPost.length / inputPostCount) * 100).toFixed(0));
+	}, [inputUserCount, inputCompanyCount, inputPostCount, countUser.length, countCompany.length, countPost.length]);
+	useEffect(() => {
+		if (userPercent > 100) {
+			setUserPercent(100);
+		} else if (userPercent < 0) {
+			setUserPercent(0);
+		}
+		if (companyPercent > 100) {
+			setCompanyPercent(100);
+		} else if (companyPercent < 0) {
+			setCompanyPercent(0);
+		}
+		if (postPercent > 100) {
+			setPostPercent(100);
+		} else if (postPercent < 0) {
+			setPostPercent(0);
+		}
+	}, [userPercent, companyPercent, postPercent]);
 	return (
 		<div className='w-full bg-gray-100 min-h-screen'>
 			<div className='container mx-auto px-4 py-8'>
@@ -325,7 +382,7 @@ export default function Home() {
 				<div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
 					<div className='bg-white rounded-lg shadow-md'>
 						<div className='p-4 border-b flex items-center justify-between'>
-							<h6 className='text-lg font-bold text-blue-500'>월별 추이</h6>
+							<h6 className='text-lg font-bold text-blue-500'>최근 1년 월별 추이</h6>
 							<div className='flex items-center gap-2'>
 								<button className='px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 focus:outline-none' onClick={() => updateAreaData(userData, '회원 가입 수')}>
 									회원
@@ -368,63 +425,110 @@ export default function Home() {
 				</div>
 				<div className='grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8'>
 					<div className='bg-white rounded-lg shadow-md'>
-						<div className='p-4 border-b'>
-							<h6 className='text-lg font-bold text-blue-500 text-center'>달성 현황</h6>
+						<div className='p-4 border-b '>
+							<h6 className='text-lg text-center font-bold text-blue-500'>달성 현황</h6>
+						</div>
+						<div className='font-pl pl-2 p-4 flex items-center gap-2'>
+							<TextField
+								id='outlined-basic'
+								label='회원 목표 수 입력'
+								variant='outlined'
+								type='number'
+								defaultValue={countUser.length}
+								onChange={(e) => {
+									const value = Math.max(0, parseInt(e.target.value, 10));
+									setInputUserCount(value);
+								}}
+							/>
+							<TextField
+								id='outlined-basic'
+								label='기업 목표 수 입력'
+								variant='outlined'
+								type='number'
+								defaultValue={countCompany.length}
+								onChange={(e) => {
+									const value = Math.max(0, parseInt(e.target.value, 10));
+									setInputCompanyCount(value);
+								}}
+							/>
+							<TextField
+								id='outlined-basic'
+								label='공고 목표 수 입력'
+								variant='outlined'
+								type='number'
+								defaultValue={countPost.length}
+								onChange={(e) => {
+									const value = Math.max(0, parseInt(e.target.value, 10));
+									setInputPostCount(value);
+								}}
+							/>
 						</div>
 						<div className='p-4 flex flex-col gap-4'>
 							<div className='mb-4'>
 								<div className='flex items-center justify-between mb-1'>
 									<span className='text-sm font-bold text-gray-800'>회원</span>
-									<span className='text-sm font-bold text-gray-800'>{countUser.length}%</span>
+									<span className='text-sm font-bold text-gray-800'>{userPercent}%</span>
 								</div>
 								<div className='h-2 bg-gray-200 rounded-full'>
-									<div className='h-2 bg-yellow-500 rounded-full' style={{ width: `${(countUser.length / 300) * 100}%` }}></div>
+									<div className='h-2 bg-yellow-500 rounded-full' style={{ width: `${userPercent}%` }}></div>
 								</div>
 							</div>
 							<div className='mb-4'>
 								<div className='flex items-center justify-between mb-1'>
 									<span className='text-sm font-bold text-gray-800'>기업</span>
-									<span className='text-sm font-bold text-gray-800'>{countCompany.length}%</span>
+									<span className='text-sm font-bold text-gray-800'>{companyPercent}%</span>
 								</div>
 								<div className='h-2 bg-gray-200 rounded-full'>
-									<div className='h-2 bg-blue-500 rounded-full' style={{ width: `${(countCompany.length / 50) * 100}%` }}></div>
+									<div className='h-2 bg-blue-500 rounded-full' style={{ width: `${companyPercent}%` }}></div>
 								</div>
 							</div>
 							<div className='mb-4'>
 								<div className='flex items-center justify-between mb-1'>
 									<span className='text-sm font-bold text-gray-800'>공고</span>
-									<span className='text-sm font-bold text-gray-800'>{countPost.length}%</span>
+									<span className='text-sm font-bold text-gray-800'>{postPercent}%</span>
 								</div>
 								<div className='h-2 bg-gray-200 rounded-full'>
-									<div className='h-2 bg-cyan-500 rounded-full' style={{ width: `${(countPost.length / 100) * 100}%` }}></div>
+									<div className='h-2 bg-cyan-500 rounded-full' style={{ width: `${postPercent}%` }}></div>
 								</div>
 							</div>
 							<div className='mb-4'>
 								<div className='flex items-center justify-between mb-1'>
 									<span className='text-sm font-bold text-gray-800'>답변</span>
-									<span className='text-sm font-bold text-gray-800'>{100 - countAnswer.length}%</span>
+									<span className='text-sm font-bold text-gray-800'>{answerPercentage.toFixed(0)}%</span>
 								</div>
 								<div className='h-2 bg-gray-200 rounded-full'>
-									<div className='h-2 bg-green-500 rounded-full' style={{ width: `${100 - countAnswer.length}%` }}></div>
+									<div className='h-2 bg-green-500 rounded-full' style={{ width: `${answerPercentage.toFixed(0)}%` }}></div>
 								</div>
+								{answerPercentage === 100 && (
+									<div className='text-sm text-green-600 mt-1'>모든 질문에 답변이 완료되었습니다!</div>
+								)}
+								{answerPercentage < 100 && (
+									<div className='text-sm text-red-600 mt-1'>답변 대기 중인 질문이 있습니다!</div>
+								)}
 							</div>
 							<div className='mb-4'>
 								<div className='flex items-center justify-between mb-1'>
 									<span className='text-sm font-bold text-gray-800'>신고 처리</span>
-									<span className='text-sm font-bold text-gray-800'>{100 - noPro.length}%</span>
+									<span className='text-sm font-bold text-gray-800'>{blackPercentage.toFixed(0)}%</span>
 								</div>
 								<div className='h-2 bg-gray-200 rounded-full'>
-									<div className='h-2 bg-red-500 rounded-full' style={{ width: `${100 - noPro.length}%` }}></div>
+									<div className='h-2 bg-red-500 rounded-full' style={{ width: `${blackPercentage.toFixed(0)}%` }}></div>
 								</div>
+								{blackPercentage === 100 && (
+									<div className='text-sm text-green-600 mt-1'>모든 신고가 처리되었습니다!</div>
+								)}
+								{blackPercentage < 100 && (
+									<div className='text-sm text-red-600 mt-1'>처리 대기 중인 신고가 있습니다!</div>
+								)}
 							</div>
 						</div>
 					</div>
 					<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 						<div className='bg-green-500 text-white rounded-lg shadow-md p-4'>
-							<strong>답변 {countAnswer.length > 0 ? `대기 ${countAnswer.length}개` : '대기 없음'}</strong>
+							<strong>답변 {countNoAnswer.length > 0 ? `대기 ${countNoAnswer.length}개` : '대기 없음'}</strong>
 							<div className='text-white-50 text-sm mt-10'>
-								{countAnswer.length > 0 &&
-									countAnswer.slice(0, 5).map((item, index) => (
+								{countNoAnswer.length > 0 &&
+									countNoAnswer.slice(0, 8).map((item, index) => (
 										<div key={index} className='mb-2 '>
 											<div className='bg-white rounded-lg p-2 cursor-pointer flex justify-between' onClick={() => router.push(`admin/bbs/qna/view/${item.id}`)}>
 												<div className='text-black text-sm font-semibold truncate'>{item.boTitle.length > 9 ? `${item.boTitle.slice(0, 9)}...` : item.boTitle}</div>
@@ -441,11 +545,11 @@ export default function Home() {
 							<strong>신고 {noPro.length > 0 ? `대기 ${noPro.length}개` : '대기 없음'}</strong>
 							<div className='text-white-50 text-sm mt-10'>
 								{noPro.length > 0 &&
-									noPro.slice(0, 5).map((item, index) => (
+									noPro.slice(0, 8).map((item, index) => (
 										<div key={index} className='mb-2 '>
 											<div className='bg-white rounded-lg p-2 cursor-pointer flex justify-between' onClick={() => router.push(`admin/blackList/view/${item.id}`)}>
 												<div className='text-black text-sm font-semibold truncate'>{item.blTitle.length > 9 ? `${item.blTitle.slice(0, 9)}...` : item.blTitle}</div>
-												<div className='flex flex-col gap-2'>
+												<div className='flex flex-col gapㅣ-2'>
 													<div className='text-gray-500 text-xs'>{item.blDate}</div>
 													<div className='text-black font-semibold text-xs text-right'>{item.usId}</div>
 												</div>

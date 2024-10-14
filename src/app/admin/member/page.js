@@ -26,13 +26,13 @@ const initialState = {
 
 function EnhancedTable() {
     const [page, setPage] = useState(0);
-    const [api_url, setApiUrl] = useState("/api/admin/jobseekers?size=10");
+    const [api_url, setApiUrl] = useState("/api/admin/jobseekers?size=6");
     const [ar, setAr] = useState([]);
     const [totalPage, setTotalPage] = useState(0);
     const [searchType, setSearchType] = useState('name');
     const [searchValue, setSearchValue] = useState('');
     const [state, setState] = useState(initialState);
-
+    const [params, setParams] = useState({});
     useEffect(() => {
         getMemberList();
     }, [page, api_url]);
@@ -44,10 +44,13 @@ function EnhancedTable() {
             setPage(response.data.pageable.pageNumber);
         });
     }
-
     const changePage = (event, value) => {
-        setPage(value - 1);
-        setApiUrl(`/api/admin/jobseekers?size=10&page=${value - 1}`);
+        if (searchType == null || searchValue == null) {
+            setPage(value - 1);
+            setApiUrl(`/api/admin/jobseekers?size=6&page=${value - 1}`);
+        } else {
+            setApiUrl(`/api/admin/jobseekers?size=6&page=${value - 1}&${new URLSearchParams(params).toString()}`);
+        }
     };
 
     const handleKeyDown = (e) => {
@@ -87,8 +90,8 @@ function EnhancedTable() {
             if (state.maxSalary) {
                 params.maxSal = state.maxSalary;
             }
-            const queryString = new URLSearchParams(params).toString();
-            setApiUrl(`/api/admin/jobseekers?size=10&page=${page}&${queryString}`);
+            setApiUrl(`/api/admin/jobseekers?size=6&page=${page}&${new URLSearchParams(params).toString()}`);
+            setParams(params);
         } catch (error) {
             console.error('검색 중 오류 발생:', error);
             alert("검색 중 오류 발생");
@@ -144,7 +147,7 @@ function EnhancedTable() {
                             <MenuItem value="tel" sx={{ fontFamily: 'pl,sans-serif' }}>전화번호</MenuItem>
                             <MenuItem value="address" sx={{ fontFamily: 'pl,sans-serif' }}>주소</MenuItem>
                             <MenuItem value="edu" sx={{ fontFamily: 'pl,sans-serif' }}>학력</MenuItem>
-                            <MenuItem value="sal" sx={{ fontFamily: 'pl,sans-serif' }}>월급</MenuItem>
+                            <MenuItem value="sal" sx={{ fontFamily: 'pl,sans-serif' }}>연봉</MenuItem>
                             <MenuItem value="gender" sx={{ fontFamily: 'pl,sans-serif' }}>성별</MenuItem>
                             <MenuItem value="joinDate" sx={{ fontFamily: 'pl,sans-serif' }}>가입일자</MenuItem>
                             <MenuItem value="leaveDate" sx={{ fontFamily: 'pl,sans-serif' }}>탈퇴일자</MenuItem>
@@ -198,7 +201,7 @@ function EnhancedTable() {
                     ) : state.isSalaryRange ? (
                         <>
                             <TextField
-                                label="최소 월급"
+                                label="최소 연봉"
                                 variant="outlined"
                                 size="small"
                                 value={state.minSalary}
@@ -210,7 +213,7 @@ function EnhancedTable() {
                                 onKeyDown={handleKeyDown}
                             />
                             <TextField
-                                label="최대 월급"
+                                label="최대 연봉"
                                 variant="outlined"
                                 size="small"
                                 value={state.maxSalary}
@@ -248,7 +251,7 @@ function EnhancedTable() {
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>전화번호</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>주소</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>학력</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>월급</TableCell>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>연봉</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>성별</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>가입일자</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>탈퇴여부</TableCell>
@@ -261,9 +264,9 @@ function EnhancedTable() {
                                 hover
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                    <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>
-                                        {user.joImgUrl == null ? <img src='/img/profile.png'/> : <img src={`/s3/${user.joImgUrl}`} alt="회원사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto', borderRadius: '50%' }} />}
-                                    </TableCell>
+                                <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>
+                                    {user.joImgUrl == null ? <img src='/img/profile.png' /> : <img src={`/s3/${user.joImgUrl}`} alt="회원사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto', borderRadius: '50%' }} />}
+                                </TableCell>
                                 <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>{user.joName ? user.joName : '없음'} </TableCell>
                                 <TableCell align="center" sx={{ fontFamily: 'pl,sans-serif', whiteSpace: 'normal', wordBreak: 'break-all' }}>
                                     {user.joBirth ? (

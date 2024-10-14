@@ -22,10 +22,10 @@ export default function page() {
     const [maxSalary, setMaxSalary] = useState('');
     const [isDatePicker, setIsDatePicker] = useState(false);
     const [searchValue, setSearchValue] = useState('');
-
+    const [params, setParams] = useState({});
     useEffect(() => {
         getPosts();
-    }, [page]);
+    }, [page, apiUrl]);
 
     function getPosts() {
         axios.get(apiUrl)
@@ -41,7 +41,7 @@ export default function page() {
 
     const changePage = (event, value) => {
         setPage(value - 1);
-        setApiUrl("/api/posts?curPage=" + (value - 1) + "&size=8");
+        setApiUrl(`/api/posts?curPage=${value - 1}&size=8&${new URLSearchParams(params).toString()}`);
         getPosts();
     };
 
@@ -64,17 +64,8 @@ export default function page() {
             if (maxSalary) {
                 params.maxSal = maxSalary;
             }
-            const response = await axios.get(apiUrl, {
-                params: params
-            });
-            if (response.status === 200) {
-                console.log(response.data);
-                setAr(response.data.content);
-                setTotalPage(response.data.totalPages);
-                setPage(response.data.pageable.pageNumber);
-            } else {
-                alert("검색 실패");
-            }
+            setParams(params);
+            setApiUrl(`/api/posts?curPage=${page}&size=8&${new URLSearchParams(params).toString()}`);
         } catch (error) {
             console.error('검색 중 오류 발생:', error);
             alert("검색 중 오류 발생");
@@ -124,31 +115,31 @@ export default function page() {
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden', mt: 0, boxShadow: 3, padding: 5, bgcolor: 'background.paper', margin: 'auto' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, mt: 4 }}>
-                <Typography variant="h4" component="div" sx={{ fontWeight: 'bold', color: 'black', fontFamily: 'pl,sans-serif',fontSize: 30 ,ml: 2}}>
+                <Typography variant="h4" component="div" sx={{ fontWeight: 'bold', color: 'black', fontFamily: 'pl,sans-serif', fontSize: 30, ml: 2 }}>
                     공고 관리
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 1, bgcolor: 'common.white', p: 0.5, borderRadius: 1 }}>
                     <FormControl size="small" sx={{ width: '15ch' }}>
-                        <InputLabel id="title" sx={{fontFamily: 'pl,sans-serif'}}>카테고리</InputLabel>
+                        <InputLabel id="title" sx={{ fontFamily: 'pl,sans-serif' }}>카테고리</InputLabel>
                         <Select
                             labelId="category-select-label"
                             id="category-select"
                             value={searchType}
                             label="카테고리"
                             onChange={handleSearchTypeChange}
-                            sx={{fontFamily: 'pl,sans-serif'}}
+                            sx={{ fontFamily: 'pl,sans-serif' }}
                         >
-                            <MenuItem sx={{fontFamily: 'pl,sans-serif'}} value="title">제목</MenuItem>
-                            <MenuItem sx={{fontFamily: 'pl,sans-serif'}} value="content">내용</MenuItem>
-                            <MenuItem sx={{fontFamily: 'pl,sans-serif'}} value="date">등록날짜</MenuItem>
-                            <MenuItem sx={{fontFamily: 'pl,sans-serif'}} value="deadline">마감날짜</MenuItem>
-                            <MenuItem sx={{fontFamily: 'pl,sans-serif'}} value="sal">월급</MenuItem>
+                            <MenuItem sx={{ fontFamily: 'pl,sans-serif' }} value="title">제목</MenuItem>
+                            <MenuItem sx={{ fontFamily: 'pl,sans-serif' }} value="content">내용</MenuItem>
+                            <MenuItem sx={{ fontFamily: 'pl,sans-serif' }} value="date">등록일</MenuItem>
+                            <MenuItem sx={{ fontFamily: 'pl,sans-serif' }} value="deadline">마감일</MenuItem>
+                            <MenuItem sx={{ fontFamily: 'pl,sans-serif' }} value="sal">연봉</MenuItem>
                         </Select>
                     </FormControl>
                     {isSalaryRange ? (
                         <>
                             <TextField
-                                label="최소 월급"
+                                label="최소 연봉"
                                 variant="outlined"
                                 size="small"
                                 value={minSalary}
@@ -160,7 +151,7 @@ export default function page() {
                                 }}
                             />
                             <TextField
-                                label="최대 월급"
+                                label="최대 연봉"
                                 variant="outlined"
                                 size="small"
                                 value={maxSalary}
