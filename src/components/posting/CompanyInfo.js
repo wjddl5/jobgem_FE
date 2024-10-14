@@ -16,9 +16,14 @@ const CompanyInfo = React.forwardRef(({ posting }, ref) => {
                     <p className='text-gray-600 mb-2'>대표자명: {posting && posting.company.coManagerName}</p>
                     <p className='text-gray-600 mb-2'>업종: {posting && posting.company.coType}</p>
                     <p className='text-gray-600 mb-2'>사원수: {posting && posting.company.coEmployee}명</p>
-                    <p className='text-gray-600 mb-2'>매출액: {posting && (
-                        `${Math.floor(posting.company.coSales / 100000000) > 0 ? `${Math.floor(posting.company.coSales / 100000000)}억 ` : ''}${Math.floor((posting.company.coSales % 100000000) / 10000) > 0 ? `${Math.floor((posting.company.coSales % 100000000) / 10000)}만원` : ''}`
-                    )} (2023년 기준)</p>
+                    <p className='text-gray-600 mb-2'>
+                        매출액: {posting && (
+                            `${Math.floor(posting.company.coSales / 100000000) > 0 ? `${Math.floor(posting.company.coSales / 100000000)}억 ` : ''}`
+                            + `${Math.floor((posting.company.coSales % 100000000) / 10000) > 0 ? `${Math.floor((posting.company.coSales % 100000000) / 10000)}만 ` : ''}`
+                            + `${(posting.company.coSales % 10000) > 0 ? `${posting.company.coSales % 10000}원` : ''}`
+                        )} (2023년 기준)
+                    </p>
+
                 </div>
             </div>
         </div>

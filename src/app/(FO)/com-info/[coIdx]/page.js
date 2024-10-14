@@ -85,10 +85,10 @@ function Page(props) {
                                 <span className="font-medium text-gray-600 w-24 md:w-32">연락처:</span>
                                 <span className="text-gray-900">{company?.coTel}</span>
                             </div>
-                            <div className="flex items-center">
-                                <span className="font-medium text-gray-600 w-24 md:w-32">매출액:</span>
-                                <span className="text-gray-900">{company?.coSales / 100000000} 억</span>
-                            </div>
+                            <span className="text-gray-900">
+                                {company?.coSales >= 1_0000_0000 && `${parseInt(company.coSales / 1_0000_0000)}억 `}
+                                {(company?.coSales % 1_0000_0000) !== 0 && `${parseInt((company.coSales % 1_0000_0000) / 1_0000)}만`}
+                            </span>
                             <div className="flex items-center">
                                 <span className="font-medium text-gray-600 w-24 md:w-32">기업형태:</span>
                                 <span className="text-gray-900">{company?.coType}</span>

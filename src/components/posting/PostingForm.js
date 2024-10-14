@@ -124,8 +124,8 @@ export default function PostingForm({ params }) {
     const [fax1, setFax1] = useState('');
     const [fax2, setFax2] = useState('');
     const [fax3, setFax3] = useState('');
-    const [workStartTime, setWorkStartTime] = useState({hour:null,minute:null});
-    const [workEndTime, setWorkEndTime] = useState({hour:null,minute:null});
+    const [workStartTime, setWorkStartTime] = useState({hour:0,minute:0});
+    const [workEndTime, setWorkEndTime] = useState({hour:0,minute:0});
     const timeOptions = Array.from({length: 24}, (_, i) => i + 1);
     const minuteOptions = ['00', '10', '20', '30', '40', '50'];
     const [showConfirmPopup, setShowConfirmPopup] = useState(false);
@@ -388,11 +388,11 @@ export default function PostingForm({ params }) {
             alert('근무요일을 선택해주세요');
             return;
         }
-        if(workStartTime.hour==null&&workStartTim.minute==null){
+        if(workStartTime.hour==0&&workStartTime.minute==0){
             alert("근무시간을 선택해 주세요");
             return;
         }
-        if(workEndTime.hour&&workEndTime.minute){
+        if(workEndTime.hour==0&&workEndTime.minute==0){
             alert("근무시간을 선택해 주세요");
             return;
         }
