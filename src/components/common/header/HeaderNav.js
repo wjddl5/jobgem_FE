@@ -55,11 +55,11 @@ function HeaderNav() {
                 const date = new Date();
                 const dateString = date.toISOString();
 
-                // 새로운 알림 추가
-                setAlerts((prevAlerts) => [{ alContent: data, alDate: dateString, alIsRead: 0, alState: 0, usIdx: userId }, ...prevAlerts]);
 
-                if(data.indexOf('sse') === -1)
+                if(data.indexOf('sse') === -1){
                     setNewAlert(true);
+                    setAlerts((prevAlerts) => [{ alContent: data, alDate: dateString, alIsRead: 0, alState: 0, usIdx: userId }, ...prevAlerts]);
+                }
             };
 
             eventSource.current.onerror = (error) => {
