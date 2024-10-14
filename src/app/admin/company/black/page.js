@@ -368,7 +368,7 @@ function EnhancedTable() {
 									<Checkbox checked={chkSet.has(company.id)} onChange={(e) => checkChange(e, company.id)} />
 								</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{company.company.coImgUrl == null ? '없음' : <img src={`/s3/${company.company.coImgUrl}`} alt="사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
-								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{company.company.coThumbImgUrl == null ? '없음' : <img src={`/s3/${company.company.coThumbImgUrl}`} alt="썸네일" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
+								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{company.company.coThumbimgUrl == null ? '없음' : <img src={`/s3/${company.company.coThumbimgUrl}`} alt="썸네일" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{company.blDate ? company.blDate : '없음'}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{company.blContent.length > 10 ? company.blContent.substring(0, 10) + '...' : company.blContent}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{company.company.coName ? company.company.coName : '없음'}</TableCell>
