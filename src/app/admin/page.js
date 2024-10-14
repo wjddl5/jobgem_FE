@@ -530,7 +530,7 @@ export default function Home() {
 								{countNoAnswer.length > 0 &&
 									countNoAnswer.slice(0, 8).map((item, index) => (
 										<div key={index} className='mb-2 '>
-											<div className='bg-white rounded-lg p-2 cursor-pointer flex justify-between' onClick={() => router.push(`admin/bbs/qna/view/${item.id}`)}>
+											<div className='bg-white rounded-lg p-2 cursor-pointer flex justify-between' onClick={() => router.push(`/admin/bbs/qna/view/${item.id}`)}>
 												<div className='text-black text-sm font-semibold truncate'>{item.boTitle.length > 9 ? `${item.boTitle.slice(0, 9)}...` : item.boTitle}</div>
 												<div className='flex flex-col gap-2'>
 													<div className='text-gray-500 text-xs'>{item.boWritedate}</div>
@@ -547,7 +547,7 @@ export default function Home() {
 								{noPro.length > 0 &&
 									noPro.slice(0, 8).map((item, index) => (
 										<div key={index} className='mb-2 '>
-											<div className='bg-white rounded-lg p-2 cursor-pointer flex justify-between' onClick={() => router.push(`admin/blackList/view/${item.id}`)}>
+											<div className='bg-white rounded-lg p-2 cursor-pointer flex justify-between' onClick={() => router.push(`/admin/blackList/view/${item.id}`)}>
 												<div className='text-black text-sm font-semibold truncate'>{item.blTitle.length > 9 ? `${item.blTitle.slice(0, 9)}...` : item.blTitle}</div>
 												<div className='flex flex-col gapㅣ-2'>
 													<div className='text-gray-500 text-xs'>{item.blDate}</div>
