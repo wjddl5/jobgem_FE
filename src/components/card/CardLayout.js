@@ -12,7 +12,7 @@ function CardLayout({ list }) {
 				<div className='w-full  bg-opacity-40 backdrop-filter backdrop-blur-lg'>
 					<h2 style={{ fontFamily: "BM", fontSize: "20px", color: "#515467", padding: "20px 0", display: "inline-block" }}>모집공고</h2>
 					<Link href='/recruit' style={{ fontFamily: "BM", fontSize: "20px", color: "#515467", padding: "20px 0", float: "right" }}>
-						더보기
+						+더보기
 					</Link>
 					<div className='w-12/12 mx-auto rounded-2xl bg-opacity-40 backdrop-filter backdrop-blur-lg'>
 						<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 text-center mx-auto'>
