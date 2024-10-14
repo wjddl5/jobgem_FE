@@ -27,7 +27,7 @@ import axios from 'axios';
 export default function Page(props) {
 	const [loading, setLoading] = useState(false);
 	const router = useRouter();
-	const [member, setMember] = useState('');
+	const [member, setMember] = useState([]);
 	const [reason, setReason] = useState('');
 	const [ar, setAr] = useState([]);
 	const [searchValue, setSearchValue] = useState('');
@@ -83,7 +83,7 @@ export default function Page(props) {
 			return;
 		}
 		// 블랙리스트 추가 로직
-		if (!member) {
+		if (!member || member.length === 0) {
 			alert('회원을 선택해주세요.');
 			return;
 		} else if (reason === '') {
@@ -248,7 +248,7 @@ export default function Page(props) {
 							<TextField
 								variant='outlined'
 								fullWidth
-								value={member ? `${member.joName ? member.joName : '없음'} ( ${member.joAddress ? member.joAddress : '없음'} / ${member.joGender ? member.joGender : '없음'} )` : '선택한 회원 정보'}
+								value={member ? member.length === 0 ? "차단된 회원입니다." : member.joName : `회원을 선택해주세요.`}
 								InputProps={{
 									readOnly: true,
 								}}

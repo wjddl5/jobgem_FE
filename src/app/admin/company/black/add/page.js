@@ -26,7 +26,7 @@ import axios from 'axios';
 export default function Page(props) {
 	const router = useRouter();
 	const api_url = '/api/admin/unblocked-companies';
-	const [company, setCompany] = useState('');
+	const [company, setCompany] = useState([]);
 	const [reason, setReason] = useState('');
 	const [ar, setAr] = useState([]);
 	const [searchValue, setSearchValue] = useState('');
@@ -84,7 +84,7 @@ export default function Page(props) {
 			setReason('');
 			return;
 		}
-		if (!company) {
+		if (!company || company.length === 0) {
 			alert('기업을 선택해주세요.');
 			return;
 		} else if (reason === '') {
@@ -258,7 +258,7 @@ export default function Page(props) {
 							<TextField
 								variant='outlined'
 								fullWidth
-								value={company ? `${company.coName ? company.coName : '없음'} ( ${company.coAddress ? company.coAddress : '없음'} / ${company.coType ? company.coType : '없음'} )` : '선택한 기업 정보'}
+								value={company ? company.length === 0 ? "차단된 기업입니다." : company.coName : '기업을 선택해주세요.'}
 								InputProps={{
 									readOnly: true,
 								}}
