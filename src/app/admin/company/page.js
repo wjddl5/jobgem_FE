@@ -18,13 +18,13 @@ const initialState = {
 
 function EnhancedTable() {
     const [page, setPage] = useState(0);
-    const [api_url, setApiUrl] = useState("/api/admin/companies?size=10");
+    const [api_url, setApiUrl] = useState("/api/admin/companies?size=6");
     const [ar, setAr] = useState([]);
     const [totalPage, setTotalPage] = useState(0);
     const [searchType, setSearchType] = useState('name');
     const [searchValue, setSearchValue] = useState('');
     const [state, setState] = useState(initialState);
-
+    const [params, setParams] = useState({});
     useEffect(() => {
         getMemberList();
     }, [page, api_url]);
@@ -39,7 +39,7 @@ function EnhancedTable() {
 
     const changePage = (event, value) => {
         setPage(value - 1);
-        setApiUrl(`/api/admin/companies?size=10&page=${value - 1}`);
+        setApiUrl(`/api/admin/companies?size=6&page=${value - 1}&${new URLSearchParams(params).toString()}`);
     };
 
     const handleKeyDown = (e) => {
@@ -67,9 +67,8 @@ function EnhancedTable() {
             if (state.maxSales) {
                 params.maxSales = state.maxSales;
             }
-            console.log(params);
-            const queryString = new URLSearchParams(params).toString();
-            setApiUrl(`/api/admin/companies?size=10&page=${page}&${queryString}`);
+            setParams(params);
+            setApiUrl(`/api/admin/companies?size=6&page=${page}&${new URLSearchParams(params).toString()}`);
         } catch (error) {
             console.error('검색 중 오류 발생:', error);
             alert("검색 중 오류 발생");
@@ -189,6 +188,8 @@ function EnhancedTable() {
                 <Table sx={{ minWidth: 750, border: '1px solid #e0e0e0' }} aria-labelledby="tableTitle" size="medium">
                     <TableHead >
                         <TableRow sx={{ bgcolor: 'primary.main' }}>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>사진</TableCell>
+                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>썸네일 사진</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>기업명</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>기업번호</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>주소</TableCell>
@@ -196,8 +197,6 @@ function EnhancedTable() {
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>종류</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>개업일</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>직원수</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>사진</TableCell>
-                            <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>썸네일 사진</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>매출</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>평점</TableCell>
                             <TableCell align="center" sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }}>담당자 이름</TableCell>
@@ -211,6 +210,38 @@ function EnhancedTable() {
                                 hover
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
+                                <TableCell align="center" sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>
+                                    {user.coImgUrl == null ? '없음' : (
+                                        <img
+                                            src={`/s3/${user.coImgUrl}`}
+                                            alt="사진"
+                                            style={{
+                                                width: '50px',
+                                                height: '50px',
+                                                display: 'block',
+                                                margin: 'auto',
+                                                objectFit: 'cover',
+                                                borderRadius: '5px'
+                                            }}
+                                        />
+                                    )}
+                                </TableCell>
+                                <TableCell align="center" sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>
+                                    {user.coThumbImgUrl == null ? '없음' : (
+                                        <img
+                                            src={`/s3/${user.coThumbImgUrl}`}
+                                            alt="썸네일"
+                                            style={{
+                                                width: '50px',
+                                                height: '50px',
+                                                display: 'block',
+                                                margin: 'auto',
+                                                objectFit: 'cover',
+                                                borderRadius: '5px'
+                                            }}
+                                        />
+                                    )}
+                                </TableCell>
                                 <TableCell align="center" sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.coName ? user.coName : '없음'}</TableCell>
                                 <TableCell align="center" sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.coNumber ? user.coNumber : '없음'}</TableCell>
                                 <TableCell align="center" sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.coAddress ? user.coAddress : '없음'}</TableCell>
@@ -218,38 +249,6 @@ function EnhancedTable() {
                                 <TableCell align="center" sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.coType ? user.coType : '없음'}</TableCell>
                                 <TableCell align="center" sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.coOpen ? user.coOpen : '없음'}</TableCell>
                                 <TableCell align="center" sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.coEmployee ? user.coEmployee : '없음'}</TableCell>
-                                <TableCell align="center" sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>
-                                    {user.coImgUrl == null ? '없음' : (
-                                        <img 
-                                            src={`/s3/${user.coImgUrl}`} 
-                                            alt="사진" 
-                                            style={{ 
-                                                width: '50px', 
-                                                height: '50px', 
-                                                display: 'block', 
-                                                margin: 'auto',
-                                                objectFit: 'cover',
-                                                borderRadius: '5px'
-                                            }} 
-                                        />
-                                    )}
-                                </TableCell>
-                                <TableCell align="center" sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>
-                                    {user.coThumbImgUrl == null ? '없음' : (
-                                        <img 
-                                            src={`/s3/${user.coThumbImgUrl}`} 
-                                            alt="썸네일" 
-                                            style={{ 
-                                                width: '50px', 
-                                                height: '50px', 
-                                                display: 'block', 
-                                                margin: 'auto',
-                                                objectFit: 'cover',
-                                                borderRadius: '5px'
-                                            }} 
-                                        />
-                                    )}
-                                </TableCell>
                                 <TableCell align="center" sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.coSales ? user.coSales.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : '없음'}</TableCell>
                                 <TableCell align="center" sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.coScore ? user.coScore : '없음'}</TableCell>
                                 <TableCell align="center" sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{user.coManagerName ? user.coManagerName : '없음'}</TableCell>

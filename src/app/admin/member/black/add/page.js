@@ -156,7 +156,7 @@ export default function Page(props) {
 									<MenuItem value='tel' sx={{ fontFamily: 'pl,sans-serif' }}>전화번호</MenuItem>
 									<MenuItem value='address' sx={{ fontFamily: 'pl,sans-serif' }}>주소</MenuItem>
 									<MenuItem value='edu' sx={{ fontFamily: 'pl,sans-serif' }}>학력</MenuItem>
-									<MenuItem value='sal' sx={{ fontFamily: 'pl,sans-serif' }}>월급</MenuItem>
+									<MenuItem value='sal' sx={{ fontFamily: 'pl,sans-serif' }}>연봉</MenuItem>
 									<MenuItem value='gender' sx={{ fontFamily: 'pl,sans-serif' }}>성별</MenuItem>
 									<MenuItem value='joinDate' sx={{ fontFamily: 'pl,sans-serif' }}>가입일자</MenuItem>
 									<MenuItem value='leaveDate' sx={{ fontFamily: 'pl,sans-serif' }}>탈퇴일자</MenuItem>
@@ -179,8 +179,7 @@ export default function Page(props) {
 											<Typography variant='body2' sx={{ fontFamily: 'pl,sans-serif' }}>성별: {user.joGender ? user.joGender : '없음'}</Typography>
 											<Typography variant='body2' sx={{ fontFamily: 'pl,sans-serif' }}>주소: {user.joAddress ? user.joAddress : '없음'}</Typography>
 											<Typography variant='body2' sx={{ fontFamily: 'pl,sans-serif' }}>학력: {user.joEdu ? user.joEdu : '없음'}</Typography>
-											<Typography variant='body2' sx={{ fontFamily: 'pl,sans-serif' }}>월급: {user.joSal ? user.joSal : '없음'}</Typography>
-											<Typography variant='body2' sx={{ fontFamily: 'pl,sans-serif' }}>사진: {user.joImgUrl ? '있음' : '없음'}</Typography>
+											<Typography variant='body2' sx={{ fontFamily: 'pl,sans-serif' }}>연봉: {user.joSal ? user.joSal : '없음'}</Typography>
 											<Typography variant='body2' sx={{ fontFamily: 'pl,sans-serif' }}>가입일자: {user.user.usJoinDate ? user.user.usJoinDate : '없음'}</Typography>
 											<Typography variant='body2' sx={{ fontFamily: 'pl,sans-serif' }}>탈퇴일자: {user.user.usLeaveDate ? user.user.usLeaveDate : '활동중'}</Typography>
 											<Divider sx={{ margin: '20px 0' }} />

@@ -46,7 +46,7 @@ const initialState = {
 
 function EnhancedTable() {
 	const router = useRouter();
-	const [api_url, setApiUrl] = useState('/api/admin/blocked-companies?size=10');
+	const [api_url, setApiUrl] = useState('/api/admin/blocked-companies?size=6');
 	const [ar, setAr] = useState([]);
 	const [page, setPage] = useState(0);
 	const [totalPage, setTotalPage] = useState(0);
@@ -56,6 +56,7 @@ function EnhancedTable() {
 	const [chkAll, setChkAll] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [state, setState] = useState(initialState);
+	const [params, setParams] = useState({});
 
 	useEffect(() => {
 		getBlockList();
@@ -90,13 +91,13 @@ function EnhancedTable() {
 				params.openEndDate = dayjs(state.openEndDate).format('YYYY-MM-DD');
 			}
 			if (state.minSales) {
-				params.minSal = state.minSales;
+				params.minSales = state.minSales;
 			}
 			if (state.maxSales) {
-				params.maxSal = state.maxSales;
+				params.maxSales = state.maxSales;
 			}
-			const queryString = new URLSearchParams(params).toString();
-			setApiUrl(`/api/admin/blocked-companies?size=10&page=${page}&${queryString}`);
+			setParams(params);
+			setApiUrl(`/api/admin/blocked-companies?size=6&page=${page}&${new URLSearchParams(params).toString()}`);
 		} catch (error) {
 			console.error('검색 중 오류 발생:', error);
 			alert("검색 중 오류 발생");
@@ -105,7 +106,7 @@ function EnhancedTable() {
 
 	const changePage = (event, value) => {
 		setPage(value - 1);
-		setApiUrl(`/api/admin/blocked-companies?size=10&page=${value - 1}`);
+		setApiUrl(`/api/admin/blocked-companies?size=6&page=${value - 1}&${new URLSearchParams(params).toString()}`);
 		setChkSet(new Set());
 		setChkAll(false);
 	};
@@ -310,6 +311,12 @@ function EnhancedTable() {
 								<Checkbox checked={chkAll} onChange={allCheckChange} color='primary' style={{ color: 'white' }} />
 							</TableCell>
 							<TableCell sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }} align='center'>
+								사진
+							</TableCell>
+							<TableCell sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }} align='center'>
+								썸네일
+							</TableCell>
+							<TableCell sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }} align='center'>
 								차단일
 							</TableCell>
 							<TableCell sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }} align='center'>
@@ -337,12 +344,6 @@ function EnhancedTable() {
 								직원수
 							</TableCell>
 							<TableCell sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }} align='center'>
-								사진
-							</TableCell>
-							<TableCell sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }} align='center'>
-								썸네일
-							</TableCell>
-							<TableCell sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }} align='center'>
 								매출
 							</TableCell>
 							<TableCell sx={{ color: 'common.white', fontWeight: 'medium', fontFamily: 'pl,sans-serif' }} align='center'>
@@ -366,6 +367,8 @@ function EnhancedTable() {
 								<TableCell align='center'>
 									<Checkbox checked={chkSet.has(company.id)} onChange={(e) => checkChange(e, company.id)} />
 								</TableCell>
+								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{company.company.coImgUrl == null ? '없음' : <img src={`/s3/${company.company.coImgUrl}`} alt="사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
+								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{company.company.coThumbImgUrl == null ? '없음' : <img src={`/s3/${company.company.coThumbImgUrl}`} alt="썸네일" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{company.blDate ? company.blDate : '없음'}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{company.blContent.length > 10 ? company.blContent.substring(0, 10) + '...' : company.blContent}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{company.company.coName ? company.company.coName : '없음'}</TableCell>
@@ -375,8 +378,6 @@ function EnhancedTable() {
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{company.company.coType ? company.company.coType : '없음'}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{company.company.coOpen ? company.company.coOpen : '없음'}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{company.company.coEmployee ? company.company.coEmployee : '없음'}</TableCell>
-								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{company.company.coImgUrl == null ? '없음' : <img src={`/s3/${company.company.coImgUrl}`} alt="사진" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
-								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{company.company.coThumbImgUrl == null ? '없음' : <img src={`/s3/${company.company.coThumbImgUrl}`} alt="썸네일" style={{ width: '50px', height: '50px', display: 'block', margin: 'auto' }} />}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{company.company.coSales ? company.company.coSales.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : '없음'}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{company.company.coScore ? company.company.coScore : '없음'}</TableCell>
 								<TableCell align='center' sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>{company.company.coManagerName ? company.company.coManagerName : '없음'}</TableCell>
