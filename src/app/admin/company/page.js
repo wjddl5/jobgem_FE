@@ -32,6 +32,7 @@ function EnhancedTable() {
     function getMemberList() {
         axios.get(api_url).then((response) => {
             setAr(response.data.content);
+            console.log(response.data.content);
             setTotalPage(response.data.totalPages);
             setPage(response.data.pageable.pageNumber);
         });
@@ -227,9 +228,9 @@ function EnhancedTable() {
                                     )}
                                 </TableCell>
                                 <TableCell align="center" sx={{ whiteSpace: 'normal', wordBreak: 'break-all', fontFamily: 'pl,sans-serif' }}>
-                                    {user.coThumbImgUrl == null ? '없음' : (
+                                    {user.coThumbimgUrl == null ? '없음' : (
                                         <img
-                                            src={`/s3/${user.coThumbImgUrl}`}
+                                            src={`/s3/${user.coThumbimgUrl}`}
                                             alt="썸네일"
                                             style={{
                                                 width: '50px',
