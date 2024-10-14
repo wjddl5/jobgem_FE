@@ -65,7 +65,7 @@ export default function page(props) {
 	}
 	function blacklistList() {
 		axios.get('/api/admin/pending-blacklist').then((res) => {
-			setBlacklist(res.data);
+			setBlacklist(res.data.filter(b => b.blProcess == 0));
 		});
 	}
 	return (
