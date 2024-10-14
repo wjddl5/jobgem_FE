@@ -111,7 +111,7 @@ function Page() {
 
 				<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
 					{jobseekers.map((item, idx) => (
-						<div key={idx} className='p-6 bg-white border border-gray-300 rounded-lg shadow-xl transition-shadow duration-300 hover:shadow-2xl hover:border-cyan-300'>
+						<div key={idx} className='flex flex-col p-6 bg-white border border-gray-300 rounded-lg shadow-xl transition-shadow duration-300 hover:shadow-2xl hover:border-cyan-300'>
 							<div
 								style={{ cursor: 'pointer' }}
 								onClick={() => {
@@ -143,7 +143,7 @@ function Page() {
 									)}
 								</div>
 							</div>
-							<div className='flex gap-2 justify-center mt-4'>
+							<div className='flex gap-2 justify-center mt-auto'>
 								<Button text='입사 제안' type='submit' onClick={() => offerHandler(item.jobseeker.id)} />
 								<Button text='찜 삭제' onClick={() => removeWishHandler(item.jobseeker.id)} />
 							</div>
