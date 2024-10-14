@@ -87,7 +87,7 @@ export default function DetialPage(props) {
 
 	function search(){
 		console.log(startDate,endDate,apRead);
-        axios.get(`/api/post/applyments/search`,{
+        axios.get(`/api/posts/applyments/search`,{
 			params:{
 				poIdx: props.params.poIdx,
 				curPage: curPage,
