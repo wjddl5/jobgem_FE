@@ -66,6 +66,17 @@ function Page() {
             setCompany(res.data);
         })
     }
+
+    function formatCurrency(value) {
+        if (value >= 100000000) {
+            return `${Math.floor(value / 100000000)}억`;
+        } else if (value >= 10000) {
+            return `${Math.floor(value / 10000)}만 원`;
+        } else {
+            return `${value}원`;
+        }
+    }
+
     useEffect(() => {
         getToken().then(
             (res) => {
@@ -124,7 +135,7 @@ function Page() {
                             </div>
                             <div className="flex items-center">
                                 <span className="font-medium text-gray-600 w-24 md:w-32">매출액:</span>
-                                <span className="text-gray-900">{company?.coSales / 100000000} 억</span>
+                                <span className="text-gray-900">{formatCurrency(company?.coSales)}</span>
                             </div>
                             <div className="flex items-center">
                                 <span className="font-medium text-gray-600 w-24 md:w-32">기업형태:</span>
