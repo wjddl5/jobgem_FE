@@ -16,8 +16,8 @@ export default function ViewPage(props) {
 	const [role, setRole] = useState();
 	useEffect(() => {
 		getToken().then((res) => {
-			setLogin(res.IDX);
-			setRole(res.ROLE);
+			setLogin(res?.IDX);
+			setRole(res?.ROLE);
 		});
 	}, []);
 	const [location, setLocation] = useState({ lat: 37.566826, lng: 126.9786567 });
@@ -98,7 +98,7 @@ export default function ViewPage(props) {
 			return;
 		}
 
-		if (!role || role === "2" || role === "0") {
+		if (!role || role == "2" || role == "0") {
 			alert("지원할 수 없는 회원입니다.");
 			return;
 		}

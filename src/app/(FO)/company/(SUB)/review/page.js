@@ -43,14 +43,13 @@ function Page() {
     // 폼 확인 시 제출
     const handleSubmit = async (formData) => {
         if(confirm("신고 접수 하시겠습니까?")){
-            axios.post("/api/company/blacklist",null,{
-                params: {
+            axios.post("/api/company/blacklist",{
                     usIdx: usId,
                     joIdx: black,
                     blTitle: formData.blTitle,
                     blContent: formData.blContent
                 }
-            }).then((res) => {
+            ).then((res) => {
                 if(res.status === 200)
                     alert("신고 완료되었습니다.")
             })
@@ -67,6 +66,17 @@ function Page() {
             setCompany(res.data);
         })
     }
+
+    function formatCurrency(value) {
+        if (value >= 100000000) {
+            return `${Math.floor(value / 100000000)}억`;
+        } else if (value >= 10000) {
+            return `${Math.floor(value / 10000)}만 원`;
+        } else {
+            return `${value}원`;
+        }
+    }
+
     useEffect(() => {
         getToken().then(
             (res) => {
@@ -125,7 +135,7 @@ function Page() {
                             </div>
                             <div className="flex items-center">
                                 <span className="font-medium text-gray-600 w-24 md:w-32">매출액:</span>
-                                <span className="text-gray-900">{company?.coSales / 100000000} 억</span>
+                                <span className="text-gray-900">{formatCurrency(company?.coSales)}</span>
                             </div>
                             <div className="flex items-center">
                                 <span className="font-medium text-gray-600 w-24 md:w-32">기업형태:</span>

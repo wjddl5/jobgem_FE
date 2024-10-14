@@ -37,6 +37,7 @@ export default function Page() {
 		axios.get(`/api/company?id=${coId}`).then((res) => {
 			setCompanyData(res.data);
 			setLogo(res.data.company.coThumbimgUrl);
+			console.log(res.data.company);
 		});
 	};
 
@@ -91,6 +92,17 @@ export default function Page() {
 			}
 		}
 	};
+
+	function formatCurrency(value) {
+		if (value >= 100000000) {
+			return `${Math.floor(value / 100000000)}억`;
+		} else if (value >= 10000) {
+			return `${Math.floor(value / 10000)}만 원`;
+		} else {
+			return `${value}원`;
+		}
+	}
+
 	if (!companyData)
 		return (
 			<div className='flex justify-center'>
@@ -125,7 +137,7 @@ export default function Page() {
 						<div className='flex justify-between'>
 							<div className='text-center p-4'>
 								<p className='mb-2'>매출액</p>
-								<p className='text-2xl font-bold'>{companyData.company.coSales / 100000000} 억</p>
+								<p className='text-2xl font-bold'>{formatCurrency(companyData.company.coSales)}</p>
 							</div>
 							<div className='text-center p-4'>
 								<p className='mb-2'>사원수</p>

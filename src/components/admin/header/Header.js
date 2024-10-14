@@ -59,16 +59,16 @@ export default function Header() {
 						</div>
 					</a>
 					{qna.length > 0 || blacklist.length > 0 ? (
-						<div className='dropdown-menu dropdown-menu-right' aria-labelledby='alertsDropdown' style={{ display: dropdownOpen ? 'block' : 'none' }} onMouseLeave={() => setDropdownOpen(false)}>
+						<div className='dropdown-menu dropdown-menu-right' aria-labelledby='alertsDropdown' style={{ display: dropdownOpen ? 'block' : 'none', maxHeight: '300px', overflowY: 'auto' }} onMouseLeave={() => setDropdownOpen(false)}>
 							<div className='dropdown-header' style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#333' }}>
 								미답변: {qna.length} &nbsp;신고대기: {blacklist.length}
 							</div>
 							<div className='dropdown-divider'></div>
-							{qna.slice(0, 3).map((q, index) => (
+							{qna.map((q, index) => (
 								<a className='dropdown-item d-flex align-items-center' key={index} onClick={() => { router.push(`/admin/bbs/qna/view/${q.id}`); }}>
 									<div className='mr-3'>
 										<div className='icon-circle bg-primary'>
-											<i className='fas fa-question text-white'></i>
+												<i className='fas fa-question text-white'></i>
 										</div>
 									</div>
 									<div>
@@ -79,7 +79,7 @@ export default function Header() {
 									</div>
 								</a>
 							))}
-							{blacklist.slice(0, 3).map((b, index) => (
+							{blacklist.map((b, index) => (
 								<a className='dropdown-item d-flex align-items-center' key={index} onClick={() => { router.push(`/admin/blackList/view/${b.id}`); }}>
 									<div className='mr-3'>
 										<div className='icon-circle bg-warning'>

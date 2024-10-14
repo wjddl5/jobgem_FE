@@ -11,7 +11,7 @@ function Card({ item}) {
 	const deadlineDate = new Date(item.poDeadline);
 	const timeDiff = deadlineDate - nowDate;
 	const dayDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)); 
-	const imgUrl = item.company.coThumbImgUrl ? item.company.coThumbImgUrl : "/img/1.jpg";
+	const imgUrl = item.company.coThumbImgUrl ? `/s3/${item.company.coThumbImgUrl}` : "/img/1.jpg";
 	const deadlineDisplay = dayDiff > 0 ? `D-${dayDiff}` : dayDiff === 0 ? "D-Day" : `D+${Math.abs(dayDiff)}`;
 
 	const handleDelete = async () => {

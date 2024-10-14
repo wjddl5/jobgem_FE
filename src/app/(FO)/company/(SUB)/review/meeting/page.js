@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import Pagination from "@/components/pagination/Pagination";
+import {getToken} from "@/app/util/token/token";
 
 export default function Page() {
     const [interviews, setInterviews] = useState([]);
@@ -10,21 +11,30 @@ export default function Page() {
     const [sortBy, setSortBy] = useState('inWriteDate');
     const [loadPage, setLoadPage] = useState(0);
     const [totalPage, setTotalPage] = useState(0);
+    const [coIdx, setCoIdx] = useState(0);
 
     const getData = () => {
-        axios.get('/api/company/interview', { params: { id: 1, loadPage, sortBy } }).then((res) => {
+        axios.get('/api/company/interview', { params: { id: coIdx, loadPage, sortBy } }).then((res) => {
             setInterviews(res.data.content);
             setTotalPage(res.data.totalPages);
         });
     };
 
     useEffect(() => {
-        getData();
-    }, [sortBy, loadPage]);
+        if(coIdx > 0) getData();
+    }, [sortBy, loadPage, coIdx]);
+
+    useEffect((res) => {
+        getToken().then((res) => {
+            setCoIdx(res.IDX);
+        })
+    }, [])
 
     const handleSort = (key) => {
         setSortBy(key);
     };
+
+
 
     return (
         <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
