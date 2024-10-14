@@ -172,10 +172,10 @@ export default function page(props) {
 								</>
 							) : (
 								<>
-									<Button className='edit-button' variant='text' size='small' hidden={comment.usIdx != USIDX} onClick={() => EditClick(comment)}>
+									<Button className='edit-button' variant='text' size='small' sx={{ display: comment.usIdx != USIDX ? 'none' : 'block' }} onClick={() => EditClick(comment)}>
 										수정
 									</Button>
-									<Button className='delete-button' variant='text' color='error' size='small' hidden={comment.usIdx != USIDX} onClick={() => removeComment(comment.id)}>
+									<Button className='delete-button' variant='text' color='error' size='small' sx={{ display: comment.usIdx != USIDX ? 'none' : 'block' }} onClick={() => removeComment(comment.id)}>
 										삭제
 									</Button>
 									<p className='comment_content'>{comment.commContent}</p>
@@ -185,21 +185,15 @@ export default function page(props) {
 						</li>
 					))}
 				</ul>
-				<TextField id='commentWrite' label='댓글작성' variant='outlined' style={{ width: '765px' }} onChange={changeComment} />
-
-				<Button
-					className='commentSaveBtn'
-					variant='outlined'
-					size='small'
-					onClick={() => {
-						saveComment();
-					}}
-				>
-					저장
-				</Button>
+				<div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+					<TextField id='commentWrite' label='댓글작성' variant='outlined' style={{ flexGrow: 1 }} onChange={changeComment} />
+					<Button className='commentSaveBtn' variant='outlined' size='small' onClick={saveComment}>
+						저장
+					</Button>
+				</div>
 			</div>
 			<div className='btn_group'>
-				<Button variant='outlined' size='small' onClick={() => router.push(`bbs-notice-list?cPage=${cPage}&searchType=${searchType}&searchValue=${searchValue}`)}>
+				<Button variant='outlined' size='small' onClick={() => router.push(`/bbs-notice-list?cPage=${cPage}&searchType=${searchType}&searchValue=${searchValue}`)}>
 					목록
 				</Button>
 			</div>
