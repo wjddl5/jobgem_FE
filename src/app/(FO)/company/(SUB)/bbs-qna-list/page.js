@@ -100,7 +100,7 @@ export default function page(props) {
 				</TableHead>
 				<TableBody>
 					{ar.map((row) => (
-						<TableRow key={row.id} className={styles.tableRow} onClick={() => router.push(`bbs-qna-view/${row.id}?cPage=${page}`)} hover>
+						<TableRow key={row.id} className={styles.tableRow} onClick={() => router.push(`/bbs-qna-view/${row.id}?cPage=${page}`)} hover>
 							<TableCell align='center'>{row.id}</TableCell>
 							<TableCell>
 								{row.boTitle} &nbsp;&nbsp;| <strong> {row.boAnswer != 1 ? '답변대기' : '답변완료'}</strong>
