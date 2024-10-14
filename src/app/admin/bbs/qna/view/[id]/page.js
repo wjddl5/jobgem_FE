@@ -92,7 +92,7 @@ export default function page(props) {
 	function qnaList() {
 		axios
 			.get('/api/admin/unanswered-questions')
-			.then((res) => setQna(res.data))
+			.then((res) => setQna(res.data.filter(q => q.boAnswer == 0)))
 			.catch((error) => console.error('Error fetching QnA:', error));
 	}
 

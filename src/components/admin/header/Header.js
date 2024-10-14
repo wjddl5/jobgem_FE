@@ -16,11 +16,11 @@ export default function Header() {
 	useEffect(() => {
 		axios
 			.get('/api/admin/unanswered-questions')
-			.then((res) => setQna(res.data))
+			.then((res) => setQna(res.data.filter(q => q.boAnswer == 0)))
 			.catch((error) => console.error('Error fetching QnA:', error));
 		axios
 			.get('/api/admin/pending-blacklist')
-			.then((res) => setBlacklist(res.data))
+			.then((res) => setBlacklist(res.data.filter(b => b.blProcess == 0)))
 			.catch((error) => console.error('Error fetching blacklist:', error));
 	}, []);
 	const handleToggleDropdown = () => {

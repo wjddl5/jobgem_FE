@@ -65,10 +65,10 @@ export default function page(props) {
 				</ul>
 			</div>
 			<div className='btn_group'>
-				<Button variant='outlined' size='small' onClick={() => router.push(`bbs-qna-list?cPage=${props.searchParams.cPage}`)}>
+				<Button variant='outlined' size='small' onClick={() => router.push(`/bbs-qna-list?cPage=${props.searchParams.cPage}`)}>
 					목록
 				</Button>
-				<Button variant='outlined' size='small' onClick={() => router.push(`bbs-qna-edit/${props.params.id}`)}>
+				<Button variant='outlined' size='small' onClick={() => router.push(`/bbs-qna-edit/${props.params.id}`)}>
 					수정
 				</Button>
 				<Button variant='outlined' size='small' color='error' onClick={() => removeBbs(vo.id)}>

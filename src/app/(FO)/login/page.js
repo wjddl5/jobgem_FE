@@ -71,27 +71,11 @@ export default function LoginPage() {
             className="mb-2 p-2 border border-gray-300 rounded"
           />
           {errors.password && <span className="text-red-500 text-sm">{errors.password.message}</span>}
-          <div className="flex items-center justify-between mb-4">
-            <label className="flex items-center">
-              <input type="checkbox" className="mr-1" />
-              로그인 유지
-            </label>
-          </div>
           <button type="submit" className="py-2 bg-blue-500 text-white rounded">로그인</button>
         </form>
-        {type === 'personal' && (
-          <div className="flex justify-around mt-4">
-            {/* 소셜 로그인으로 변경 예정 */}
-            <button className="text-green-500">N</button>
-            <button className="text-yellow-500">K</button>
-            <button className="text-blue-500">F</button>
-            <button className="text-gray-800">G</button>
-            <button className="text-black">A</button>
-          </div>
-        )}
         <div className="flex justify-between mt-4 text-sm">
-          <span className="cursor-pointer">아이디 찾기</span>
-          <span className="cursor-pointer">비밀번호 찾기</span>
+          <Link href="/login/search/id" className="cursor-pointer">아이디 찾기</Link>
+          <Link href="/login/search/pw" className="cursor-pointe">비밀번호 찾기</Link>
           <Link href="/reg" className="cursor-pointer text-blue-500">회원가입</Link>
         </div>
       </div>
