@@ -55,6 +55,9 @@ function Page() {
                 );
                 setChatList((prevMessages) => [...prevMessages, newMessage]);
             });
+
+            stompClient.current.heartbeat.outgoing = 30000; // 클라이언트에서 서버로의 heartbeat (30초)
+            stompClient.current.heartbeat.incoming = 30000; // 서버에서 클라이언트로의 heartbeat (30초)
         }, (error) => {
             console.error('STOMP connection error:', error);
         });
@@ -126,7 +129,7 @@ function Page() {
     return (
         <>
             {
-                chatRooms.length > 0 ? <div className="flex h-screen">
+                chatRooms?.length > 0 ? <div className="flex h-screen">
                     <div className="w-1/4 bg-gray-100 border-r border-gray-300 pr-1">
                         <div className="space-y-2 overflow-y-auto h-full">
                             {chatRooms.map((chat) => (

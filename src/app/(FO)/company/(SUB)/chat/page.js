@@ -42,7 +42,6 @@ function Page() {
         stompClient.current.connect({}, () => {
             stompClient.current.subscribe(`/sub/chatroom/${chatRoomId}`, (message) => {
                 const newMessage = JSON.parse(message.body);
-                console.log(newMessage.chDate = new Date());
 
                 setChatRooms((prevChatRooms) =>
                     prevChatRooms.map((chatRoom) =>
@@ -130,7 +129,7 @@ function Page() {
     return (
         <>
             {
-                chatRooms.length > 0 ? <div className="flex h-screen">
+                chatRooms?.length > 0 ? <div className="flex h-screen">
                     <div className="w-1/4 bg-gray-100 border-r border-gray-300 pr-1">
                         <div className="space-y-2 overflow-y-auto h-full">
                             {chatRooms.map((chat) => (
