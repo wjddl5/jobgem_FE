@@ -131,10 +131,10 @@ export default function DetialPage(props) {
 		}
 	}
 
-	function readResume(id){
+	function readResume(id,reIdx){
 		axios.put(`/api/posts/${id}/read`)
 			.then(response => {
-				router.push(`/company/resume/${id}`)
+				router.push(`/company/resume/${reIdx}`)
 			})
 			.catch(error => {
 
@@ -227,7 +227,7 @@ export default function DetialPage(props) {
 											</td>
 											<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>{item.apDate}</td>
 											<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-700'>
-												<button className='text-blue-500 hover:text-blue-600' onClick={() => readResume(item.id)}>
+												<button className='text-blue-500 hover:text-blue-600' onClick={() => readResume(item.id,item.reIdx)}>
 													| 이력서보기 |
 												</button>
 											</td>
